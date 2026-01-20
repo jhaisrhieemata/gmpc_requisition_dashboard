@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stocks & Requisitions Dashboard</title>
+
+    <style>
+      body {
+        font-family: Roboto, Arial, sans-serif;
+        margin: 12px;
+        background: #f7f8fb;
+      }
+      .container {
+        max-width: 1300px;
+        margin: auto;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+      .small {
+        font-size: 12px;
+        color: #666;
+      }
+      .header-right {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .header-right button {
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        background: #666;
+        color: white;
+      }
+      .header-right button:hover {
+        background: #555;
+      }
+
+      .badge {
+        padding: 6px 12px;
+        border-radius: 18px;
+        font-weight: 600;
+        color: #fff;
+      }
+      .badge-office {
+        background: #1976d2;
+      }
+      .badge-special {
+        background: #6a1b9a;
+      }
+      .badge-zero {
+        background: #2e7d32;
+      }
+
+      .card {
+        background: #fff;
+        padding: 18px;
+        border-radius: 14px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+      th,
+      td {
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+      }
+      th {
+        background: #f1f1f1;
+        position: sticky;
+        top: 0;
+      }
+
+      .card-scroll {
+        max-height: 380px;
+        overflow: auto;
+      }
+
+      .action-btn {
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        margin-right: 4px;
+      }
+      .action-edit {
+        background: #ffc107;
+      }
+      .action-delete {
+        background: #dc3545;
+        color: #fff;
+      }
+      .action-approve {
+        background: #28a745;
+        color: #fff;
+      }
+      .loading {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+      .loading::after {
+        content: " ⏳";
+      }
+
+      /* MODAL */
+      #branchModal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 1000;
+      }
+      #branchModal .box {
+        background: #fff;
+        margin: 4% auto;
+        padding: 20px;
+        width: 92%;
+        max-width: 950px;
+        border-radius: 14px;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+    </style>
+
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <div>
+          <h1>Stocks & Requisitions Dashboard</h1>
+          <div class="small">Live from Spreadsheet</div>
+        </div>
+        <div class="header-right">
+          <span id="officeBadge" class="badge">Office</span>
+          <span id="specialBadge" class="badge">Special</span>
+        </div>
+      </header>
+
+      <!-- ================= PIE + INVENTORY ================= -->
+      <div class="card">
+        <div id="statusPie" style="height: 320px"></div>
+      </div>
+
+      <div class="card">
+        <h3>OFFICE STOCKS – Inventory</h3>
+        <div class="card-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Item ID</th>
+                <th>Description</th>
+                <th>Unit</th>
+                <th style="text-align: right">Stocks</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ================= SPECIAL REQUEST ================= -->
+      <div class="card">
+        <h3>Pending – Special Requests</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Branch</th>
+              <th>Total</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="specialBody"></tbody>
+        </table>
+      </div>
+
+      <!-- ================= OFFICE SUPPLIES ================= -->
+      <div class="card">
+        <h3>Pending – Office Supplies</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Branch</th>
+              <th>Total</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="officeBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ================= BRANCH MODAL ================= -->
+    <div id="branchModal">
+      <div class="box">
+        <h3 id="modalTitle"></h3>
+
+        <div style="margin-bottom: 10px">
+          <button
+            class="action-btn action-approve"
+            onclick="batchApprove(this)"
+          >
+            Batch Approve
+          </button>
+          <button class="print-btn action-print" onclick="batchPrint(this)">
+            Batch Print PDF
+          </button>
+          <button style="float: right" onclick="closeModal()">Close</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Qty</th>
+              <th>Unit</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="modalBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      google.charts.load("current", { packages: ["corechart"] });
+      google.charts.setOnLoadCallback(init);
+
+      let currentRows = [];
+
+      function init() {
+        refreshAll();
+        setInterval(refreshAll, 10000);
+      }
+
+      function refreshAll() {
+        google.script.run
+          .withSuccessHandler(renderGrouped)
+          .getPendingGroupedByBranch();
+        google.script.run
+          .withSuccessHandler(updateBadges)
+          .getPendingBreakdown();
+        google.script.run
+          .withSuccessHandler(renderDashboard)
+          .getDashboardData();
+      }
+
+      function updateBadges(d) {
+        officeBadge.textContent = `Office: ${d.office}`;
+        specialBadge.textContent = `Special: ${d.special}`;
+        officeBadge.className =
+          "badge " + (d.office ? "badge-office" : "badge-zero");
+        specialBadge.className =
+          "badge " + (d.special ? "badge-special" : "badge-zero");
+      }
+
+      function renderDashboard(d) {
+        drawPie(d.statusCounts);
+        inventoryBody.innerHTML = "";
+        d.addStocks.forEach((r) => {
+          inventoryBody.innerHTML += `
+      <tr>
+        <td>${r.itemId}</td>
+        <td>${r.description}</td>
+        <td>${r.unit}</td>
+        <td style="text-align:right">${r.totalRunningStocks}</td>
+        <td>${r.status}</td>
+      </tr>`;
+        });
+      }
+
+      function drawPie(sc) {
+        const rows = [["Status", "Count"]];
+        Object.keys(sc || {}).forEach((k) => rows.push([k, sc[k]]));
+        if (rows.length === 1) rows.push(["None", 0]);
+        new google.visualization.PieChart(statusPie).draw(
+          google.visualization.arrayToDataTable(rows),
+          { title: "Request Status Distribution", pieHole: 0.35 }
+        );
+      }
+
+      function renderGrouped(data) {
+        renderBranchTable("officeBody", data.office);
+        renderBranchTable("specialBody", data.special);
+      }
+
+      function renderBranchTable(id, groups) {
+        const b = document.getElementById(id);
+        b.innerHTML = "";
+        (groups || []).forEach((g) => {
+          b.innerHTML += `
+      <tr>
+        <td>${g.branch}</td>
+        <td>${g.total}</td>
+        <td>
+          <button class="action-btn action-edit"
+            onclick='openModal(${JSON.stringify(g)})'>View</button>
+        </td>
+      </tr>`;
+        });
+      }
+
+      /* MODAL */
+      function openModal(g) {
+        currentRows = g.rows;
+        modalTitle.textContent = `Branch: ${g.branch}`;
+        modalBody.innerHTML = "";
+        g.rows.forEach((r) => {
+          modalBody.innerHTML += `
+      <tr>
+        <td>${r.qty}</td>
+        <td>${r.unit}</td>
+        <td>${r.description}</td>
+        <td>
+          <button class="action-btn action-edit"
+            onclick="editQty('${r.sheetName}',${r.rowNumber},${r.qty})">Edit</button>
+          <button class="action-btn action-approve"
+            onclick="approveRow(this,'${r.sheetName}',${r.rowNumber})">Approve</button>
+          <button class="action-btn action-delete"
+            onclick="deleteRow(this,'${r.sheetName}',${r.rowNumber})">Delete</button>
+        </td>
+      </tr>`;
+        });
+        branchModal.style.display = "block";
+      }
+      function closeModal() {
+        branchModal.style.display = "none";
+      }
+
+      /* ACTIONS */
+      function editQty(s, r, q) {
+        const n = prompt("Edit Qty:", q);
+        if (n != null)
+          google.script.run
+            .withSuccessHandler(refreshAll)
+            .editPendingRow(s, r, { Qty: n });
+      }
+      function approveRow(btn, s, r) {
+        btn.classList.add("loading");
+        google.script.run
+          .withSuccessHandler(refreshAll)
+          .approvePendingRow(s, r);
+      }
+      function deleteRow(btn, s, r) {
+        if (!confirm("Delete?")) return;
+        btn.classList.add("loading");
+        google.script.run.withSuccessHandler(refreshAll).deletePendingRow(s, r);
+      }
+
+      /* BATCH */
+      function batchApprove(btn) {
+        btn.classList.add("loading");
+        google.script.run
+          .withSuccessHandler(() => {
+            btn.classList.remove("loading");
+            refreshAll();
+          })
+          .batchApprove(currentRows);
+      }
+
+      function batchPrint() {
+        google.script.run
+          .withSuccessHandler((selectedPerBranch) => {
+            if (
+              !selectedPerBranch ||
+              Object.keys(selectedPerBranch).length === 0
+            ) {
+              alert(
+                "No PDFs found. Please ensure PDF URLs are populated in the spreadsheet."
+              );
+              return;
+            }
+
+            let pdfCount = 0;
+            Object.keys(selectedPerBranch).forEach((branch) => {
+              const pdf = selectedPerBranch[branch];
+              if (pdf && pdf.url) {
+                window.open(pdf.url, "_blank");
+                pdfCount++;
+              }
+            });
+
+            alert(
+              `Opened ${pdfCount} PDF(s) — one per branch (prefer Special requests/ Office Supplies).`
+            );
+          })
+          .getBatchPdfUrls(currentRows);
+      }
+    </script>
+  </body>
+</html>
