@@ -224,7 +224,14 @@
             Batch Print PDF
           </button>
           <button class="action-btn" onclick="composeEmail()">
-            Send Email
+            Received Email
+          </button>
+          <button
+            class="action-btn"
+            style="background: #6c757d"
+            onclick="claimedEmail(this)"
+          >
+            Claimed Email
           </button>
           <button style="float: right" onclick="closeModal()">Close</button>
         </div>
@@ -516,6 +523,54 @@
 
         // Open Gmail compose in new tab
         window.open(gmailUrl, "_blank");
+      }
+
+      function claimedEmail(btn) {
+        if (!currentRows || currentRows.length === 0) {
+          alert("No items selected.");
+          return;
+        }
+
+        btn.classList.add("loading");
+
+        // Get branch name from modal title
+        const branch = modalTitle.textContent.replace(/^Branch:\s*/, "").trim();
+
+        // Resolve email addresses
+        const to = getEmailForBranch(branch);
+        const cc = branchEmailMap["ADMIN"] || "";
+
+        // Email subject
+        const subject = `Office Supplies Ready for Claim – ${branch}`;
+
+        // Build email body
+        let body = `Good day Ma'am/Sir,\n\n`;
+        body += `We are pleased to inform you that the requested office supplies for the ${branch} branch are now ready for claim.\n\n`;
+        body += `Please note that some item quantities may have been adjusted or not fully served due to limited or unavailable stock at the time of processing. Rest assured that available items have been prepared accordingly.\n\n`;
+        body += `${"=".repeat(100)}\n\n`;
+        body += `Details Items:\n\n`;
+        body += `# - Qty - Unit - Description\n`;
+        body += `${"=".repeat(100)}\n`;
+
+        currentRows.forEach((r, index) => {
+          body += `${index + 1} - ${r.qty} - ${r.unit} - ${r.description}\n`;
+        });
+
+        body += `${"=".repeat(100)}\n\n`;
+        body += `Thank you.`;
+
+        // Gmail compose URL
+        const gmailUrl =
+          "https://mail.google.com/mail/?view=cm&fs=1" +
+          `&to=${encodeURIComponent(to)}` +
+          `&cc=${encodeURIComponent(cc)}` +
+          `&su=${encodeURIComponent(subject)}` +
+          `&body=${encodeURIComponent(body)}`;
+
+        // Open Gmail compose in new tab
+        window.open(gmailUrl, "_blank");
+
+        btn.classList.remove("loading");
       }
     </script>
   </body>
