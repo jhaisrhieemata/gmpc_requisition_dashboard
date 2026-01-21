@@ -40,6 +40,8 @@ function getDashboardData() {
     email: ["email", "e-mail", "email address", "contact email", "contact"],
     status: ["status", "approval"],
     pdfUrl: ["pdf", "pdf url", "pdf_url", "pdf link", "pdf link", "drive link"],
+    uprice: ["uprice", "unit price", "price"],
+    amount: ["amount", "total amount"],
   };
 
   const pendingOffice = [];
@@ -87,6 +89,8 @@ function getDashboardData() {
       branch: findIdx(headers, headerNames.branch),
       email: findIdx(headers, headerNames.email),
       status: findIdx(headers, headerNames.status),
+      uprice: findIdx(headers, headerNames.uprice),
+      amount: findIdx(headers, headerNames.amount),
     };
 
     for (let r = 1; r < data.length; r++) {
@@ -96,16 +100,21 @@ function getDashboardData() {
       statusCounts[status] = (statusCounts[status] || 0) + 1;
 
       if (status.toLowerCase() === "pending") {
+        const uprice = Number(data[r][idx.uprice] || 0);
+        const qty = Number(data[r][idx.qty] || 0);
+        const amount = uprice * qty;
         const row = {
           sheetName: sheet.getName(),
           rowNumber: r + 1,
           itemId: data[r][idx.itemId] || "",
           description: data[r][idx.description] || "",
-          qty: Number(data[r][idx.qty] || 0),
+          qty: qty,
           unit: data[r][idx.unit] || "",
           branch: data[r][idx.branch] || "",
           email: data[r][idx.email] || "",
           status,
+          uprice: uprice,
+          amount: amount,
         };
 
         detectRequestType(sheet.getName()) === "SPECIAL"
@@ -244,7 +253,7 @@ function getBatchPdfUrls(rows) {
         "PDF fetch failed for %s#%s: %s",
         r.sheetName,
         r.rowNumber,
-        e.toString()
+        e.toString(),
       );
     }
   });

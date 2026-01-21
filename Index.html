@@ -235,6 +235,9 @@
               <th>Qty</th>
               <th>Unit</th>
               <th>Description</th>
+              <th>Uprice</th>
+              <th>Amount</th>
+              <th>Total</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -294,6 +297,13 @@
         );
         if (foundKey) return branchEmailMap[foundKey];
         return branchEmailMap["ADMIN"];
+      }
+
+      function formatNumberWithThousands(num) {
+        return parseFloat(num).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
       }
 
       function init() {
@@ -373,12 +383,17 @@
         currentRows = g.rows;
         modalTitle.textContent = `Branch: ${g.branch}`;
         modalBody.innerHTML = "";
+        let total = 0;
         g.rows.forEach((r) => {
+          total += r.amount || 0;
           modalBody.innerHTML += `
       <tr>
         <td>${r.qty}</td>
         <td>${r.unit}</td>
         <td>${r.description}</td>
+        <td>${formatNumberWithThousands(r.uprice || 0)}</td>
+        <td>${formatNumberWithThousands(r.amount || 0)}</td>
+        <td>${formatNumberWithThousands(total)}</td>
         <td>
           <button class="action-btn action-edit"
             onclick="editQty('${r.sheetName}',${r.rowNumber},${r.qty})">Edit</button>
@@ -474,12 +489,21 @@
         // Build email body
         let body = `Good day,\n\n`;
         body += `Please see below the requisition details for ${branch}:\n\n`;
+        body += `# - Qty - Unit - Description - Uprice - Amount\n`;
+        body += `${"=".repeat(100)}\n`;
 
+        let totalAmount = 0;
         currentRows.forEach((r, index) => {
-          body += `${index + 1}. ${r.qty} ${r.unit} – ${r.description}\n`;
+          const amount = r.amount || 0;
+          totalAmount += amount;
+          const uprice = formatNumberWithThousands(r.uprice || 0);
+          const amountFormatted = formatNumberWithThousands(amount);
+          body += `${index + 1} - ${r.qty} - ${r.unit} - ${r.description} - ${uprice} - ${amountFormatted}\n`;
         });
 
-        body += `\nIf you have any questions, please let us know.\n\n`;
+        body += `${"=".repeat(100)}\n`;
+        body += `TOTAL AMOUNT: ${formatNumberWithThousands(totalAmount)}\n\n`;
+        body += `If you have any questions, please let us know.\n\n`;
         body += `Regards,\nPurchasing Team`;
 
         // Gmail compose URL
