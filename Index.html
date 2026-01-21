@@ -237,7 +237,6 @@
               <th>Description</th>
               <th>Uprice</th>
               <th>Amount</th>
-              <th>Total</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -393,7 +392,6 @@
         <td>${r.description}</td>
         <td>${formatNumberWithThousands(r.uprice || 0)}</td>
         <td>${formatNumberWithThousands(r.amount || 0)}</td>
-        <td>${formatNumberWithThousands(total)}</td>
         <td>
           <button class="action-btn action-edit"
             onclick="editQty('${r.sheetName}',${r.rowNumber},${r.qty})">Edit</button>
@@ -487,8 +485,10 @@
         const subject = `Request Received – ${branch}`;
 
         // Build email body
-        let body = `Good day,\n\n`;
-        body += `Please see below the requisition details for ${branch}:\n\n`;
+        let body = `Good day Ma’am/Sir,\n\n`;
+        body += `We have received the requisition request for ${branch}:\nPlease find the details below for your reference:\n\n`;
+        body += `${"=".repeat(100)}\n\n`;
+        body += `Requisition Details:\n\n`;
         body += `# - Qty - Unit - Description - Uprice - Amount\n`;
         body += `${"=".repeat(100)}\n`;
 
@@ -498,13 +498,13 @@
           totalAmount += amount;
           const uprice = formatNumberWithThousands(r.uprice || 0);
           const amountFormatted = formatNumberWithThousands(amount);
-          body += `${index + 1} - ${r.qty} - ${r.unit} - ${r.description} - ${uprice} - ${amountFormatted}\n`;
+          body += `${index + 1} - ${r.qty} - ${r.unit} - ${r.description} - ${uprice} - ${amountFormatted}\n\n`;
         });
 
         body += `${"=".repeat(100)}\n`;
         body += `TOTAL AMOUNT: ${formatNumberWithThousands(totalAmount)}\n\n`;
-        body += `If you have any questions, please let us know.\n\n`;
-        body += `Regards,\nPurchasing Team`;
+        body += `If you have any questions or require further clarification, please do not hesitate to contact us.\n\n`;
+        body += `Thank you.`;
 
         // Gmail compose URL
         const gmailUrl =
