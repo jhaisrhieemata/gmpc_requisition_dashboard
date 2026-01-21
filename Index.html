@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <base target="_top" />
@@ -145,7 +145,7 @@
     <div class="container">
       <header>
         <div>
-          <h1>Stocks & Requisitions Dashboard</h1>
+          <h1>Stocks & Requisitions Dashboard V2</h1>
           <div class="small">Live from Spreadsheet</div>
         </div>
         <div class="header-right">
@@ -251,37 +251,37 @@
 
       // Branch -> email mapping (integrated per provided list)
       const branchEmailMap = {
-        "ADMIN": "gmpcpurchasing@gmail.com",
-        "WAREHOUSE": "warehousegiant21@gmail.com",
-        "LAGTANG": "giantmotoprolagtang@gmail.com",
+        ADMIN: "gmpcpurchasing@gmail.com",
+        WAREHOUSE: "warehousegiant21@gmail.com",
+        LAGTANG: "giantmotoprolagtang@gmail.com",
         "V-RAMA": "gmpcguad_accounting@yahoo.com.ph",
-        "BULACAO": "ivyhamistoso@gmail.com",
+        BULACAO: "ivyhamistoso@gmail.com",
         "Y3S TALISAY": "gmpcyamaha3st@gmail.com",
-        "MINGLANILLA": "giantmotoprolinao@gmail.com",
+        MINGLANILLA: "giantmotoprolinao@gmail.com",
         "Y3S PARDO": "gmpcy3spardo@yahoo.com",
         "LAPU-LAPU": "giantmotoproopon19@gmail.com",
-        "BACAYAN": "gmpcbacayan@gmail.com",
+        BACAYAN: "gmpcbacayan@gmail.com",
         "SAN FERNANDO MB": "gmpcsanfernando@gmail.com",
         "Y3S SAN FERNANDO": "sanfernandoyamaha3s@gmail.com",
-        "LILOAN": "gmpctayud@gmail.com",
+        LILOAN: "gmpctayud@gmail.com",
         "CORDOVA MB": "gmpccordova@gmail.com",
         "Y3S CORDOVA": "gmpccordovay3s@gmail.com",
-        "CLARIN": "gmpcclarin@gmail.com",
-        "TOLEDO": "giantmotopro_corporation@yahoo.com.ph",
-        "UBAY": "gmpcubay@gmail.com",
-        "CARMEN": "gmpccarmenbh@gmail.com",
-        "TUBIGON": "gmpctubigon@gmail.com",
-        "TALIBON": "gmpctalibon@gmail.com",
-        "BOGO": "gmpcbogo@gmail.com",
-        "BALAMBAN": "gmpcbalamban@gmail.com",
+        CLARIN: "gmpcclarin@gmail.com",
+        TOLEDO: "giantmotopro_corporation@yahoo.com.ph",
+        UBAY: "gmpcubay@gmail.com",
+        CARMEN: "gmpccarmenbh@gmail.com",
+        TUBIGON: "gmpctubigon@gmail.com",
+        TALIBON: "gmpctalibon@gmail.com",
+        BOGO: "gmpcbogo@gmail.com",
+        BALAMBAN: "gmpcbalamban@gmail.com",
         "Y3S BARILI": "yamaha3sbarili@gmail.com",
         "BARILI MB": "giantmotoprobarilibranch@gmail.com",
         "SIERRA BULLONES": "gmpcsierra@gmail.com",
-        "PITOGO": "gmpcpitogo@gmail.com",
+        PITOGO: "gmpcpitogo@gmail.com",
         "TAYUD CONSOLACION": "gmpctayudconsolacion@gmail.com",
-        "PINAMUNGAJAN": "gmpcpinamungajan22@gmail.com",
-        "CANDIJAY": "giantcandijay@gmail.com",
-        "YATI LILOAN": "gmpcyatililoan@gmail.com"
+        PINAMUNGAJAN: "gmpcpinamungajan22@gmail.com",
+        CANDIJAY: "giantcandijay@gmail.com",
+        "YATI LILOAN": "gmpcyatililoan@gmail.com",
       };
 
       function getEmailForBranch(branch) {
@@ -290,7 +290,7 @@
         if (branchEmailMap[branch]) return branchEmailMap[branch];
         if (branchEmailMap[up]) return branchEmailMap[up];
         const foundKey = Object.keys(branchEmailMap).find(
-          (k) => k.toLowerCase().trim() === branch.toLowerCase().trim()
+          (k) => k.toLowerCase().trim() === branch.toLowerCase().trim(),
         );
         if (foundKey) return branchEmailMap[foundKey];
         return branchEmailMap["ADMIN"];
@@ -343,7 +343,7 @@
         if (rows.length === 1) rows.push(["None", 0]);
         new google.visualization.PieChart(statusPie).draw(
           google.visualization.arrayToDataTable(rows),
-          { title: "Request Status Distribution", pieHole: 0.35 }
+          { title: "Request Status Distribution", pieHole: 0.35 },
         );
       }
 
@@ -434,7 +434,7 @@
               Object.keys(selectedPerBranch).length === 0
             ) {
               alert(
-                "No PDFs found. Please ensure PDF URLs are populated in the spreadsheet."
+                "No PDFs found. Please ensure PDF URLs are populated in the spreadsheet.",
               );
               return;
             }
@@ -449,50 +449,50 @@
             });
 
             alert(
-              `Opened ${pdfCount} PDF(s) — one per branch (prefer Special requests/ Office Supplies).`
+              `Opened ${pdfCount} PDF(s) — one per branch (prefer Special requests/ Office Supplies).`,
             );
           })
           .getBatchPdfUrls(currentRows);
       }
 
-     function composeEmail() {
-  if (!currentRows || currentRows.length === 0) {
-    alert("No items selected to email.");
-    return;
-  }
+      function composeEmail() {
+        if (!currentRows || currentRows.length === 0) {
+          alert("No items selected to email.");
+          return;
+        }
 
-  // Get branch name from modal title
-  const branch = modalTitle.textContent.replace(/^Branch:\s*/, "").trim();
+        // Get branch name from modal title
+        const branch = modalTitle.textContent.replace(/^Branch:\s*/, "").trim();
 
-  // Resolve email addresses
-  const to = getEmailForBranch(branch);
-  const cc = branchEmailMap["ADMIN"] || "";
+        // Resolve email addresses
+        const to = getEmailForBranch(branch);
+        const cc = branchEmailMap["ADMIN"] || "";
 
-  // Email subject
-  const subject = `Request Received – ${branch}`;
+        // Email subject
+        const subject = `Request Received – ${branch}`;
 
-  // Build email body
-  let body = `Good day,\n\n`;
-  body += `Please see below the requisition details for ${branch}:\n\n`;
+        // Build email body
+        let body = `Good day,\n\n`;
+        body += `Please see below the requisition details for ${branch}:\n\n`;
 
-  currentRows.forEach((r, index) => {
-    body += `${index + 1}. ${r.qty} ${r.unit} – ${r.description}\n`;
-  });
+        currentRows.forEach((r, index) => {
+          body += `${index + 1}. ${r.qty} ${r.unit} – ${r.description}\n`;
+        });
 
-  body += `\nIf you have any questions, please let us know.\n\n`;
-  body += `Regards,\nPurchasing Team`;
+        body += `\nIf you have any questions, please let us know.\n\n`;
+        body += `Regards,\nPurchasing Team`;
 
-  // Gmail compose URL
-  const gmailUrl =
-    "https://mail.google.com/mail/?view=cm&fs=1" +
-    `&to=${encodeURIComponent(to)}` +
-    `&cc=${encodeURIComponent(cc)}` +
-    `&su=${encodeURIComponent(subject)}` +
-    `&body=${encodeURIComponent(body)}`;
+        // Gmail compose URL
+        const gmailUrl =
+          "https://mail.google.com/mail/?view=cm&fs=1" +
+          `&to=${encodeURIComponent(to)}` +
+          `&cc=${encodeURIComponent(cc)}` +
+          `&su=${encodeURIComponent(subject)}` +
+          `&body=${encodeURIComponent(body)}`;
 
-  // Open Gmail compose in new tab
-  window.open(gmailUrl, "_blank");
-}
+        // Open Gmail compose in new tab
+        window.open(gmailUrl, "_blank");
+      }
     </script>
   </body>
 </html>
