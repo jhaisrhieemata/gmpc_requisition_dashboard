@@ -223,14 +223,17 @@
           <button class="print-btn action-print" onclick="batchPrint(this)">
             Batch Print PDF
           </button>
-          <button class="action-btn" onclick="composeEmail()">
-            Received Email
+          <button
+            class="action-btn"
+            onclick="officesuppliesreceivedEmail(this)"
+          >
+            Office Supplies Received Email
           </button>
           <button class="action-btn" onclick="claimedEmail(this)">
             Claimed Email
           </button>
           <button class="action-btn" onclick="specialrequestEmail(this)">
-            Spcial Request Email
+            Special Request Email
           </button>
           <button style="float: right" onclick="closeModal()">Close</button>
         </div>
@@ -256,6 +259,7 @@
       google.charts.setOnLoadCallback(init);
 
       let currentRows = [];
+      let branchGroupsCache = []; // Cache for branch groups to avoid JSON.stringify issues
 
       // Branch -> email mapping (integrated per provided list)
       const branchEmailMap = {
@@ -371,16 +375,24 @@
         const b = document.getElementById(id);
         b.innerHTML = "";
         (groups || []).forEach((g) => {
+          const cacheIndex = branchGroupsCache.length;
+          branchGroupsCache.push(g);
           b.innerHTML += `
       <tr>
         <td>${g.branch}</td>
         <td>${g.total}</td>
         <td>
           <button class="action-btn action-edit"
-            onclick='openModal(${JSON.stringify(g)})'>View</button>
+            onclick='openModalFromCache(${cacheIndex})'>View</button>
         </td>
       </tr>`;
         });
+      }
+
+      function openModalFromCache(cacheIndex) {
+        if (cacheIndex >= 0 && cacheIndex < branchGroupsCache.length) {
+          openModal(branchGroupsCache[cacheIndex]);
+        }
       }
 
       /* MODAL */
@@ -474,7 +486,7 @@
           .getBatchPdfUrls(currentRows);
       }
 
-      function composeEmail() {
+      function officesuppliesreceivedEmail(btn) {
         if (!currentRows || currentRows.length === 0) {
           alert("No items selected to email.");
           return;
@@ -485,37 +497,29 @@
 
         // Resolve email addresses
         const to = getEmailForBranch(branch);
-        const cc = branchEmailMap["ADMIN"] || "";
 
         // Email subject
-        const subject = `Request Received – ${branch}`;
+        const subject = `OFFICE SUPPLIES RECEIVED – ${branch}`;
 
         // Build email body
-        let body = `Good day Ma’am/Sir,\n\n`;
-        body += `We have received your request for ${branch} Branch.\n\n`;
+        let body = `Good Day Ma'am/Sir,\n\n`;
+        body += `We have received your office supplies request.\n\n`;
         body += `${"=".repeat(100)}\n\n`;
         body += `Request Details:\n\n`;
-        body += `# - Qty - Unit - Description - Uprice - Amount\n`;
+        body += `# - Description - Qty - Unit\n`;
         body += `${"=".repeat(100)}\n`;
 
-        let totalAmount = 0;
         currentRows.forEach((r, index) => {
-          const amount = r.amount || 0;
-          totalAmount += amount;
-          const uprice = formatNumberWithThousands(r.uprice || 0);
-          const amountFormatted = formatNumberWithThousands(amount);
-          body += `${index + 1} - ${r.qty} - ${r.unit} - ${r.description} - ${uprice} - ${amountFormatted}\n`;
+          body += `${index + 1} - ${r.description} - ${r.qty} - ${r.unit}\n`;
         });
 
-        body += `${"=".repeat(100)}\n`;
-        body += `TOTAL AMOUNT: ${formatNumberWithThousands(totalAmount)}\n\n`;
-        body += `Thank you.`;
+        body += `${"=".repeat(100)}\n\n`;
+        body += `Thank you, God bless!\n`;
 
         // Gmail compose URL
         const gmailUrl =
           "https://mail.google.com/mail/?view=cm&fs=1" +
           `&to=${encodeURIComponent(to)}` +
-          `&cc=${encodeURIComponent(cc)}` +
           `&su=${encodeURIComponent(subject)}` +
           `&body=${encodeURIComponent(body)}`;
 
@@ -536,21 +540,20 @@
 
         // Resolve email addresses
         const to = getEmailForBranch(branch);
-        const cc = branchEmailMap["ADMIN"] || "";
 
         // Email subject
-        const subject = `Office Supplies Ready for Claim – ${branch}`;
+        const subject = `OFFICE SUPPLIES READY FOR PICKUP – ${branch}`;
 
         // Build email body
-        let body = `Good day Ma'am/Sir,\n\n`;
-        body += `We are pleased to inform you that the requested office supplies for the ${branch} branch are now ready for pickup.\n\n`;
+        let body = `Good Day Ma'am/Sir,\n\n`;
+        body += `The requested office supplies are ready for pickup.\n\n`;
         body += `${"=".repeat(100)}\n\n`;
         body += `Request Details:\n\n`;
-        body += `# - Qty - Unit - Description\n`;
+        body += `# - Description - Qty - Unit\n`;
         body += `${"=".repeat(100)}\n`;
 
         currentRows.forEach((r, index) => {
-          body += `${index + 1} - ${r.qty} - ${r.unit} - ${r.description}\n`;
+          body += `${index + 1} - ${r.description} - ${r.qty} - ${r.unit}\n`;
         });
 
         body += `${"=".repeat(100)}\n\n`;
@@ -560,7 +563,6 @@
         const gmailUrl =
           "https://mail.google.com/mail/?view=cm&fs=1" +
           `&to=${encodeURIComponent(to)}` +
-          `&cc=${encodeURIComponent(cc)}` +
           `&su=${encodeURIComponent(subject)}` +
           `&body=${encodeURIComponent(body)}`;
 
@@ -583,14 +585,16 @@
 
         // Resolve email addresses
         const to = getEmailForBranch(branch);
-        const cc = branchEmailMap["ADMIN"] || "";
 
         // Email subject
-        const subject = `Special Request Recieved – ${branch}`;
+        const subject = `SPECIAL REQUEST RECEIVED – ${branch}`;
 
         // Build email body
-        let body = `Good day Ma'am/Sir,\n\n`;
-        body += `We have received your Special Request for the ${branch} branch.\n\n`;
+        let body = `Good Day Ma'am/Sir,\n\n`;
+        body += `We have received your special request.\n\n`;
+
+        //
+        body += `NOTE: Please be informed that this request has been approved by our corporate accountant and has been endorsed to the disbursement officer for issuance.\n\n`;
         body += `${"=".repeat(100)}\n\n`;
         body += `Special Request Details:\n\n`;
         body += `# - Qty - Unit - Description - Uprice - Amount\n`;
@@ -607,14 +611,12 @@
 
         body += `${"=".repeat(100)}\n`;
         body += `TOTAL AMOUNT: ${formatNumberWithThousands(totalAmount)}\n\n`;
-        body += `Please be informed that this request has been approved by our Corporate Accountant and has been endorsed to the Disbursement Officer for issuance.\n\n`;
         body += `Thank you, God bless!\n`;
 
         // Gmail compose URL
         const gmailUrl =
           "https://mail.google.com/mail/?view=cm&fs=1" +
           `&to=${encodeURIComponent(to)}` +
-          `&cc=${encodeURIComponent(cc)}` +
           `&su=${encodeURIComponent(subject)}` +
           `&body=${encodeURIComponent(body)}`;
 
