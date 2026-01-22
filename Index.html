@@ -226,12 +226,11 @@
           <button class="action-btn" onclick="composeEmail()">
             Received Email
           </button>
-          <button
-            class="action-btn"
-            style="background: #6c757d"
-            onclick="claimedEmail(this)"
-          >
+          <button class="action-btn" onclick="claimedEmail(this)">
             Claimed Email
+          </button>
+          <button class="action-btn" onclick="specialrequestEmail(this)">
+            Spcial Request Email
           </button>
           <button style="float: right" onclick="closeModal()">Close</button>
         </div>
@@ -493,9 +492,9 @@
 
         // Build email body
         let body = `Good day Ma’am/Sir,\n\n`;
-        body += `We have received the requisition request for ${branch}:\nPlease find the details below for your reference:\n\n`;
+        body += `We have received your request for ${branch} Branch.\n\n`;
         body += `${"=".repeat(100)}\n\n`;
-        body += `Requisition Details:\n\n`;
+        body += `Request Details:\n\n`;
         body += `# - Qty - Unit - Description - Uprice - Amount\n`;
         body += `${"=".repeat(100)}\n`;
 
@@ -505,12 +504,11 @@
           totalAmount += amount;
           const uprice = formatNumberWithThousands(r.uprice || 0);
           const amountFormatted = formatNumberWithThousands(amount);
-          body += `${index + 1} - ${r.qty} - ${r.unit} - ${r.description} - ${uprice} - ${amountFormatted}\n\n`;
+          body += `${index + 1} - ${r.qty} - ${r.unit} - ${r.description} - ${uprice} - ${amountFormatted}\n`;
         });
 
         body += `${"=".repeat(100)}\n`;
         body += `TOTAL AMOUNT: ${formatNumberWithThousands(totalAmount)}\n\n`;
-        body += `If you have any questions or require further clarification, please do not hesitate to contact us.\n\n`;
         body += `Thank you.`;
 
         // Gmail compose URL
@@ -545,10 +543,9 @@
 
         // Build email body
         let body = `Good day Ma'am/Sir,\n\n`;
-        body += `We are pleased to inform you that the requested office supplies for the ${branch} branch are now ready for claim.\n\n`;
-        body += `Please note that some item quantities may have been adjusted or not fully served due to limited or unavailable stock at the time of processing. Rest assured that available items have been prepared accordingly.\n\n`;
+        body += `We are pleased to inform you that the requested office supplies for the ${branch} branch are now ready for pickup.\n\n`;
         body += `${"=".repeat(100)}\n\n`;
-        body += `Details Items:\n\n`;
+        body += `Request Details:\n\n`;
         body += `# - Qty - Unit - Description\n`;
         body += `${"=".repeat(100)}\n`;
 
@@ -557,7 +554,61 @@
         });
 
         body += `${"=".repeat(100)}\n\n`;
-        body += `Thank you.`;
+        body += `Thank you, God bless!\n`;
+
+        // Gmail compose URL
+        const gmailUrl =
+          "https://mail.google.com/mail/?view=cm&fs=1" +
+          `&to=${encodeURIComponent(to)}` +
+          `&cc=${encodeURIComponent(cc)}` +
+          `&su=${encodeURIComponent(subject)}` +
+          `&body=${encodeURIComponent(body)}`;
+
+        // Open Gmail compose in new tab
+        window.open(gmailUrl, "_blank");
+
+        btn.classList.remove("loading");
+      }
+
+      function specialrequestEmail(btn) {
+        if (!currentRows || currentRows.length === 0) {
+          alert("No items selected.");
+          return;
+        }
+
+        btn.classList.add("loading");
+
+        // Get branch name from modal title
+        const branch = modalTitle.textContent.replace(/^Branch:\s*/, "").trim();
+
+        // Resolve email addresses
+        const to = getEmailForBranch(branch);
+        const cc = branchEmailMap["ADMIN"] || "";
+
+        // Email subject
+        const subject = `Special Request Recieved – ${branch}`;
+
+        // Build email body
+        let body = `Good day Ma'am/Sir,\n\n`;
+        body += `We have received your Special Request for the ${branch} branch.\n\n`;
+        body += `${"=".repeat(100)}\n\n`;
+        body += `Special Request Details:\n\n`;
+        body += `# - Qty - Unit - Description - Uprice - Amount\n`;
+        body += `${"=".repeat(100)}\n`;
+
+        let totalAmount = 0;
+        currentRows.forEach((r, index) => {
+          const amount = r.amount || 0;
+          totalAmount += amount;
+          const uprice = formatNumberWithThousands(r.uprice || 0);
+          const amountFormatted = formatNumberWithThousands(amount);
+          body += `${index + 1} - ${r.qty} - ${r.unit} - ${r.description} - ${uprice} - ${amountFormatted}\n`;
+        });
+
+        body += `${"=".repeat(100)}\n`;
+        body += `TOTAL AMOUNT: ${formatNumberWithThousands(totalAmount)}\n\n`;
+        body += `Please be informed that this request has been approved by our Corporate Accountant and has been endorsed to the Disbursement Officer for issuance.\n\n`;
+        body += `Thank you, God bless!\n`;
 
         // Gmail compose URL
         const gmailUrl =
