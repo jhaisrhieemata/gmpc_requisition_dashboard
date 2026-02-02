@@ -222,10 +222,7 @@
           >
             Batch Approve
           </button>
-          <button
-            class="print-btn action-print"
-            onclick="batchPrint(this, 'office')"
-          >
+          <button class="print-btn action-print" onclick="batchPrint(this)">
             Batch Print PDF
           </button>
           <button
@@ -237,54 +234,10 @@
           <button class="action-btn" onclick="claimedEmail(this, 'office')">
             Claimed Email
           </button>
-          <button style="float: right" onclick="closeModal('office')">
-            Close
-          </button>
-        </div>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Qty</th>
-              <th>Unit</th>
-              <th>Description</th>
-              <th>Uprice</th>
-              <th>Amount</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="officeModalBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ================= SPECIAL REQUEST MODAL ================= -->
-    <div id="specialModal">
-      <div class="box">
-        <h3 id="specialModalTitle"></h3>
-
-        <div style="margin-bottom: 10px">
-          <button
-            class="action-btn action-approve"
-            onclick="batchApprove(this, 'special')"
-          >
-            Batch Approve
-          </button>
-          <button
-            class="print-btn action-print"
-            onclick="batchPrint(this, 'special')"
-          >
-            Batch Print PDF
-          </button>
-          <button
-            class="action-btn"
-            onclick="specialrequestEmail(this, 'special')"
-          >
+          <button class="action-btn" onclick="specialrequestEmail(this)">
             Special Request Email
           </button>
-          <button style="float: right" onclick="closeModal('special')">
-            Close
-          </button>
+          <button style="float: right" onclick="closeModal()">Close</button>
         </div>
 
         <table>
@@ -446,26 +399,9 @@
 
       /* MODAL */
       function openModal(g) {
-        // Determine request type from first row
-        const requestType =
-          g.rows.length > 0
-            ? g.rows[0].sheetName.toLowerCase().includes("special")
-              ? "special"
-              : "office"
-            : "office";
-
         currentRows = g.rows;
-
-        const modalId =
-          requestType === "special" ? "specialModal" : "officeModal";
-        const titleId =
-          requestType === "special" ? "specialModalTitle" : "officeModalTitle";
-        const bodyId =
-          requestType === "special" ? "specialModalBody" : "officeModalBody";
-
-        document.getElementById(titleId).textContent = `Branch: ${g.branch}`;
-        document.getElementById(bodyId).innerHTML = "";
-
+        modalTitle.textContent = `Branch: ${g.branch}`;
+        modalBody.innerHTML = "";
         let total = 0;
         g.rows.forEach((r) => {
           total += r.amount || 0;
@@ -486,20 +422,10 @@
         </td>
       </tr>`;
         });
-
-        document.getElementById(modalId).style.display = "block";
+        branchModal.style.display = "block";
       }
-
-      function closeModal(type) {
-        if (type === "special") {
-          document.getElementById("specialModal").style.display = "none";
-        } else if (type === "office") {
-          document.getElementById("officeModal").style.display = "none";
-        } else {
-          // Close both for backward compatibility
-          document.getElementById("officeModal").style.display = "none";
-          document.getElementById("specialModal").style.display = "none";
-        }
+      function closeModal() {
+        branchModal.style.display = "none";
       }
 
       /* ACTIONS */
@@ -569,13 +495,7 @@
         }
 
         // Get branch name from modal title
-        const titleElement =
-          type === "office"
-            ? document.getElementById("officeModalTitle")
-            : document.getElementById("officeModalTitle");
-        const branch = titleElement.textContent
-          .replace(/^Branch:\s*/, "")
-          .trim();
+        const branch = modalTitle.textContent.replace(/^Branch:\s*/, "").trim();
 
         // Resolve email addresses
         const to = getEmailForBranch(branch);
@@ -618,10 +538,7 @@
         btn.classList.add("loading");
 
         // Get branch name from modal title
-        const titleElement = document.getElementById("officeModalTitle");
-        const branch = titleElement.textContent
-          .replace(/^Branch:\s*/, "")
-          .trim();
+        const branch = modalTitle.textContent.replace(/^Branch:\s*/, "").trim();
 
         // Resolve email addresses
         const to = getEmailForBranch(branch);
@@ -666,10 +583,7 @@
         btn.classList.add("loading");
 
         // Get branch name from modal title
-        const titleElement = document.getElementById("specialModalTitle");
-        const branch = titleElement.textContent
-          .replace(/^Branch:\s*/, "")
-          .trim();
+        const branch = modalTitle.textContent.replace(/^Branch:\s*/, "").trim();
 
         // Resolve email addresses
         const to = getEmailForBranch(branch);
