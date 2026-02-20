@@ -636,6 +636,7 @@
         body += `Request Details:\n\n`;
         body += `# - Description - Qty - Unit\n`;
         body += `${"=".repeat(100)}\n`;
+        body += `${branch}\n`;
 
         currentRows.forEach((r, index) => {
           body += `${index + 1} - ${r.description} - ${r.qty} - ${r.unit}\n`;
