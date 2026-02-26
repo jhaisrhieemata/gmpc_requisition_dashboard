@@ -296,12 +296,23 @@ function _createPdfFileForRow(row, ssOpt) {
 // ===============================
 // BATCH
 // ===============================
-function batchApprove(rows) {
+function batchAction(rows, action) {
   if (!rows || !Array.isArray(rows)) {
-    Logger.log("batchApprove: Invalid rows parameter");
+    Logger.log("batchAction: Invalid rows parameter");
     return false;
   }
-  rows.forEach((r) => approvePendingRow(r.sheetName, r.rowNumber));
+  rows.forEach((r) => rowAction(r.sheetName, r.rowNumber, action));
+  return true;
+}
+
+function rowAction(sheetName, rowNumber, action) {
+  const s = SpreadsheetApp.openById(SHEET_FILE_ID).getSheetByName(sheetName);
+  const h = s
+    .getRange(1, 1, 1, s.getLastColumn())
+    .getValues()[0]
+    .map((x) => ("" + x).toLowerCase());
+  const idx = h.findIndex((x) => x.includes("status"));
+  s.getRange(rowNumber, idx + 1).setValue(action);
   return true;
 }
 

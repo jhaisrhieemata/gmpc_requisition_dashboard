@@ -110,6 +110,30 @@
         background: #28a745;
         color: #fff;
       }
+      .action-nostock {
+        background: #ff9800;
+        color: #fff;
+      }
+      .action-pettycash {
+        background: #9c27b0;
+        color: #fff;
+      }
+      .action-cancel {
+        background: #6c757d;
+        color: #fff;
+      }
+      .action-approvedpurchasing {
+        background: #00bcd4;
+        color: #fff;
+      }
+      .action-approvedaccounting {
+        background: #3f51b5;
+        color: #fff;
+      }
+      .action-topurchased {
+        background: #795548;
+        color: #fff;
+      }
       .loading {
         opacity: 0.6;
         pointer-events: none;
@@ -218,9 +242,27 @@
         <div style="margin-bottom: 10px">
           <button
             class="action-btn action-approve"
-            onclick="batchApprove(this, 'office')"
+            onclick="batchAction(this, 'office', 'Approved')"
           >
-            Batch Approve
+            Approved
+          </button>
+          <button
+            class="action-btn action-nostock"
+            onclick="batchAction(this, 'office', 'No Stocks')"
+          >
+            No Stocks
+          </button>
+          <button
+            class="action-btn action-pettycash"
+            onclick="batchAction(this, 'office', 'Petty Cash by Branch')"
+          >
+            Petty Cash by Branch
+          </button>
+          <button
+            class="action-btn action-cancel"
+            onclick="batchAction(this, 'office', 'Cancel')"
+          >
+            Cancel
           </button>
           <button
             class="print-btn action-print"
@@ -265,10 +307,34 @@
 
         <div style="margin-bottom: 10px">
           <button
-            class="action-btn action-approve"
-            onclick="batchApprove(this, 'special')"
+            class="action-btn action-approvedpurchasing"
+            onclick="batchAction(this, 'special', 'Approved by Purchasing')"
           >
-            Batch Approve
+            Approved by Purchasing
+          </button>
+          <button
+            class="action-btn action-approvedaccounting"
+            onclick="batchAction(this, 'special', 'Approved by Accounting')"
+          >
+            Approved by Accounting
+          </button>
+          <button
+            class="action-btn action-pettycash"
+            onclick="batchAction(this, 'special', 'Petty Cash by Branch')"
+          >
+            Petty Cash by Branch
+          </button>
+          <button
+            class="action-btn action-cancel"
+            onclick="batchAction(this, 'special', 'Cancel')"
+          >
+            Cancel
+          </button>
+          <button
+            class="print-btn action-print"
+            onclick="batchPrint(this, 'special')"
+          >
+            Batch Print PDF
           </button>
           <button
             class="print-btn action-print"
@@ -364,20 +430,39 @@
         });
       }
 
+      let refreshTimeout = null;
+      let isRefreshing = false;
+
       function init() {
         refreshAll();
         setInterval(refreshAll, 10000);
       }
 
       function refreshAll() {
+        if (isRefreshing) {
+          // Schedule another refresh after current one completes
+          if (refreshTimeout) clearTimeout(refreshTimeout);
+          refreshTimeout = setTimeout(refreshAll, 1500);
+          return;
+        }
+        isRefreshing = true;
         google.script.run
-          .withSuccessHandler(renderGrouped)
+          .withSuccessHandler((data) => {
+            renderGrouped(data);
+            isRefreshing = false;
+          })
           .getPendingGroupedByBranch();
         google.script.run
-          .withSuccessHandler(updateBadges)
+          .withSuccessHandler((d) => {
+            updateBadges(d);
+            isRefreshing = false;
+          })
           .getPendingBreakdown();
         google.script.run
-          .withSuccessHandler(renderDashboard)
+          .withSuccessHandler((d) => {
+            renderDashboard(d);
+            isRefreshing = false;
+          })
           .getDashboardData();
       }
 
@@ -469,6 +554,42 @@
         let total = 0;
         g.rows.forEach((r) => {
           total += r.amount || 0;
+          
+          let actionsHtml = '';
+          if (requestType === "office") {
+            actionsHtml = `
+              <button class="action-btn action-edit"
+                onclick="editQty(this,'${r.sheetName}',${r.rowNumber},${r.qty})">Edit</button>
+              <button class="action-btn action-approve"
+                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Approved')">Approved</button>
+              <button class="action-btn action-nostock"
+                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'No Stocks')">No Stock</button>
+              <button class="action-btn action-pettycash"
+                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Petty Cash by Branch')">Petty Cash</button>
+              <button class="action-btn action-cancel"
+                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Cancel')">Cancel</button>
+              <button class="action-btn action-delete"
+                onclick="deleteRow(this,'${r.sheetName}',${r.rowNumber})">Delete</button>
+            `;
+          } else {
+            actionsHtml = `
+              <button class="action-btn action-edit"
+                onclick="editQty(this,'${r.sheetName}',${r.rowNumber},${r.qty})">Edit</button>
+              <button class="action-btn action-approvedpurchasing"
+                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Approved by Purchasing')">App. Purchasing</button>
+              <button class="action-btn action-approvedaccounting"
+                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Approved by Accounting')">App. Accounting</button>
+              <button class="action-btn action-pettycash"
+                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Petty Cash by Branch')">Petty Cash</button>
+              <button class="action-btn action-cancel"
+                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Cancel')">Cancel</button>
+              <button class="action-btn action-topurchased"
+                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'To Purchased')">To Purchased</button>
+              <button class="action-btn action-delete"
+                onclick="deleteRow(this,'${r.sheetName}',${r.rowNumber})">Delete</button>
+            `;
+          }
+          
           document.getElementById(bodyId).innerHTML += `
       <tr>
         <td>${r.qty}</td>
@@ -476,14 +597,7 @@
         <td>${r.description}</td>
         <td>${formatNumberWithThousands(r.uprice || 0)}</td>
         <td>${formatNumberWithThousands(r.amount || 0)}</td>
-        <td>
-          <button class="action-btn action-edit"
-            onclick="editQty('${r.sheetName}',${r.rowNumber},${r.qty})">Edit</button>
-          <button class="action-btn action-approve"
-            onclick="approveRow(this,'${r.sheetName}',${r.rowNumber})">Approve</button>
-          <button class="action-btn action-delete"
-            onclick="deleteRow(this,'${r.sheetName}',${r.rowNumber})">Delete</button>
-        </td>
+        <td>${actionsHtml}</td>
       </tr>`;
         });
 
@@ -496,41 +610,121 @@
         } else if (type === "office") {
           document.getElementById("officeModal").style.display = "none";
         } else {
-          // Close both for backward compatibility
           document.getElementById("officeModal").style.display = "none";
           document.getElementById("specialModal").style.display = "none";
         }
+        // Refresh immediately when closing modal
+        setTimeout(refreshAll, 500);
       }
 
       /* ACTIONS */
-      function editQty(s, r, q) {
+      function editQty(btn, s, r, q) {
         const n = prompt("Edit Qty:", q);
-        if (n != null)
+        if (n != null && n !== "") {
+          // Find the row in modal and update immediately
+          const rows = btn.closest('tr');
+          if (rows) {
+            const cells = rows.cells;
+            cells[0].textContent = n;
+            // Calculate new amount if uprice exists
+            const upriceCell = cells[3].textContent.replace(/,/g, '');
+            const uprice = parseFloat(upriceCell) || 0;
+            const newAmount = parseFloat(n) * uprice;
+            cells[4].textContent = formatNumberWithThousands(newAmount);
+          }
+          // Update currentRows data
+          const rowData = currentRows.find(x => x.rowNumber === r);
+          if (rowData) {
+            rowData.qty = parseFloat(n);
+            rowData.amount = parseFloat(n) * (rowData.uprice || 0);
+          }
+          // Server update in background
           google.script.run
-            .withSuccessHandler(refreshAll)
+            .withSuccessHandler(() => {
+              setTimeout(refreshAll, 1500);
+            })
             .editPendingRow(s, r, { Qty: n });
+        }
       }
+
       function approveRow(btn, s, r) {
         btn.classList.add("loading");
+        // Immediately remove row from DOM
+        const row = btn.closest('tr');
+        if (row) row.remove();
+        // Update badge counts immediately
+        const type = s.toLowerCase().includes("special") ? "special" : "office";
+        updateBadgeInstant(type, -1);
+        // Server update in background
         google.script.run
-          .withSuccessHandler(refreshAll)
+          .withSuccessHandler(() => {
+            setTimeout(refreshAll, 1500);
+          })
           .approvePendingRow(s, r);
       }
+
       function deleteRow(btn, s, r) {
         if (!confirm("Delete?")) return;
         btn.classList.add("loading");
-        google.script.run.withSuccessHandler(refreshAll).deletePendingRow(s, r);
+        // Immediately remove row from DOM
+        const row = btn.closest('tr');
+        if (row) row.remove();
+        // Update badge counts immediately
+        const type = s.toLowerCase().includes("special") ? "special" : "office";
+        updateBadgeInstant(type, -1);
+        // Server update in background
+        google.script.run
+          .withSuccessHandler(() => {
+            setTimeout(refreshAll, 1500);
+          })
+          .deletePendingRow(s, r);
+      }
+
+      function updateBadgeInstant(type, delta) {
+        const badge = type === "special" ? specialBadge : officeBadge;
+        const current = parseInt(badge.textContent.match(/\d+/)?.[0] || "0");
+        const newVal = Math.max(0, current + delta);
+        badge.textContent = `${type === "special" ? "Special" : "Office"}: ${newVal}`;
+        badge.className = "badge " + (newVal > 0 ? (type === "special" ? "badge-special" : "badge-office") : "badge-zero");
       }
 
       /* BATCH */
-      function batchApprove(btn, type) {
+      function batchAction(btn, type, action) {
+        if (!confirm(`Confirm batch action: ${action}?`)) return;
         btn.classList.add("loading");
+        const rowCount = currentRows.length;
+        // Clear modal body immediately
+        const bodyId = type === "special" ? "specialModalBody" : "officeModalBody";
+        document.getElementById(bodyId).innerHTML = "";
+        // Update badge immediately
+        updateBadgeInstant(type, -rowCount);
+        const rowsToProcess = [...currentRows];
+        currentRows = [];
+        // Server update in background
         google.script.run
           .withSuccessHandler(() => {
             btn.classList.remove("loading");
-            refreshAll();
+            setTimeout(refreshAll, 1500);
           })
-          .batchApprove(currentRows);
+          .batchAction(rowsToProcess, action);
+      }
+
+      /* ROW ACTION */
+      function rowAction(btn, s, r, action) {
+        if (!confirm(`Confirm action: ${action}?`)) return;
+        btn.classList.add("loading");
+        // Immediately remove row from DOM
+        const row = btn.closest('tr');
+        if (row) row.remove();
+        // Update badge counts immediately
+        const type = s.toLowerCase().includes("special") ? "special" : "office";
+        updateBadgeInstant(type, -1);
+        // Server update in background
+        google.script.run
+          .withSuccessHandler(() => {
+            setTimeout(refreshAll, 1500);
+          })
+          .rowAction(s, r, action);
       }
 
       function batchPrint(btn, type) {
