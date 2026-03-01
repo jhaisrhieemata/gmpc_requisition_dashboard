@@ -3,911 +3,2321 @@
   <head>
     <base target="_top" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Stocks & Requisitions Dashboard</title>
-
+    <title>GMPC Requisitions Dashboard</title>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" />
     <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
       body {
-        font-family: Roboto, Arial, sans-serif;
-        margin: 12px;
-        background: #f7f8fb;
+        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        background: #f0f2f5;
+        min-height: 100vh;
       }
-      .container {
-        max-width: 1300px;
-        margin: auto;
+      
+      /* Layout */
+      .app-container {
+        display: flex;
+        min-height: 100vh;
       }
-      header {
+      
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+        color: white;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 100;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.15);
+      }
+      
+      .sidebar-header {
+        padding: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        text-align: center;
+      }
+      
+      .sidebar-header h2 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      
+      .sidebar-header .subtitle {
+        font-size: 11px;
+        opacity: 0.7;
+      }
+      
+      .sidebar-nav {
+        padding: 10px 0;
+      }
+      
+      .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-left: 3px solid transparent;
+      }
+      
+      .nav-item:hover {
+        background: rgba(255,255,255,0.1);
+        color: white;
+      }
+      
+      .nav-item.active {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        border-left-color: #ffca28;
+      }
+      
+      .nav-item .material-icons {
+        margin-right: 12px;
+        font-size: 20px;
+      }
+      
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: 260px;
+        padding: 20px;
+      }
+      
+      /* Header */
+      .page-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 20px;
       }
-      h1 {
-        margin: 0;
-        font-size: 20px;
+      
+      .page-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1a237e;
       }
-      .small {
-        font-size: 12px;
-        color: #666;
-      }
-      .header-right {
+      
+      .header-actions {
         display: flex;
-        gap: 8px;
+        gap: 10px;
         align-items: center;
       }
-      .header-right button {
-        padding: 6px 12px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        font-size: 13px;
-        background: #666;
+      
+      .auto-refresh-badge {
+        background: #4caf50;
         color: white;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
       }
-      .header-right button:hover {
-        background: #555;
-      }
-
-      .badge {
-        padding: 6px 12px;
-        border-radius: 18px;
-        font-weight: 600;
-        color: #fff;
-      }
-      .badge-office {
-        background: #1976d2;
-      }
-      .badge-special {
-        background: #6a1b9a;
-      }
-      .badge-zero {
-        background: #2e7d32;
-      }
-
+      
+      /* Cards */
       .card {
-        background: #fff;
-        padding: 18px;
-        border-radius: 14px;
-        margin-bottom: 16px;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-      }
-      th,
-      td {
-        padding: 8px;
+      
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
         border-bottom: 1px solid #eee;
       }
-      th {
-        background: #f1f1f1;
+      
+      .card-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+      }
+      
+      /* Stats Grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      
+      .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      }
+      
+      .stat-card .stat-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+      }
+      
+      .stat-card .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #333;
+      }
+      
+      .stat-card .stat-label {
+        font-size: 13px;
+        color: #666;
+        margin-top: 4px;
+      }
+      
+      /* Tables */
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      
+      .data-table th,
+      .data-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+      }
+      
+      .data-table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #333;
         position: sticky;
         top: 0;
       }
-
-      .card-scroll {
-        max-height: 380px;
-        overflow: auto;
+      
+      .data-table tr:hover {
+        background: #f8f9fa;
       }
-
-      .action-btn {
-        padding: 6px 10px;
+      
+      .table-scroll {
+        max-height: 500px;
+        overflow-y: auto;
+      }
+      
+      /* Buttons */
+      .btn {
+        padding: 8px 16px;
         border-radius: 6px;
         border: none;
         cursor: pointer;
         font-size: 13px;
-        margin-right: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
       }
-      .action-edit {
-        background: #ffc107;
+      
+      .btn-primary { background: #1976d2; color: white; }
+      .btn-primary:hover { background: #1565c0; }
+      
+      .btn-success { background: #28a745; color: white; }
+      .btn-success:hover { background: #218838; }
+      
+      .btn-danger { background: #dc3545; color: white; }
+      .btn-danger:hover { background: #c82333; }
+      
+      .btn-warning { background: #ffc107; color: #333; }
+      .btn-warning:hover { background: #e0a800; }
+      
+      .btn-secondary { background: #6c757d; color: white; }
+      .btn-secondary:hover { background: #5a6268; }
+      
+      .btn-sm { padding: 4px 8px; font-size: 12px; }
+      
+      /* Forms */
+      .form-group {
+        margin-bottom: 15px;
       }
-      .action-delete {
-        background: #dc3545;
-        color: #fff;
+      
+      .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: #333;
       }
-      .action-approve {
-        background: #28a745;
-        color: #fff;
+      
+      .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
       }
-      .action-nostock {
-        background: #ff9800;
-        color: #fff;
+      
+      .form-control:focus {
+        outline: none;
+        border-color: #1976d2;
+        box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
       }
-      .action-pettycash {
-        background: #9c27b0;
-        color: #fff;
+      
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
       }
-      .action-cancel {
-        background: #6c757d;
-        color: #fff;
+      
+      /* Modal */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
       }
-      .action-approvedpurchasing {
-        background: #00bcd4;
-        color: #fff;
+      
+      .modal-overlay.active {
+        display: flex;
       }
-      .action-approvedaccounting {
-        background: #3f51b5;
-        color: #fff;
+      
+      .modal {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
       }
-      .action-topurchased {
-        background: #795548;
-        color: #fff;
+      
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
       }
+      
+      .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      
+      .modal-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+        color: #666;
+      }
+      
+      /* Search & Filter */
+      .search-filter-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+      }
+      
+      .search-box {
+        flex: 1;
+        min-width: 200px;
+        position: relative;
+      }
+      
+      .search-box input {
+        width: 100%;
+        padding: 10px 12px 10px 36px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+      }
+      
+      .search-box .material-icons {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+      }
+      
+      select.form-control {
+        min-width: 150px;
+      }
+      
+      /* Status Badges */
+      .badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      
+      .badge-pending { background: #fff3e0; color: #e65100; }
+      .badge-approved { background: #e8f5e9; color: #2e7d32; }
+      .badge-rejected { background: #ffebee; color: #c62828; }
+      .badge-special { background: #f3e5f5; color: #6a1b9a; }
+      .badge-low { background: #ffebee; color: #d32f2f; }
+      
+      /* Calendar */
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+      }
+      
+      .calendar-header {
+        text-align: center;
+        font-weight: 600;
+        padding: 8px;
+        background: #f8f9fa;
+        border-radius: 4px;
+      }
+      
+      .calendar-day {
+        padding: 8px;
+        text-align: center;
+        border-radius: 4px;
+        background: #f8f9fa;
+        cursor: pointer;
+      }
+      
+      .calendar-day:hover { background: #e3f2fd; }
+      .calendar-day.has-event { background: #e8f5e9; }
+      .calendar-day.today { background: #bbdefb; }
+      
+      /* Tabs */
+      .tabs {
+        display: flex;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 20px;
+      }
+      
+      .tab {
+        padding: 12px 24px;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -2px;
+        color: #666;
+        transition: all 0.2s;
+      }
+      
+      .tab:hover { color: #1976d2; }
+      .tab.active {
+        color: #1976d2;
+        border-bottom-color: #1976d2;
+      }
+      
+      /* Page Sections */
+      .page-section {
+        display: none;
+      }
+      
+      .page-section.active {
+        display: block;
+      }
+      
+      /* Action buttons in table */
+      .action-buttons {
+        display: flex;
+        gap: 4px;
+      }
+      
+      /* Print styles */
+      @media print {
+        .sidebar, .header-actions, .btn { display: none !important; }
+        .main-content { margin-left: 0 !important; }
+        .card { box-shadow: none !important; }
+      }
+      
+      /* Loading */
       .loading {
         opacity: 0.6;
         pointer-events: none;
       }
-      .loading::after {
-        content: " ⏳";
+      
+      /* File upload */
+      .file-upload {
+        border: 2px dashed #ddd;
+        padding: 30px;
+        text-align: center;
+        border-radius: 8px;
+        cursor: pointer;
       }
-
-      /* MODAL */
-      #officeModal,
-      #specialModal {
+      
+      .file-upload:hover {
+        border-color: #1976d2;
+        background: #f8f9fa;
+      }
+      
+      /* Dropdown */
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      
+      .dropdown-menu {
         display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.45);
-        z-index: 1000;
+        position: absolute;
+        background: white;
+        min-width: 160px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border-radius: 6px;
+        z-index: 100;
+        overflow: hidden;
       }
-      #officeModal .box,
-      #specialModal .box {
-        background: #fff;
-        margin: 4% auto;
-        padding: 20px;
-        width: 92%;
-        max-width: 950px;
-        border-radius: 14px;
-        max-height: 80vh;
-        overflow-y: auto;
+      
+      .dropdown-menu.show { display: block; }
+      
+      .dropdown-item {
+        padding: 10px 16px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
       }
+      
+      .dropdown-item:hover { background: #f8f9fa; }
     </style>
-
-    <script src="https://www.gstatic.com/charts/loader.js"></script>
   </head>
-
   <body>
-    <div class="container">
-      <header>
-        <div>
-          <h1>Stocks & Requisitions Dashboard V2</h1>
-          <div class="small">Live from Spreadsheet</div>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2>GMPC Dashboard</h2>
+          <div class="subtitle">Requisitions System</div>
         </div>
-        <div class="header-right">
-          <span id="officeBadge" class="badge">Office</span>
-          <span id="specialBadge" class="badge">Special</span>
-        </div>
-      </header>
+        <nav class="sidebar-nav">
+          <div class="nav-item active" data-page="home">
+            <span class="material-icons">dashboard</span> Home
+          </div>
+          <div class="nav-item" data-page="inventory">
+            <span class="material-icons">inventory_2</span> Inventory
+          </div>
+          <div class="nav-item" data-page="office-request">
+            <span class="material-icons">business_center</span> Office Request
+          </div>
+          <div class="nav-item" data-page="special-request">
+            <span class="material-icons">star</span> Special Request
+          </div>
+          <div class="nav-item" data-page="office-supplies">
+            <span class="material-icons">shopping_cart</span> Office Supplies
+          </div>
+          <div class="nav-item" data-page="stock-suppliers">
+            <span class="material-icons">local_shipping</span> Stock Suppliers
+          </div>
+          <div class="nav-item" data-page="manage-suppliers">
+            <span class="material-icons">supervised_user_circle</span> Manage Suppliers
+          </div>
+          <div class="nav-item" data-page="reports">
+            <span class="material-icons">assessment</span> Reports
+          </div>
+          <div class="nav-item" data-page="low-stocks">
+            <span class="material-icons">warning</span> Low Stocks Report
+          </div>
+          <div class="nav-item" data-page="branches-dashboard">
+            <span class="material-icons">calendar_month</span> Branches Dashboard
+          </div>
+          <div class="nav-item" data-page="branch-report">
+            <span class="material-icons">article</span> Branch Report
+          </div>
+          <div class="nav-item" data-page="add-branches">
+            <span class="material-icons">add_business</span> Add Branches
+          </div>
+          <div class="nav-item" data-page="manage-users">
+            <span class="material-icons">people</span> Manage Users
+          </div>
+        </nav>
+      </aside>
 
-      <!-- ================= PIE + INVENTORY ================= -->
-      <div class="card">
-        <div id="statusPie" style="height: 320px"></div>
-      </div>
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- HOME PAGE -->
+        <section id="home-page" class="page-section active">
+          <div class="page-header">
+            <h1 class="page-title">Dashboard Overview</h1>
+            <div class="header-actions">
+              <span class="auto-refresh-badge">
+                <span class="material-icons" style="font-size:14px">sync</span>
+                Auto-refresh: 10s
+              </span>
+            </div>
+          </div>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#e3f2fd">
+                <span class="material-icons" style="color:#1976d2">business_center</span>
+              </div>
+              <div class="stat-value" id="stat-office">0</div>
+              <div class="stat-label">Pending Office Requests</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#f3e5f5">
+                <span class="material-icons" style="color:#6a1b9a">star</span>
+              </div>
+              <div class="stat-value" id="stat-special">0</div>
+              <div class="stat-label">Pending Special Requests</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#ffebee">
+                <span class="material-icons" style="color:#c62828">warning</span>
+              </div>
+              <div class="stat-value" id="stat-lowstocks">0</div>
+              <div class="stat-label">Low Stock Items</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon" style="background:#e8f5e9">
+                <span class="material-icons" style="color:#2e7d32">check_circle</span>
+              </div>
+              <div class="stat-value" id="stat-approved">0</div>
+              <div class="stat-label">Approved Requests</div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Request Status Distribution</h3>
+            </div>
+            <div id="statusPie" style="height: 350px"></div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Low Stock Items</h3>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Item ID</th>
+                    <th>Description</th>
+                    <th>Unit</th>
+                    <th>Current Stock</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="lowStockBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
 
-      <div class="card">
-        <h3>OFFICE STOCKS – Inventory</h3>
-        <div class="card-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Item ID</th>
-                <th>Description</th>
-                <th>Unit</th>
-                <th style="text-align: right">Stocks</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="inventoryBody"></tbody>
-          </table>
-        </div>
-      </div>
+        <!-- INVENTORY PAGE -->
+        <section id="inventory-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Inventory Management</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="openModal('inventory')">
+                <span class="material-icons">add</span> Add Item
+              </button>
+              <button class="btn btn-secondary" onclick="window.print()">
+                <span class="material-icons">print</span> Print
+              </button>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="search-filter-bar">
+              <div class="search-box">
+                <span class="material-icons">search</span>
+                <input type="text" id="inventorySearch" placeholder="Search items..." oninput="filterInventory()">
+              </div>
+              <select class="form-control" id="inventorySupplierFilter" onchange="filterInventory()">
+                <option value="">All Suppliers</option>
+              </select>
+              <select class="form-control" id="inventoryStatusFilter" onchange="filterInventory()">
+                <option value="">All Status</option>
+                <option value="Active">Active</option>
+                <option value="Low Stock">Low Stock</option>
+                <option value="Out of Stock">Out of Stock</option>
+              </select>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Item ID</th>
+                    <th>Description</th>
+                    <th>Unit</th>
+                    <th>Supplier</th>
+                    <th>Classification</th>
+                    <th>Current Stock</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
 
-      <!-- ================= SPECIAL REQUEST ================= -->
-      <div class="card">
-        <h3>Pending – Special Request</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Branch</th>
-              <th>Total</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="specialBody"></tbody>
-        </table>
-      </div>
+        <!-- OFFICE REQUEST PAGE -->
+        <section id="office-request-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Office Requests</h1>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Pending Office Requests by Branch</h3>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Branch</th>
+                    <th>Total Items</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="officeRequestBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
 
-      <!-- ================= OFFICE SUPPLIES ================= -->
-      <div class="card">
-        <h3>Pending – Office Supplies</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Branch</th>
-              <th>Total</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="officeBody"></tbody>
-        </table>
-      </div>
+        <!-- SPECIAL REQUEST PAGE -->
+        <section id="special-request-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Special Requests</h1>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Pending Special Requests - Multi-Level Approval</h3>
+            </div>
+            <div class="tabs">
+              <div class="tab active" onclick="switchSpecialTab('pending')">Pending</div>
+              <div class="tab" onclick="switchSpecialTab('purchasing')">Purchasing</div>
+              <div class="tab" onclick="switchSpecialTab('accounting')">Accounting</div>
+              <div class="tab" onclick="switchSpecialTab('admin')">Admin</div>
+              <div class="tab" onclick="switchSpecialTab('approved')">Approved</div>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Branch</th>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                    <th>Current Stage</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="specialRequestBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- OFFICE SUPPLIES PAGE -->
+        <section id="office-supplies-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Office Supplies</h1>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Office Supply Requests - Approval/Rejection</h3>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Branch</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="officeSuppliesBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- STOCK SUPPLIERS PAGE -->
+        <section id="stock-suppliers-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Stock Suppliers</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="openModal('supplierItem')">
+                <span class="material-icons">add</span> Add Stock Entry
+              </button>
+              <button class="btn btn-success" onclick="document.getElementById('excelUpload').click()">
+                <span class="material-icons">upload</span> Upload Excel
+              </button>
+              <input type="file" id="excelUpload" accept=".xlsx,.xls" style="display:none" onchange="handleExcelUpload(this)">
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Supplier Stock Entries</h3>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Item ID</th>
+                    <th>Supplier</th>
+                    <th>Description</th>
+                    <th>Unit</th>
+                    <th>Unit Price</th>
+                    <th>Current Stock</th>
+                    <th>Min Stock Level</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="stockSuppliersBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- MANAGE SUPPLIERS PAGE -->
+        <section id="manage-suppliers-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Manage Suppliers</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="openModal('supplier')">
+                <span class="material-icons">add</span> Add Supplier
+              </button>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Supplier ID</th>
+                    <th>Supplier Name</th>
+                    <th>Contact Person</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Classification</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="manageSuppliersBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- REPORTS PAGE -->
+        <section id="reports-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Generate Reports</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="generateReport()">
+                <span class="material-icons">generate</span> Generate Report
+              </button>
+              <button class="btn btn-secondary" onclick="window.print()">
+                <span class="material-icons">print</span> Print
+              </button>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Report Filters</h3>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date From</label>
+                <input type="date" class="form-control" id="reportDateFrom">
+              </div>
+              <div class="form-group">
+                <label>Date To</label>
+                <input type="date" class="form-control" id="reportDateTo">
+              </div>
+              <div class="form-group">
+                <label>Branch</label>
+                <select class="form-control" id="reportBranch">
+                  <option value="">All Branches</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Request Type</label>
+                <select class="form-control" id="reportType">
+                  <option value="All">All</option>
+                  <option value="Office">Office</option>
+                  <option value="Special">Special</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Report Results</h3>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Branch</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="reportResultsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- LOW STOCKS REPORT PAGE -->
+        <section id="low-stocks-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Low Stocks Report</h1>
+            <div class="header-actions">
+              <button class="btn btn-secondary" onclick="window.print()">
+                <span class="material-icons">print</span> Print
+              </button>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Items Below Minimum Stock Level</h3>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Item ID</th>
+                    <th>Description</th>
+                    <th>Unit</th>
+                    <th>Current Stock</th>
+                    <th>Min Level</th>
+                    <th>Supplier</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="lowStocksBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- BRANCHES DASHBOARD PAGE -->
+        <section id="branches-dashboard-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Branches Dashboard</h1>
+          </div>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="totalBranches">0</div>
+              <div class="stat-label">Total Branches</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="totalBranchRequests">0</div>
+              <div class="stat-label">Total Requests</div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Branch Overview</h3>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Branch</th>
+                    <th>Office Pending</th>
+                    <th>Office Approved</th>
+                    <th>Special Pending</th>
+                    <th>Special Approved</th>
+                  </tr>
+                </thead>
+                <tbody id="branchesOverviewBody"></tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Calendar View</h3>
+            </div>
+            <div id="calendarView"></div>
+          </div>
+        </section>
+
+        <!-- BRANCH REPORT PAGE -->
+        <section id="branch-report-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Branch Report</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="generateBranchReport()">
+                <span class="material-icons">generate</span> Generate
+              </button>
+              <button class="btn btn-secondary" onclick="window.print()">
+                <span class="material-icons">print</span> Print
+              </button>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Branch</label>
+                <select class="form-control" id="branchReportBranch">
+                  <option value="All">All Branches</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Period</label>
+                <select class="form-control" id="branchReportPeriod" onchange="toggleMonthSelect()">
+                  <option value="yearly">Yearly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Year</label>
+                <input type="number" class="form-control" id="branchReportYear" value="2026">
+              </div>
+              <div class="form-group">
+                <label>Month</label>
+                <select class="form-control" id="branchReportMonth">
+                  <option value="">All Months</option>
+                  <option value="1">January</option>
+                  <option value="2">February</option>
+                  <option value="3">March</option>
+                  <option value="4">April</option>
+                  <option value="5">May</option>
+                  <option value="6">June</option>
+                  <option value="7">July</option>
+                  <option value="8">August</option>
+                  <option value="9">September</option>
+                  <option value="10">October</option>
+                  <option value="11">November</option>
+                  <option value="12">December</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Branch Report Summary</h3>
+            </div>
+            <div id="branchReportSummary"></div>
+          </div>
+        </section>
+
+        <!-- ADD BRANCHES PAGE -->
+        <section id="add-branches-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Add New Branch</h1>
+          </div>
+          
+          <div class="card">
+            <form id="addBranchForm" onsubmit="saveBranch(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Branch Name *</label>
+                  <input type="text" class="form-control" id="branchName" required>
+                </div>
+                <div class="form-group">
+                  <label>Email *</label>
+                  <input type="email" class="form-control" id="branchEmail" required>
+                </div>
+                <div class="form-group">
+                  <label>Location</label>
+                  <input type="text" class="form-control" id="branchLocation">
+                </div>
+                <div class="form-group">
+                  <label>Classification</label>
+                  <select class="form-control" id="branchClassification">
+                    <option value="Regular">Regular</option>
+                    <option value="3S">3S</option>
+                    <option value="MB">MB</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                <span class="material-icons">save</span> Save Branch
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- MANAGE USERS PAGE -->
+        <section id="manage-users-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Manage Users</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="openModal('user')">
+                <span class="material-icons">person_add</span> Add User
+              </button>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Branch Access</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="usersBody"></tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div class="card" style="margin-top:20px">
+            <div class="card-header">
+              <h3 class="card-title">Password Reset Requests</h3>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Request ID</th>
+                    <th>User ID</th>
+                    <th>Request Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="passwordResetBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
 
-    <!-- ================= OFFICE SUPPLIES MODAL ================= -->
-    <div id="officeModal">
-      <div class="box">
-        <h3 id="officeModalTitle"></h3>
-
-        <div style="margin-bottom: 10px">
-          <button
-            class="action-btn action-approve"
-            onclick="batchAction(this, 'office', 'Approved')"
-          >
-            Approved
-          </button>
-          <button
-            class="action-btn action-nostock"
-            onclick="batchAction(this, 'office', 'No Stocks')"
-          >
-            No Stocks
-          </button>
-          <button
-            class="action-btn action-pettycash"
-            onclick="batchAction(this, 'office', 'Petty Cash by Branch')"
-          >
-            Petty Cash by Branch
-          </button>
-          <button
-            class="action-btn action-cancel"
-            onclick="batchAction(this, 'office', 'Cancel')"
-          >
-            Cancel
-          </button>
-          <button
-            class="print-btn action-print"
-            onclick="batchPrint(this, 'office')"
-          >
-            Batch Print PDF
-          </button>
-          <button
-            class="action-btn"
-            onclick="officesuppliesreceivedEmail(this, 'office')"
-          >
-            Office Supplies Received Email
-          </button>
-          <button class="action-btn" onclick="claimedEmail(this, 'office')">
-            Claimed Email
-          </button>
-          <button style="float: right" onclick="closeModal('office')">
-            Close
-          </button>
+    <!-- MODALS -->
+    <div id="modalOverlay" class="modal-overlay" onclick="closeModalOverlay(event)">
+      <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title" id="modalTitle">Modal Title</h3>
+          <button class="modal-close" onclick="closeModal()">&times;</button>
         </div>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Qty</th>
-              <th>Unit</th>
-              <th>Description</th>
-              <th>Uprice</th>
-              <th>Amount</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="officeModalBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ================= SPECIAL REQUEST MODAL ================= -->
-    <div id="specialModal">
-      <div class="box">
-        <h3 id="specialModalTitle"></h3>
-
-        <div style="margin-bottom: 10px">
-          <button
-            class="action-btn action-approvedpurchasing"
-            onclick="batchAction(this, 'special', 'Approved by Purchasing')"
-          >
-            Approved by Purchasing
-          </button>
-          <button
-            class="action-btn action-approvedaccounting"
-            onclick="batchAction(this, 'special', 'Approved by Accounting')"
-          >
-            Approved by Accounting
-          </button>
-          <button
-            class="action-btn action-pettycash"
-            onclick="batchAction(this, 'special', 'Petty Cash by Branch')"
-          >
-            Petty Cash by Branch
-          </button>
-          <button
-            class="action-btn action-cancel"
-            onclick="batchAction(this, 'special', 'Cancel')"
-          >
-            Cancel
-          </button>
-          <button
-            class="print-btn action-print"
-            onclick="batchPrint(this, 'special')"
-          >
-            Batch Print PDF
-          </button>
-          <button
-            class="print-btn action-print"
-            onclick="batchPrint(this, 'special')"
-          >
-            Batch Print PDF
-          </button>
-          <button
-            class="action-btn"
-            onclick="specialrequestEmail(this, 'special')"
-          >
-            Special Request Email
-          </button>
-          <button style="float: right" onclick="closeModal('special')">
-            Close
-          </button>
-        </div>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Qty</th>
-              <th>Unit</th>
-              <th>Description</th>
-              <th>Uprice</th>
-              <th>Amount</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="specialModalBody"></tbody>
-        </table>
+        <div id="modalContent"></div>
       </div>
     </div>
 
     <script>
+      // ===============================
+      // CONFIG & STATE
+      // ===============================
       google.charts.load("current", { packages: ["corechart"] });
-      google.charts.setOnLoadCallback(init);
+      
+      let currentPage = 'home';
+      let inventoryData = [];
+      let suppliersData = [];
+      let supplierItemsData = [];
+      let usersData = [];
+      let branchesData = [];
+      let officeRequestsData = [];
+      let specialRequestsData = [];
+      let specialTab = 'pending';
+      
+      let refreshInterval = null;
+      let autoRefreshPages = ['home', 'office-request', 'special-request', 'office-supplies'];
 
-      let currentRows = [];
-      let branchGroupsCache = []; // Cache for branch groups to avoid JSON.stringify issues
-
-      // Branch -> email mapping (integrated per provided list)
-      const branchEmailMap = {
-        ADMIN: "gmpcpurchasing@gmail.com",
-        WAREHOUSE: "warehousegiant21@gmail.com",
-        LAGTANG: "giantmotoprolagtang@gmail.com",
-        "V-RAMA": "gmpcguad_accounting@yahoo.com.ph",
-        BULACAO: "ivyhamistoso@gmail.com",
-        "Y3S TALISAY": "gmpcyamaha3st@gmail.com",
-        MINGLANILLA: "giantmotoprolinao@gmail.com",
-        "Y3S PARDO": "gmpcy3spardo@yahoo.com",
-        "LAPU-LAPU": "giantmotoproopon19@gmail.com",
-        BACAYAN: "gmpcbacayan@gmail.com",
-        "SAN FERNANDO MB": "gmpcsanfernando@gmail.com",
-        "Y3S SAN FERNANDO": "sanfernandoyamaha3s@gmail.com",
-        LILOAN: "gmpctayud@gmail.com",
-        "CORDOVA MB": "gmpccordova@gmail.com",
-        "Y3S CORDOVA": "gmpccordovay3s@gmail.com",
-        CLARIN: "gmpcclarin@gmail.com",
-        TOLEDO: "giantmotopro_corporation@yahoo.com.ph",
-        UBAY: "gmpcubay@gmail.com",
-        CARMEN: "gmpccarmenbh@gmail.com",
-        TUBIGON: "gmpctubigon@gmail.com",
-        TALIBON: "gmpctalibon@gmail.com",
-        BOGO: "gmpcbogo@gmail.com",
-        BALAMBAN: "gmpcbalamban@gmail.com",
-        "Y3S BARILI": "yamaha3sbarili@gmail.com",
-        "BARILI MB": "giantmotoprobarilibranch@gmail.com",
-        "SIERRA BULLONES": "gmpcsierra@gmail.com",
-        PITOGO: "gmpcpitogo@gmail.com",
-        "TAYUD CONSOLACION": "gmpctayudconsolacion@gmail.com",
-        PINAMUNGAJAN: "gmpcpinamungajan22@gmail.com",
-        CANDIJAY: "giantcandijay@gmail.com",
-        "YATI LILOAN": "gmpcyatililoan@gmail.com",
-      };
-
-      function getEmailForBranch(branch) {
-        if (!branch) return branchEmailMap["ADMIN"];
-        const up = branch.toUpperCase().trim();
-        if (branchEmailMap[branch]) return branchEmailMap[branch];
-        if (branchEmailMap[up]) return branchEmailMap[up];
-        const foundKey = Object.keys(branchEmailMap).find(
-          (k) => k.toLowerCase().trim() === branch.toLowerCase().trim(),
-        );
-        if (foundKey) return branchEmailMap[foundKey];
-        return branchEmailMap["ADMIN"];
-      }
-
-      function formatNumberWithThousands(num) {
-        return parseFloat(num).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
+      // ===============================
+      // NAVIGATION
+      // ===============================
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+          const page = this.dataset.page;
+          navigateTo(page);
         });
-      }
+      });
 
-      let refreshTimeout = null;
-      let isRefreshing = false;
-
-      function init() {
-        refreshAll();
-        setInterval(refreshAll, 10000);
-      }
-
-      function refreshAll() {
-        if (isRefreshing) {
-          // Schedule another refresh after current one completes
-          if (refreshTimeout) clearTimeout(refreshTimeout);
-          refreshTimeout = setTimeout(refreshAll, 1500);
-          return;
+      function navigateTo(page) {
+        // Update nav
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.querySelector(`[data-page="${page}"]`).classList.add('active');
+        
+        // Update page
+        document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+        document.getElementById(`${page}-page`).classList.add('active');
+        
+        currentPage = page;
+        
+        // Auto-refresh for certain pages
+        if (autoRefreshPages.includes(page)) {
+          startAutoRefresh();
+        } else {
+          stopAutoRefresh();
         }
-        isRefreshing = true;
-        google.script.run
-          .withSuccessHandler((data) => {
-            renderGrouped(data);
-            isRefreshing = false;
-          })
-          .getPendingGroupedByBranch();
-        google.script.run
-          .withSuccessHandler((d) => {
-            updateBadges(d);
-            isRefreshing = false;
-          })
-          .getPendingBreakdown();
-        google.script.run
-          .withSuccessHandler((d) => {
-            renderDashboard(d);
-            isRefreshing = false;
-          })
-          .getDashboardData();
+        
+        // Load data for page
+        loadPageData(page);
       }
 
-      function updateBadges(d) {
-        officeBadge.textContent = `Office: ${d.office}`;
-        specialBadge.textContent = `Special: ${d.special}`;
-        officeBadge.className =
-          "badge " + (d.office ? "badge-office" : "badge-zero");
-        specialBadge.className =
-          "badge " + (d.special ? "badge-special" : "badge-zero");
+      function loadPageData(page) {
+        switch(page) {
+          case 'home': loadHomeData(); break;
+          case 'inventory': loadInventory(); break;
+          case 'office-request': loadOfficeRequests(); break;
+          case 'special-request': loadSpecialRequests(); break;
+          case 'office-supplies': loadOfficeSupplies(); break;
+          case 'stock-suppliers': loadStockSuppliers(); break;
+          case 'manage-suppliers': loadManageSuppliers(); break;
+          case 'reports': loadBranchesForFilter(); break;
+          case 'low-stocks': loadLowStocks(); break;
+          case 'branches-dashboard': loadBranchesDashboard(); break;
+          case 'branch-report': loadBranchesForBranchReport(); break;
+          case 'manage-users': loadUsers(); break;
+        }
+      }
+
+      // ===============================
+      // AUTO REFRESH
+      // ===============================
+      function startAutoRefresh() {
+        stopAutoRefresh();
+        refreshInterval = setInterval(() => {
+          if (autoRefreshPages.includes(currentPage)) {
+            loadPageData(currentPage);
+          }
+        }, 10000);
+      }
+
+      function stopAutoRefresh() {
+        if (refreshInterval) {
+          clearInterval(refreshInterval);
+          refreshInterval = null;
+        }
+      }
+
+      // ===============================
+      // HOME
+      // ===============================
+      function loadHomeData() {
+        google.script.run.withSuccessHandler(renderDashboard).getDashboardData();
       }
 
       function renderDashboard(d) {
+        if (!d.success) return;
+        
+        document.getElementById('stat-office').textContent = d.pendingOffice.length;
+        document.getElementById('stat-special').textContent = d.pendingSpecial.length;
+        document.getElementById('stat-lowstocks').textContent = d.lowStockCount;
+        
+        let approved = 0;
+        Object.keys(d.statusCounts).forEach(k => {
+          if (k.toLowerCase().includes('approved')) approved += d.statusCounts[k];
+        });
+        document.getElementById('stat-approved').textContent = approved;
+        
+        // Pie chart
         drawPie(d.statusCounts);
-        inventoryBody.innerHTML = "";
-        d.addStocks.forEach((r) => {
-          inventoryBody.innerHTML += `
-      <tr>
-        <td>${r.itemId}</td>
-        <td>${r.description}</td>
-        <td>${r.unit}</td>
-        <td style="text-align:right">${r.totalRunningStocks}</td>
-        <td>${r.status}</td>
-      </tr>`;
+        
+        // Low stock items
+        const lowStockBody = document.getElementById('lowStockBody');
+        lowStockBody.innerHTML = '';
+        (d.addStocks || []).filter(s => s.totalRunningStocks <= 10).slice(0, 10).forEach(s => {
+          lowStockBody.innerHTML += `
+            <tr>
+              <td>${s.itemId}</td>
+              <td>${s.description}</td>
+              <td>${s.unit}</td>
+              <td>${s.totalRunningStocks}</td>
+              <td><span class="badge badge-low">Low Stock</span></td>
+            </tr>
+          `;
         });
       }
 
       function drawPie(sc) {
         const rows = [["Status", "Count"]];
-        Object.keys(sc || {}).forEach((k) => rows.push([k, sc[k]]));
+        Object.keys(sc || {}).forEach(k => rows.push([k, sc[k]]));
         if (rows.length === 1) rows.push(["None", 0]);
-        new google.visualization.PieChart(statusPie).draw(
+        new google.visualization.PieChart(document.getElementById('statusPie')).draw(
           google.visualization.arrayToDataTable(rows),
-          { title: "Request Status Distribution", pieHole: 0.35 },
+          { title: "Request Status Distribution", pieHole: 0.35, colors: ['#4caf50', '#ff9800', '#f44336', '#2196f3', '#9c27b0'] }
         );
       }
 
-      function renderGrouped(data) {
-        renderBranchTable("officeBody", data.office);
-        renderBranchTable("specialBody", data.special);
+      // ===============================
+      // INVENTORY
+      // ===============================
+      function loadInventory() {
+        google.script.run.withSuccessHandler(renderInventory).getInventory();
+        google.script.run.withSuccessHandler(populateSupplierFilter).getSuppliers();
       }
 
-      function renderBranchTable(id, groups) {
-        const b = document.getElementById(id);
-        b.innerHTML = "";
-        (groups || []).forEach((g) => {
-          const cacheIndex = branchGroupsCache.length;
-          branchGroupsCache.push(g);
-          b.innerHTML += `
-      <tr>
-        <td>${g.branch}</td>
-        <td>${g.total}</td>
-        <td>
-          <button class="action-btn action-edit"
-            onclick='openModalFromCache(${cacheIndex})'>View</button>
-        </td>
-      </tr>`;
+      function renderInventory(d) {
+        if (!d.success) return;
+        inventoryData = d.data;
+        filterInventory();
+      }
+
+      function filterInventory() {
+        const search = document.getElementById('inventorySearch').value.toLowerCase();
+        const supplier = document.getElementById('inventorySupplierFilter').value;
+        const status = document.getElementById('inventoryStatusFilter').value;
+        
+        const filtered = inventoryData.filter(item => {
+          const matchSearch = !search || 
+            item.description.toLowerCase().includes(search) || 
+            item.item_id.toLowerCase().includes(search);
+          const matchSupplier = !supplier || item.supplier === supplier;
+          const matchStatus = !status || 
+            (status === 'Low Stock' && item.total_running_stocks <= 10) ||
+            (status === 'Out of Stock' && item.total_running_stocks === 0) ||
+            (status === 'Active' && item.total_running_stocks > 10);
+          return matchSearch && matchSupplier && matchStatus;
+        });
+        
+        const tbody = document.getElementById('inventoryBody');
+        tbody.innerHTML = '';
+        filtered.forEach(item => {
+          const stockStatus = item.total_running_stocks <= 10 ? 
+            (item.total_running_stocks === 0 ? 'Out of Stock' : 'Low Stock') : 'Active';
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.item_id}</td>
+              <td>${item.description}</td>
+              <td>${item.unit}</td>
+              <td>${item.supplier}</td>
+              <td>${item.classification}</td>
+              <td>${item.total_running_stocks}</td>
+              <td><span class="badge badge-${stockStatus === 'Active' ? 'approved' : 'low'}">${stockStatus}</span></td>
+              <td>
+                <button class="btn btn-sm btn-warning" onclick="editInventoryItem(${item.id})">Edit</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteInventoryItem(${item.id})">Delete</button>
+              </td>
+            </tr>
+          `;
         });
       }
 
-      function openModalFromCache(cacheIndex) {
-        if (cacheIndex >= 0 && cacheIndex < branchGroupsCache.length) {
-          openModal(branchGroupsCache[cacheIndex]);
-        }
+      function populateSupplierFilter(d) {
+        if (!d.success) return;
+        const select = document.getElementById('inventorySupplierFilter');
+        select.innerHTML = '<option value="">All Suppliers</option>';
+        (d.data || []).forEach(s => {
+          select.innerHTML += `<option value="${s.supplier_name}">${s.supplier_name}</option>`;
+        });
       }
 
-      /* MODAL */
-      function openModal(g) {
-        // Determine request type from first row
-        const requestType =
-          g.rows.length > 0
-            ? g.rows[0].sheetName.toLowerCase().includes("special")
-              ? "special"
-              : "office"
-            : "office";
+      // ===============================
+      // OFFICE REQUEST
+      // ===============================
+      function loadOfficeRequests() {
+        google.script.run.withSuccessHandler(renderOfficeRequests).getPendingGroupedByBranch();
+      }
 
-        currentRows = g.rows;
+      function renderOfficeRequests(d) {
+        if (!d.success) return;
+        const tbody = document.getElementById('officeRequestBody');
+        tbody.innerHTML = '';
+        (d.office || []).forEach((g, idx) => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${g.branch}</td>
+              <td>${g.total}</td>
+              <td>
+                <button class="btn btn-sm btn-primary" onclick="viewOfficeBranch(${idx}, 'office')">View</button>
+              </td>
+            </tr>
+          `;
+        });
+      }
 
-        const modalId =
-          requestType === "special" ? "specialModal" : "officeModal";
-        const titleId =
-          requestType === "special" ? "specialModalTitle" : "officeModalTitle";
-        const bodyId =
-          requestType === "special" ? "specialModalBody" : "officeModalBody";
+      // ===============================
+      // SPECIAL REQUEST
+      // ===============================
+      function loadSpecialRequests() {
+        google.script.run.withSuccessHandler(renderSpecialRequests).getSpecialRequests();
+      }
 
-        document.getElementById(titleId).textContent = `Branch: ${g.branch}`;
-        document.getElementById(bodyId).innerHTML = "";
+      function switchSpecialTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        specialTab = tab;
+        renderSpecialRequests(specialRequestsData);
+      }
 
+      function renderSpecialRequests(d) {
+        specialRequestsData = d;
+        if (!d.success) return;
+        
+        const tbody = document.getElementById('specialRequestBody');
+        tbody.innerHTML = '';
+        
+        const filtered = (d.data || []).filter(item => {
+          const status = (item.status || '').toLowerCase();
+          if (specialTab === 'pending') return status === 'pending';
+          if (specialTab === 'purchasing') return status === 'approved';
+          if (specialTab === 'accounting') return status === 'accounting dept';
+          if (specialTab === 'admin') return status === 'approved by accounting';
+          if (specialTab === 'approved') return status === 'to purchased' || status === 'petty cash by branch';
+          return true;
+        });
+        
+        filtered.forEach(item => {
+          let currentStage = 'Pending';
+          if (item.status === 'Approved') currentStage = 'Purchasing';
+          else if (item.status === 'Accounting Dept') currentStage = 'Accounting';
+          else if (item.status === 'Approved by Accounting') currentStage = 'Admin';
+          else if (item.status === 'To Purchased' || item.status === 'Petty Cash by Branch') currentStage = 'Completed';
+          
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.branch}</td>
+              <td>${item.description}</td>
+              <td>${item.qty}</td>
+              <td>${formatNumber(item.amount)}</td>
+              <td><span class="badge badge-special">${currentStage}</span></td>
+              <td>
+                <button class="btn btn-sm btn-success" onclick="advanceSpecialRequest(${item.id}, '${item.status}')">Advance</button>
+                <button class="btn btn-sm btn-danger" onclick="rejectSpecialRequest(${item.id})">Reject</button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+
+      // ===============================
+      // OFFICE SUPPLIES
+      // ===============================
+      function loadOfficeSupplies() {
+        google.script.run.withSuccessHandler(renderOfficeSupplies).getOfficeRequests();
+      }
+
+      function renderOfficeSupplies(d) {
+        if (!d.success) return;
+        const tbody = document.getElementById('officeSuppliesBody');
+        tbody.innerHTML = '';
+        (d.data || []).forEach(item => {
+          const statusClass = item.status === 'Pending' ? 'pending' : 
+                              item.status === 'Approved' ? 'approved' : 'rejected';
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.branch}</td>
+              <td>${item.date}</td>
+              <td>${item.description}</td>
+              <td>${item.qty}</td>
+              <td>${formatNumber(item.amount)}</td>
+              <td><span class="badge badge-${statusClass}">${item.status}</span></td>
+              <td>
+                <button class="btn btn-sm btn-success" onclick="approveOfficeRequest(${item.id})">Approve</button>
+                <button class="btn btn-sm btn-danger" onclick="rejectOfficeRequest(${item.id})">Reject</button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+
+      // ===============================
+      // STOCK SUPPLIERS
+      // ===============================
+      function loadStockSuppliers() {
+        google.script.run.withSuccessHandler(renderStockSuppliers).getSupplierItems();
+        google.script.run.withSuccessHandler(populateSupplierSelect).getSuppliers();
+      }
+
+      function renderStockSuppliers(d) {
+        if (!d.success) return;
+        supplierItemsData = d.data;
+        const tbody = document.getElementById('stockSuppliersBody');
+        tbody.innerHTML = '';
+        (d.data || []).forEach(item => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.item_id}</td>
+              <td>${item.supplier_id}</td>
+              <td>${item.description}</td>
+              <td>${item.unit}</td>
+              <td>${formatNumber(item.unit_price)}</td>
+              <td>${item.current_stock}</td>
+              <td>${item.min_stock_level}</td>
+              <td>
+                <button class="btn btn-sm btn-warning" onclick="editSupplierItem(${item.id})">Edit</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteSupplierItem(${item.id})">Delete</button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+
+      function populateSupplierSelect(d) {
+        if (!d.success) return;
+        suppliersData = d.data;
+      }
+
+      // ===============================
+      // MANAGE SUPPLIERS
+      // ===============================
+      function loadManageSuppliers() {
+        google.script.run.withSuccessHandler(renderManageSuppliers).getSuppliers();
+      }
+
+      function renderManageSuppliers(d) {
+        if (!d.success) return;
+        const tbody = document.getElementById('manageSuppliersBody');
+        tbody.innerHTML = '';
+        (d.data || []).forEach(item => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.supplier_id}</td>
+              <td>${item.supplier_name}</td>
+              <td>${item.contact_person}</td>
+              <td>${item.email}</td>
+              <td>${item.phone}</td>
+              <td>${item.classification}</td>
+              <td><span class="badge badge-${item.status === 'Active' ? 'approved' : 'rejected'}">${item.status}</span></td>
+              <td>
+                <button class="btn btn-sm btn-warning" onclick="editSupplier(${item.id})">Edit</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteSupplier(${item.id})">Delete</button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+
+      // ===============================
+      // REPORTS
+      // ===============================
+      function loadBranchesForFilter() {
+        google.script.run.withSuccessHandler(d => {
+          if (!d.success) return;
+          const select = document.getElementById('reportBranch');
+          select.innerHTML = '<option value="">All Branches</option>';
+          (d.data || []).forEach(b => {
+            select.innerHTML += `<option value="${b.branch_name}">${b.branch_name}</option>`;
+          });
+        }).getBranches();
+      }
+
+      function generateReport() {
+        const data = {
+          dateFrom: document.getElementById('reportDateFrom').value,
+          dateTo: document.getElementById('reportDateTo').value,
+          branch: document.getElementById('reportBranch').value,
+          requestType: document.getElementById('reportType').value
+        };
+        
+        google.script.run.withSuccessHandler(renderReportResults).generateReport(data);
+      }
+
+      function renderReportResults(d) {
+        if (!d.success) return;
+        const tbody = document.getElementById('reportResultsBody');
+        tbody.innerHTML = '';
+        (d.data || []).forEach(item => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.date}</td>
+              <td>${item.branch}</td>
+              <td>${item.sheetName}</td>
+              <td>${item.description}</td>
+              <td>${item.qty}</td>
+              <td>${formatNumber(item.amount)}</td>
+              <td><span class="badge badge-${item.status.toLowerCase().includes('approved') ? 'approved' : 'pending'}">${item.status}</span></td>
+            </tr>
+          `;
+        });
+      }
+
+      // ===============================
+      // LOW STOCKS
+      // ===============================
+      function loadLowStocks() {
+        google.script.run.withSuccessHandler(renderLowStocks).getLowStocksReport();
+      }
+
+      function renderLowStocks(d) {
+        if (!d.success) return;
+        const tbody = document.getElementById('lowStocksBody');
+        tbody.innerHTML = '';
+        (d.data || []).forEach(item => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.item_id}</td>
+              <td>${item.description}</td>
+              <td>${item.unit}</td>
+              <td>${item.total_running_stocks}</td>
+              <td>10</td>
+              <td>${item.supplier}</td>
+              <td><span class="badge badge-low">${item.total_running_stocks === 0 ? 'Out of Stock' : 'Low Stock'}</span></td>
+            </tr>
+          `;
+        });
+      }
+
+      // ===============================
+      // BRANCHES DASHBOARD
+      // ===============================
+      function loadBranchesDashboard() {
+        google.script.run.withSuccessHandler(renderBranchesDashboard).getBranchDashboard();
+        google.script.run.withSuccessHandler(renderBranchesOverview).getBranches();
+      }
+
+      function renderBranchesDashboard(d) {
+        if (!d.success) return;
+        document.getElementById('totalBranches').textContent = d.data.length;
+        
         let total = 0;
-        g.rows.forEach((r) => {
-          total += r.amount || 0;
-          
-          let actionsHtml = '';
-          if (requestType === "office") {
-            actionsHtml = `
-              <button class="action-btn action-edit"
-                onclick="editQty(this,'${r.sheetName}',${r.rowNumber},${r.qty})">Edit</button>
-              <button class="action-btn action-approve"
-                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Approved')">Approved</button>
-              <button class="action-btn action-nostock"
-                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'No Stocks')">No Stock</button>
-              <button class="action-btn action-pettycash"
-                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Petty Cash by Branch')">Petty Cash</button>
-              <button class="action-btn action-cancel"
-                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Cancel')">Cancel</button>
-              <button class="action-btn action-delete"
-                onclick="deleteRow(this,'${r.sheetName}',${r.rowNumber})">Delete</button>
-            `;
-          } else {
-            actionsHtml = `
-              <button class="action-btn action-edit"
-                onclick="editQty(this,'${r.sheetName}',${r.rowNumber},${r.qty})">Edit</button>
-              <button class="action-btn action-approvedpurchasing"
-                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Approved by Purchasing')">App. Purchasing</button>
-              <button class="action-btn action-approvedaccounting"
-                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Approved by Accounting')">App. Accounting</button>
-              <button class="action-btn action-pettycash"
-                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Petty Cash by Branch')">Petty Cash</button>
-              <button class="action-btn action-cancel"
-                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'Cancel')">Cancel</button>
-              <button class="action-btn action-topurchased"
-                onclick="rowAction(this,'${r.sheetName}',${r.rowNumber},'To Purchased')">To Purchased</button>
-              <button class="action-btn action-delete"
-                onclick="deleteRow(this,'${r.sheetName}',${r.rowNumber})">Delete</button>
-            `;
-          }
-          
-          document.getElementById(bodyId).innerHTML += `
-      <tr>
-        <td>${r.qty}</td>
-        <td>${r.unit}</td>
-        <td>${r.description}</td>
-        <td>${formatNumberWithThousands(r.uprice || 0)}</td>
-        <td>${formatNumberWithThousands(r.amount || 0)}</td>
-        <td>${actionsHtml}</td>
-      </tr>`;
+        d.data.forEach(b => {
+          total += b.officePending + b.officeApproved + b.specialPending + b.specialApproved;
         });
-
-        document.getElementById(modalId).style.display = "block";
+        document.getElementById('totalBranchRequests').textContent = total;
+        
+        renderCalendar(d.data);
       }
 
-      function closeModal(type) {
-        if (type === "special") {
-          document.getElementById("specialModal").style.display = "none";
-        } else if (type === "office") {
-          document.getElementById("officeModal").style.display = "none";
-        } else {
-          document.getElementById("officeModal").style.display = "none";
-          document.getElementById("specialModal").style.display = "none";
-        }
-        // Refresh immediately when closing modal
-        setTimeout(refreshAll, 500);
+      function renderBranchesOverview(d) {
+        if (!d.success) return;
+        branchesData = d.data;
       }
 
-      /* ACTIONS */
-      function editQty(btn, s, r, q) {
-        const n = prompt("Edit Qty:", q);
-        if (n != null && n !== "") {
-          // Find the row in modal and update immediately
-          const rows = btn.closest('tr');
-          if (rows) {
-            const cells = rows.cells;
-            cells[0].textContent = n;
-            // Calculate new amount if uprice exists
-            const upriceCell = cells[3].textContent.replace(/,/g, '');
-            const uprice = parseFloat(upriceCell) || 0;
-            const newAmount = parseFloat(n) * uprice;
-            cells[4].textContent = formatNumberWithThousands(newAmount);
+      function renderCalendar(branchData) {
+        const calendar = document.getElementById('calendarView');
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        let html = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;">';
+        
+        months.forEach((month, idx) => {
+          html += `
+            <div class="card" style="margin:0">
+              <h4 style="text-align:center;margin-bottom:10px">${month}</h4>
+              <div class="calendar-grid">
+                <div class="calendar-header">S</div>
+                <div class="calendar-header">M</div>
+                <div class="calendar-header">T</div>
+                <div class="calendar-header">W</div>
+                <div class="calendar-header">T</div>
+                <div class="calendar-header">F</div>
+                <div class="calendar-header">S</div>
+          `;
+          
+          const daysInMonth = new Date(2026, idx + 1, 0).getDate();
+          const firstDay = new Date(2026, idx, 1).getDay();
+          
+          for (let i = 0; i < firstDay; i++) {
+            html += '<div></div>';
           }
-          // Update currentRows data
-          const rowData = currentRows.find(x => x.rowNumber === r);
-          if (rowData) {
-            rowData.qty = parseFloat(n);
-            rowData.amount = parseFloat(n) * (rowData.uprice || 0);
-          }
-          // Server update in background
-          google.script.run
-            .withSuccessHandler(() => {
-              setTimeout(refreshAll, 1500);
-            })
-            .editPendingRow(s, r, { Qty: n });
-        }
-      }
-
-      function approveRow(btn, s, r) {
-        btn.classList.add("loading");
-        // Immediately remove row from DOM
-        const row = btn.closest('tr');
-        if (row) row.remove();
-        // Update badge counts immediately
-        const type = s.toLowerCase().includes("special") ? "special" : "office";
-        updateBadgeInstant(type, -1);
-        // Server update in background
-        google.script.run
-          .withSuccessHandler(() => {
-            setTimeout(refreshAll, 1500);
-          })
-          .approvePendingRow(s, r);
-      }
-
-      function deleteRow(btn, s, r) {
-        if (!confirm("Delete?")) return;
-        btn.classList.add("loading");
-        // Immediately remove row from DOM
-        const row = btn.closest('tr');
-        if (row) row.remove();
-        // Update badge counts immediately
-        const type = s.toLowerCase().includes("special") ? "special" : "office";
-        updateBadgeInstant(type, -1);
-        // Server update in background
-        google.script.run
-          .withSuccessHandler(() => {
-            setTimeout(refreshAll, 1500);
-          })
-          .deletePendingRow(s, r);
-      }
-
-      function updateBadgeInstant(type, delta) {
-        const badge = type === "special" ? specialBadge : officeBadge;
-        const current = parseInt(badge.textContent.match(/\d+/)?.[0] || "0");
-        const newVal = Math.max(0, current + delta);
-        badge.textContent = `${type === "special" ? "Special" : "Office"}: ${newVal}`;
-        badge.className = "badge " + (newVal > 0 ? (type === "special" ? "badge-special" : "badge-office") : "badge-zero");
-      }
-
-      /* BATCH */
-      function batchAction(btn, type, action) {
-        if (!confirm(`Confirm batch action: ${action}?`)) return;
-        btn.classList.add("loading");
-        const rowCount = currentRows.length;
-        // Clear modal body immediately
-        const bodyId = type === "special" ? "specialModalBody" : "officeModalBody";
-        document.getElementById(bodyId).innerHTML = "";
-        // Update badge immediately
-        updateBadgeInstant(type, -rowCount);
-        const rowsToProcess = [...currentRows];
-        currentRows = [];
-        // Server update in background
-        google.script.run
-          .withSuccessHandler(() => {
-            btn.classList.remove("loading");
-            setTimeout(refreshAll, 1500);
-          })
-          .batchAction(rowsToProcess, action);
-      }
-
-      /* ROW ACTION */
-      function rowAction(btn, s, r, action) {
-        if (!confirm(`Confirm action: ${action}?`)) return;
-        btn.classList.add("loading");
-        // Immediately remove row from DOM
-        const row = btn.closest('tr');
-        if (row) row.remove();
-        // Update badge counts immediately
-        const type = s.toLowerCase().includes("special") ? "special" : "office";
-        updateBadgeInstant(type, -1);
-        // Server update in background
-        google.script.run
-          .withSuccessHandler(() => {
-            setTimeout(refreshAll, 1500);
-          })
-          .rowAction(s, r, action);
-      }
-
-      function batchPrint(btn, type) {
-        google.script.run
-          .withSuccessHandler((selectedPerBranch) => {
-            if (
-              !selectedPerBranch ||
-              Object.keys(selectedPerBranch).length === 0
-            ) {
-              alert(
-                "No PDFs found. Please ensure PDF URLs are populated in the spreadsheet.",
-              );
-              return;
-            }
-
-            let pdfCount = 0;
-            Object.keys(selectedPerBranch).forEach((branch) => {
-              const pdf = selectedPerBranch[branch];
-              if (pdf && pdf.url) {
-                window.open(pdf.url, "_blank");
-                pdfCount++;
-              }
+          
+          for (let day = 1; day <= daysInMonth; day++) {
+            let hasEvent = false;
+            branchData.forEach(b => {
+              b.calendar.forEach(c => {
+                if (c.date && new Date(c.date).getMonth() === idx && new Date(c.date).getDate() === day) {
+                  hasEvent = true;
+                }
+              });
             });
-
-            alert(
-              `Opened ${pdfCount} PDF(s) — one per branch (prefer Special requests/ Office Supplies).`,
-            );
-          })
-          .getBatchPdfUrls(currentRows);
-      }
-
-      function officesuppliesreceivedEmail(btn, type) {
-        if (!currentRows || currentRows.length === 0) {
-          alert("No items selected to email.");
-          return;
-        }
-
-        // Get branch name from modal title
-        const titleElement =
-          type === "office"
-            ? document.getElementById("officeModalTitle")
-            : document.getElementById("officeModalTitle");
-        const branch = titleElement.textContent
-          .replace(/^Branch:\s*/, "")
-          .trim();
-
-        // Resolve email addresses
-        const to = getEmailForBranch(branch);
-
-        // Email subject
-        const subject = `OFFICE SUPPLIES RECEIVED – ${branch}`;
-
-        // Build email body
-        let body = `Good Day Ma'am/Sir,\n\n`;
-        body += `We have received your office supplies request.\n\n`;
-        body += `${"=".repeat(100)}\n\n`;
-        body += `Request Details:\n\n`;
-        body += `# - Description - Qty - Unit\n`;
-        body += `${"=".repeat(100)}\n`;
-
-        currentRows.forEach((r, index) => {
-          body += `${index + 1} - ${r.description} - ${r.qty} - ${r.unit}\n`;
+            
+            html += `<div class="calendar-day ${hasEvent ? 'has-event' : ''}">${day}</div>`;
+          }
+          
+          html += '</div></div>';
         });
-
-        body += `${"=".repeat(100)}\n\n`;
-        body += `Thank you, God bless!\n`;
-
-        // Gmail compose URL
-        const gmailUrl =
-          "https://mail.google.com/mail/?view=cm&fs=1" +
-          `&to=${encodeURIComponent(to)}` +
-          `&su=${encodeURIComponent(subject)}` +
-          `&body=${encodeURIComponent(body)}`;
-
-        // Open Gmail compose in new tab
-        window.open(gmailUrl, "_blank");
+        
+        html += '</div>';
+        calendar.innerHTML = html;
       }
 
-      function claimedEmail(btn, type) {
-        if (!currentRows || currentRows.length === 0) {
-          alert("No items selected.");
-          return;
-        }
+      // ===============================
+      // BRANCH REPORT
+      // ===============================
+      function loadBranchesForBranchReport() {
+        google.script.run.withSuccessHandler(d => {
+          if (!d.success) return;
+          const select = document.getElementById('branchReportBranch');
+          select.innerHTML = '<option value="All">All Branches</option>';
+          (d.data || []).forEach(b => {
+            select.innerHTML += `<option value="${b.branch_name}">${b.branch_name}</option>`;
+          });
+        }).getBranches();
+      }
 
-        btn.classList.add("loading");
+      function toggleMonthSelect() {
+        const period = document.getElementById('branchReportPeriod').value;
+        document.getElementById('branchReportMonth').disabled = period === 'yearly';
+      }
 
-        // Get branch name from modal title
-        const titleElement = document.getElementById("officeModalTitle");
-        const branch = titleElement.textContent
-          .replace(/^Branch:\s*/, "")
-          .trim();
+      function generateBranchReport() {
+        const data = {
+          branch: document.getElementById('branchReportBranch').value,
+          period: document.getElementById('branchReportPeriod').value,
+          year: document.getElementById('branchReportYear').value,
+          month: document.getElementById('branchReportMonth').value
+        };
+        
+        google.script.run.withSuccessHandler(renderBranchReport).getBranchReport(data);
+      }
 
-        // Resolve email addresses
-        const to = getEmailForBranch(branch);
+      function renderBranchReport(d) {
+        if (!d.success) return;
+        const summary = document.getElementById('branchReportSummary');
+        const data = d.data;
+        
+        summary.innerHTML = `
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value">${data.summary.officeTotal}</div>
+              <div class="stat-label">Total Office Requests</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${data.summary.officePending}</div>
+              <div class="stat-label">Office Pending</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${data.summary.officeApproved}</div>
+              <div class="stat-label">Office Approved</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${data.summary.specialTotal}</div>
+              <div class="stat-label">Total Special Requests</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${data.summary.specialPending}</div>
+              <div class="stat-label">Special Pending</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${data.summary.specialApproved}</div>
+              <div class="stat-label">Special Approved</div>
+            </div>
+          </div>
+        `;
+      }
 
-        // Email subject
-        const subject = `OFFICE SUPPLIES READY FOR PICKUP – ${branch}`;
+      // ===============================
+      // MANAGE USERS
+      // ===============================
+      function loadUsers() {
+        google.script.run.withSuccessHandler(renderUsers).getUsers();
+        google.script.run.withSuccessHandler(renderPasswordReset).getPasswordResetRequests();
+        google.script.run.withSuccessHandler(populateBranchesForUsers).getBranches();
+      }
 
-        // Build email body
-        let body = `Good Day Ma'am/Sir,\n\n`;
-        body += `The requested office supplies are ready for pickup.\n\n`;
-        body += `${"=".repeat(100)}\n\n`;
-        body += `Request Details:\n\n`;
-        body += `# - Description - Qty - Unit\n`;
-        body += `${"=".repeat(100)}\n`;
-        body += `${branch}\n`;
-
-        currentRows.forEach((r, index) => {
-          body += `${index + 1} - ${r.description} - ${r.qty} - ${r.unit}\n`;
+      function renderUsers(d) {
+        if (!d.success) return;
+        usersData = d.data;
+        const tbody = document.getElementById('usersBody');
+        tbody.innerHTML = '';
+        (d.data || []).forEach(item => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.user_id}</td>
+              <td>${item.username}</td>
+              <td>${item.email}</td>
+              <td>${item.role}</td>
+              <td>${item.branch_access}</td>
+              <td><span class="badge badge-${item.status === 'Active' ? 'approved' : 'rejected'}">${item.status}</span></td>
+              <td>
+                <button class="btn btn-sm btn-warning" onclick="editUser(${item.id})">Edit</button>
+                <button class="btn btn-sm btn-secondary" onclick="resetUserPassword(${item.id})">Reset PW</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteUser(${item.id})">Delete</button>
+              </td>
+            </tr>
+          `;
         });
-
-        body += `${"=".repeat(100)}\n\n`;
-        body += `Thank you, God bless!\n`;
-
-        // Gmail compose URL
-        const gmailUrl =
-          "https://mail.google.com/mail/?view=cm&fs=1" +
-          `&to=${encodeURIComponent(to)}` +
-          `&su=${encodeURIComponent(subject)}` +
-          `&body=${encodeURIComponent(body)}`;
-
-        // Open Gmail compose in new tab
-        window.open(gmailUrl, "_blank");
-
-        btn.classList.remove("loading");
       }
 
-      function specialrequestEmail(btn, type) {
-        if (!currentRows || currentRows.length === 0) {
-          alert("No items selected.");
-          return;
-        }
-
-        btn.classList.add("loading");
-
-        // Get branch name from modal title
-        const titleElement = document.getElementById("specialModalTitle");
-        const branch = titleElement.textContent
-          .replace(/^Branch:\s*/, "")
-          .trim();
-
-        // Resolve email addresses
-        const to = getEmailForBranch(branch);
-
-        // Email subject
-        const subject = `SPECIAL REQUEST RECEIVED – ${branch}`;
-
-        // Build email body
-        let body = `Good Day Ma'am/Sir,\n\n`;
-        body += `We have received your special request.\n\n`;
-
-        //
-        body += `NOTE: Please be informed that this request has been approved by our corporate accountant and has been endorsed to the disbursement officer for issuance.\n\n`;
-        body += `${"=".repeat(100)}\n\n`;
-        body += `Special Request Details:\n\n`;
-        body += `# - Qty - Unit - Description - Uprice - Amount\n`;
-        body += `${"=".repeat(100)}\n`;
-
-        let totalAmount = 0;
-        currentRows.forEach((r, index) => {
-          const amount = r.amount || 0;
-          totalAmount += amount;
-          const uprice = formatNumberWithThousands(r.uprice || 0);
-          const amountFormatted = formatNumberWithThousands(amount);
-          body += `${index + 1} - ${r.qty} - ${r.unit} - ${r.description} - ${uprice} - ${amountFormatted}\n`;
+      function renderPasswordReset(d) {
+        if (!d.success) return;
+        const tbody = document.getElementById('passwordResetBody');
+        tbody.innerHTML = '';
+        (d.data || []).forEach(item => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${item.request_id}</td>
+              <td>${item.user_id}</td>
+              <td>${item.request_date}</td>
+              <td><span class="badge badge-${item.status === 'Pending' ? 'pending' : 'approved'}">${item.status}</span></td>
+              <td>
+                ${item.status === 'Pending' ? `
+                  <button class="btn btn-sm btn-success" onclick="approvePasswordReset(${item.id}, '${item.user_id}')">Approve</button>
+                  <button class="btn btn-sm btn-danger" onclick="rejectPasswordReset(${item.id})">Reject</button>
+                ` : ''}
+              </td>
+            </tr>
+          `;
         });
-
-        body += `${"=".repeat(100)}\n`;
-        body += `TOTAL AMOUNT: ${formatNumberWithThousands(totalAmount)}\n\n`;
-        body += `Thank you, God bless!\n`;
-
-        // Gmail compose URL
-        const gmailUrl =
-          "https://mail.google.com/mail/?view=cm&fs=1" +
-          `&to=${encodeURIComponent(to)}` +
-          `&su=${encodeURIComponent(subject)}` +
-          `&body=${encodeURIComponent(body)}`;
-
-        // Open Gmail compose in new tab
-        window.open(gmailUrl, "_blank");
-
-        btn.classList.remove("loading");
       }
+
+      function populateBranchesForUsers(d) {
+        // Store for use in modals
+      }
+
+      // ===============================
+      // ACTIONS
+      // ===============================
+      function saveBranch(e) {
+        e.preventDefault();
+        const data = {
+          branch_name: document.getElementById('branchName').value,
+          email: document.getElementById('branchEmail').value,
+          location: document.getElementById('branchLocation').value,
+          classification: document.getElementById('branchClassification').value
+        };
+        
+        google.script.run.withSuccessHandler(r => {
+          alert(r.message);
+          if (r.success) {
+            document.getElementById('addBranchForm').reset();
+            loadBranchesForFilter();
+          }
+        }).addBranch(data);
+      }
+
+      function advanceSpecialRequest(id, currentStatus) {
+        let newStatus = 'Approved';
+        if (currentStatus === 'Approved') newStatus = 'Accounting Dept';
+        else if (currentStatus === 'Accounting Dept') newStatus = 'Approved by Accounting';
+        else if (currentStatus === 'Approved by Accounting') newStatus = 'To Purchased';
+        
+        google.script.run.withSuccessHandler(() => {
+          loadSpecialRequests();
+        }).updateSpecialRequest({ id: id, status: newStatus });
+      }
+
+      function rejectSpecialRequest(id) {
+        if (!confirm('Reject this request?')) return;
+        google.script.run.withSuccessHandler(() => {
+          loadSpecialRequests();
+        }).updateSpecialRequest({ id: id, status: 'Cancel' });
+      }
+
+      function approveOfficeRequest(id) {
+        google.script.run.withSuccessHandler(() => {
+          loadOfficeSupplies();
+        }).updateOfficeRequest({ id: id, status: 'Approved' });
+      }
+
+      function rejectOfficeRequest(id) {
+        if (!confirm('Reject this request?')) return;
+        google.script.run.withSuccessHandler(() => {
+          loadOfficeSupplies();
+        }).updateOfficeRequest({ id: id, status: 'Cancel' });
+      }
+
+      function resetUserPassword(id) {
+        if (!confirm('Reset password to default?')) return;
+        google.script.run.withSuccessHandler(r => {
+          alert(r.message);
+          loadUsers();
+        }).resetPassword(id);
+      }
+
+      function approvePasswordReset(id, userId) {
+        google.script.run.withSuccessHandler(r => {
+          alert(r.message);
+          loadUsers();
+        }).handlePasswordReset({ id: id, user_id: userId, status: 'Approved' });
+      }
+
+      function rejectPasswordReset(id) {
+        google.script.run.withSuccessHandler(r => {
+          alert(r.message);
+          loadUsers();
+        }).handlePasswordReset({ id: id, status: 'Rejected' });
+      }
+
+      function deleteSupplier(id) {
+        if (!confirm('Delete this supplier?')) return;
+        google.script.run.withSuccessHandler(r => {
+          alert(r.message);
+          loadManageSuppliers();
+        }).deleteSupplier(id);
+      }
+
+      function deleteSupplierItem(id) {
+        if (!confirm('Delete this item?')) return;
+        google.script.run.withSuccessHandler(r => {
+          alert(r.message);
+          loadStockSuppliers();
+        }).deleteSupplierItem(id);
+      }
+
+      function deleteInventoryItem(id) {
+        if (!confirm('Delete this item?')) return;
+        google.script.run.withSuccessHandler(r => {
+          alert(r.message);
+          loadInventory();
+        }).deleteInventoryItem(id);
+      }
+
+      function deleteUser(id) {
+        if (!confirm('Delete this user?')) return;
+        google.script.run.withSuccessHandler(r => {
+          alert(r.message);
+          loadUsers();
+        }).deleteUser(id);
+      }
+
+      // ===============================
+      // MODALS
+      // ===============================
+      function openModal(type) {
+        const overlay = document.getElementById('modalOverlay');
+        const title = document.getElementById('modalTitle');
+        const content = document.getElementById('modalContent');
+        
+        overlay.classList.add('active');
+        
+        switch(type) {
+          case 'supplier':
+            title.textContent = 'Add Supplier';
+            content.innerHTML = getSupplierFormHtml();
+            break;
+          case 'supplierItem':
+            title.textContent = 'Add Stock Entry';
+            content.innerHTML = getSupplierItemFormHtml();
+            break;
+          case 'user':
+            title.textContent = 'Add User';
+            content.innerHTML = getUserFormHtml();
+            break;
+          case 'inventory':
+            title.textContent = 'Add Inventory Item';
+            content.innerHTML = getInventoryFormHtml();
+            break;
+        }
+      }
+
+      function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('active');
+      }
+
+      function closeModalOverlay(e) {
+        if (e.target.id === 'modalOverlay') closeModal();
+      }
+
+      function getSupplierFormHtml() {
+        return `
+          <form onsubmit="saveSupplier(event)">
+            <div class="form-group">
+              <label>Supplier Name</label>
+              <input type="text" class="form-control" id="supplierName" required>
+            </div>
+            <div class="form-group">
+              <label>Contact Person</label>
+              <input type="text" class="form-control" id="supplierContact">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" class="form-control" id="supplierEmail">
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="text" class="form-control" id="supplierPhone">
+            </div>
+            <div class="form-group">
+              <label>Address</label>
+              <input type="text" class="form-control" id="supplierAddress">
+            </div>
+            <div class="form-group">
+              <label>Classification</label>
+              <select class="form-control" id="supplierClassification">
+                <option value="General">General</option>
+                <option value="Office">Office</option>
+                <option value="Tools">Tools</option>
+                <option value="Spare Parts">Spare Parts</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        `;
+      }
+
+      function getSupplierItemFormHtml() {
+        let options = '<option value="">Select Supplier</option>';
+        (suppliersData || []).forEach(s => {
+          options += `<option value="${s.supplier_name}">${s.supplier_name}</option>`;
+        });
+        
+        return `
+          <form onsubmit="saveSupplierItem(event)">
+            <div class="form-group">
+              <label>Item ID</label>
+              <input type="text" class="form-control" id="supplierItemId" required>
+            </div>
+            <div class="form-group">
+              <label>Supplier</label>
+              <select class="form-control" id="supplierItemSupplier" required>${options}</select>
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <input type="text" class="form-control" id="supplierItemDesc" required>
+            </div>
+            <div class="form-group">
+              <label>Unit</label>
+              <input type="text" class="form-control" id="supplierItemUnit">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Unit Price</label>
+                <input type="number" class="form-control" id="supplierItemPrice" step="0.01">
+              </div>
+              <div class="form-group">
+                <label>Min Stock Level</label>
+                <input type="number" class="form-control" id="supplierItemMin" value="10">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Current Stock</label>
+              <input type="number" class="form-control" id="supplierItemCurrent" value="0">
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        `;
+      }
+
+      function getUserFormHtml() {
+        let branchOptions = '<option value="">All Branches</option>';
+        (branchesData || []).forEach(b => {
+          branchOptions += `<option value="${b.branch_name}">${b.branch_name}</option>`;
+        });
+        
+        return `
+          <form onsubmit="saveUser(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-control" id="userUsername" required>
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-control" id="userEmail" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Role</label>
+                <select class="form-control" id="userRole">
+                  <option value="Admin">Admin</option>
+                  <option value="Purchasing">Purchasing</option>
+                  <option value="Accounting">Accounting</option>
+                  <option value="Branch">Branch</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Branch Access</label>
+                <select class="form-control" id="userBranch">${branchOptions}</select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        `;
+      }
+
+      function getInventoryFormHtml() {
+        let supplierOptions = '<option value="">Select Supplier</option>';
+        (suppliersData || []).forEach(s => {
+          supplierOptions += `<option value="${s.supplier_name}">${s.supplier_name}</option>`;
+        });
+        
+        return `
+          <form onsubmit="saveInventoryItem(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Item ID</label>
+                <input type="text" class="form-control" id="invItemId" required>
+              </div>
+              <div class="form-group">
+                <label>Description</label>
+                <input type="text" class="form-control" id="invDesc" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Unit</label>
+                <input type="text" class="form-control" id="invUnit">
+              </div>
+              <div class="form-group">
+                <label>Current Stock</label>
+                <input type="number" class="form-control" id="invStock" value="0">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Supplier</label>
+                <select class="form-control" id="invSupplier">${supplierOptions}</select>
+              </div>
+              <div class="form-group">
+                <label>Classification</label>
+                <select class="form-control" id="invClassification">
+                  <option value="General">General</option>
+                  <option value="Office">Office</option>
+                  <option value="Tools">Tools</option>
+                  <option value="Spare Parts">Spare Parts</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        `;
+      }
+
+      function saveSupplier(e) {
+        e.preventDefault();
+        google.script.run.withSuccessHandler(r => {
+          alert(r.message);
+          if (r.success) {
+            closeModal();
+            loadManageSuppliers();
+          }
+        }).addSupplier({
+          supplier_name: document.getElementById('supplierName').value,
+          contact_person: document.getElementById('supplierContact').value,
+          email: document.getElementById('supplierEmail').value,
+          phone: document.getElementById('supplierPhone').value,
+          address: document.getElementById('supplierAddress').value,
+          classification: document.getElementById('supplierClassification').value
+        });
+      }
+
+      function saveSupplierItem(e) {
+        e.preventDefault();
+        google.script.run.withSuccessHandler(r => {
+          alert(r.message);
+          if (r.success) {
+            closeModal();
+            loadStockSuppliers();
+          }
+        }).addSupplierItem({
+          item_id: document.getElementById('supplierItemId').value,
+          supplier_id: document.getElementById('supplierItemSupplier').value,
+          description: document.getElementById('supplierItemDesc').value,
+          unit: document.getElementById('supplierItemUnit').value,
+          unit_price: document.getElementById('supplierItemPrice').value,
+          min_stock_level: document.getElementById('supplierItemMin').value,
+          current_stock: document.getElementById('supplierItemCurrent').value
+        });
+      }
+
+      function saveUser(e) {
+        e.preventDefault();
+        google.script.run.withSuccessHandler(r => {
+          alert(r.message);
+          if (r.success) {
+            closeModal();
+            loadUsers();
+          }
+        }).addUser({
+          username: document.getElementById('userUsername').value,
+          email: document.getElementById('userEmail').value,
+          role: document.getElementById('userRole').value,
+          branch_access: document.getElementById('userBranch').value
+        });
+      }
+
+      function saveInventoryItem(e) {
+        e.preventDefault();
+        google.script.run.withSuccessHandler(r => {
+          alert(r.message);
+          if (r.success) {
+            closeModal();
+            loadInventory();
+          }
+        }).addInventoryItem({
+          item_id: document.getElementById('invItemId').value,
+          description: document.getElementById('invDesc').value,
+          unit: document.getElementById('invUnit').value,
+          total_running_stocks: document.getElementById('invStock').value,
+          supplier: document.getElementById('invSupplier').value,
+          classification: document.getElementById('invClassification').value
+        });
+      }
+
+      function editSupplier(id) {
+        const item = suppliersData.find(s => s.id === id);
+        if (!item) return;
+        
+        document.getElementById('modalTitle').textContent = 'Edit Supplier';
+        document.getElementById('modalContent').innerHTML = getSupplierFormHtml();
+        document.getElementById('supplierName').value = item.supplier_name;
+        document.getElementById('supplierContact').value = item.contact_person;
+        document.getElementById('supplierEmail').value = item.email;
+        document.getElementById('supplierPhone').value = item.phone;
+        document.getElementById('supplierAddress').value = item.address;
+        document.getElementById('supplierClassification').value = item.classification;
+        
+        document.querySelector('#modalContent form').onsubmit = function(e) {
+          e.preventDefault();
+          google.script.run.withSuccessHandler(r => {
+            alert(r.message);
+            if (r.success) {
+              closeModal();
+              loadManageSuppliers();
+            }
+          }).updateSupplier({
+            id: id,
+            supplier_name: document.getElementById('supplierName').value,
+            contact_person: document.getElementById('supplierContact').value,
+            email: document.getElementById('supplierEmail').value,
+            phone: document.getElementById('supplierPhone').value,
+            address: document.getElementById('supplierAddress').value,
+            classification: document.getElementById('supplierClassification').value,
+            status: item.status
+          });
+        };
+        
+        document.getElementById('modalOverlay').classList.add('active');
+      }
+
+      function editSupplierItem(id) {
+        const item = supplierItemsData.find(s => s.id === id);
+        if (!item) return;
+        
+        document.getElementById('modalTitle').textContent = 'Edit Stock Entry';
+        document.getElementById('modalContent').innerHTML = getSupplierItemFormHtml();
+        
+        let options = '<option value="">Select Supplier</option>';
+        (suppliersData || []).forEach(s => {
+          options += `<option value="${s.supplier_name}" ${s.supplier_name === item.supplier_id ? 'selected' : ''}>${s.supplier_name}</option>`;
+        });
+        document.getElementById('supplierItemSupplier').innerHTML = options;
+        
+        document.getElementById('supplierItemId').value = item.item_id;
+        document.getElementById('supplierItemDesc').value = item.description;
+        document.getElementById('supplierItemUnit').value = item.unit;
+        document.getElementById('supplierItemPrice').value = item.unit_price;
+        document.getElementById('supplierItemMin').value = item.min_stock_level;
+        document.getElementById('supplierItemCurrent').value = item.current_stock;
+        
+        document.querySelector('#modalContent form').onsubmit = function(e) {
+          e.preventDefault();
+          google.script.run.withSuccessHandler(r => {
+            alert(r.message);
+            if (r.success) {
+              closeModal();
+              loadStockSuppliers();
+            }
+          }).updateSupplierItem({
+            id: id,
+            supplier_id: document.getElementById('supplierItemSupplier').value,
+            description: document.getElementById('supplierItemDesc').value,
+            unit: document.getElementById('supplierItemUnit').value,
+            unit_price: document.getElementById('supplierItemPrice').value,
+            min_stock_level: document.getElementById('supplierItemMin').value,
+            current_stock: document.getElementById('supplierItemCurrent').value
+          });
+        };
+        
+        document.getElementById('modalOverlay').classList.add('active');
+      }
+
+      function editUser(id) {
+        const item = usersData.find(u => u.id === id);
+        if (!item) return;
+        
+        document.getElementById('modalTitle').textContent = 'Edit User';
+        document.getElementById('modalContent').innerHTML = getUserFormHtml();
+        
+        document.getElementById('userUsername').value = item.username;
+        document.getElementById('userEmail').value = item.email;
+        document.getElementById('userRole').value = item.role;
+        document.getElementById('userBranch').value = item.branch_access;
+        
+        document.querySelector('#modalContent form').onsubmit = function(e) {
+          e.preventDefault();
+          google.script.run.withSuccessHandler(r => {
+            alert(r.message);
+            if (r.success) {
+              closeModal();
+              loadUsers();
+            }
+          }).updateUser({
+            id: id,
+            username: document.getElementById('userUsername').value,
+            email: document.getElementById('userEmail').value,
+            role: document.getElementById('userRole').value,
+            branch_access: document.getElementById('userBranch').value,
+            status: item.status
+          });
+        };
+        
+        document.getElementById('modalOverlay').classList.add('active');
+      }
+
+      function editInventoryItem(id) {
+        const item = inventoryData.find(i => i.id === id);
+        if (!item) return;
+        
+        document.getElementById('modalTitle').textContent = 'Edit Inventory Item';
+        document.getElementById('modalContent').innerHTML = getInventoryFormHtml();
+        
+        document.getElementById('invItemId').value = item.item_id;
+        document.getElementById('invDesc').value = item.description;
+        document.getElementById('invUnit').value = item.unit;
+        document.getElementById('invStock').value = item.total_running_stocks;
+        document.getElementById('invSupplier').value = item.supplier;
+        document.getElementById('invClassification').value = item.classification;
+        
+        document.querySelector('#modalContent form').onsubmit = function(e) {
+          e.preventDefault();
+          google.script.run.withSuccessHandler(r => {
+            alert(r.message);
+            if (r.success) {
+              closeModal();
+              loadInventory();
+            }
+          }).updateInventoryItem({
+            id: id,
+            description: document.getElementById('invDesc').value,
+            unit: document.getElementById('invUnit').value,
+            total_running_stocks: document.getElementById('invStock').value,
+            supplier: document.getElementById('invSupplier').value,
+            classification: document.getElementById('invClassification').value
+          });
+        };
+        
+        document.getElementById('modalOverlay').classList.add('active');
+      }
+
+      function handleExcelUpload(input) {
+        alert('Excel upload feature requires additional implementation. Please add items manually or use Google Sheets import.');
+      }
+
+      // ===============================
+      // UTILITIES
+      // ===============================
+      function formatNumber(num) {
+        return parseFloat(num || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      // ===============================
+      // INITIALIZATION
+      // ===============================
+      google.charts.setOnLoadCallback(function() {
+        loadHomeData();
+        loadBranchesForFilter();
+        loadBranchesForBranchReport();
+      });
     </script>
   </body>
 </html>
