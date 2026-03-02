@@ -5,21 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>GMPC Requisitions Dashboard</title>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Icons"
+      rel="stylesheet"
+    />
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
       body {
-        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        font-family: "Segoe UI", Roboto, Arial, sans-serif;
         background: #f0f2f5;
         min-height: 100vh;
       }
-      
+
       /* Layout */
       .app-container {
         display: flex;
         min-height: 100vh;
       }
-      
+
       /* Sidebar */
       .sidebar {
         width: 260px;
@@ -29,64 +36,64 @@
         height: 100vh;
         overflow-y: auto;
         z-index: 100;
-        box-shadow: 2px 0 10px rgba(0,0,0,0.15);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
       }
-      
+
       .sidebar-header {
         padding: 20px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         text-align: center;
       }
-      
+
       .sidebar-header h2 {
         font-size: 18px;
         font-weight: 600;
         margin-bottom: 4px;
       }
-      
+
       .sidebar-header .subtitle {
         font-size: 11px;
         opacity: 0.7;
       }
-      
+
       .sidebar-nav {
         padding: 10px 0;
       }
-      
+
       .nav-item {
         display: flex;
         align-items: center;
         padding: 12px 20px;
-        color: rgba(255,255,255,0.8);
+        color: rgba(255, 255, 255, 0.8);
         text-decoration: none;
         cursor: pointer;
         transition: all 0.2s;
         border-left: 3px solid transparent;
       }
-      
+
       .nav-item:hover {
-        background: rgba(255,255,255,0.1);
+        background: rgba(255, 255, 255, 0.1);
         color: white;
       }
-      
+
       .nav-item.active {
-        background: rgba(255,255,255,0.15);
+        background: rgba(255, 255, 255, 0.15);
         color: white;
         border-left-color: #ffca28;
       }
-      
+
       .nav-item .material-icons {
         margin-right: 12px;
         font-size: 20px;
       }
-      
+
       /* Main Content */
       .main-content {
         flex: 1;
         margin-left: 260px;
         padding: 20px;
       }
-      
+
       /* Header */
       .page-header {
         display: flex;
@@ -94,19 +101,19 @@
         align-items: center;
         margin-bottom: 20px;
       }
-      
+
       .page-title {
         font-size: 24px;
         font-weight: 600;
         color: #1a237e;
       }
-      
+
       .header-actions {
         display: flex;
         gap: 10px;
         align-items: center;
       }
-      
+
       .auto-refresh-badge {
         background: #4caf50;
         color: white;
@@ -117,16 +124,16 @@
         align-items: center;
         gap: 4px;
       }
-      
+
       /* Cards */
       .card {
         background: white;
         border-radius: 12px;
         padding: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       }
-      
+
       .card-header {
         display: flex;
         justify-content: space-between;
@@ -135,13 +142,13 @@
         padding-bottom: 10px;
         border-bottom: 1px solid #eee;
       }
-      
+
       .card-title {
         font-size: 16px;
         font-weight: 600;
         color: #333;
       }
-      
+
       /* Stats Grid */
       .stats-grid {
         display: grid;
@@ -149,14 +156,14 @@
         gap: 15px;
         margin-bottom: 20px;
       }
-      
+
       .stat-card {
         background: white;
         border-radius: 12px;
         padding: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       }
-      
+
       .stat-card .stat-icon {
         width: 45px;
         height: 45px;
@@ -166,32 +173,32 @@
         justify-content: center;
         margin-bottom: 12px;
       }
-      
+
       .stat-card .stat-value {
         font-size: 28px;
         font-weight: 700;
         color: #333;
       }
-      
+
       .stat-card .stat-label {
         font-size: 13px;
         color: #666;
         margin-top: 4px;
       }
-      
+
       /* Tables */
       .data-table {
         width: 100%;
         border-collapse: collapse;
       }
-      
+
       .data-table th,
       .data-table td {
         padding: 12px;
         text-align: left;
         border-bottom: 1px solid #eee;
       }
-      
+
       .data-table th {
         background: #f8f9fa;
         font-weight: 600;
@@ -199,16 +206,16 @@
         position: sticky;
         top: 0;
       }
-      
+
       .data-table tr:hover {
         background: #f8f9fa;
       }
-      
+
       .table-scroll {
         max-height: 500px;
         overflow-y: auto;
       }
-      
+
       /* Buttons */
       .btn {
         padding: 8px 16px;
@@ -221,36 +228,64 @@
         gap: 6px;
         transition: all 0.2s;
       }
-      
-      .btn-primary { background: #1976d2; color: white; }
-      .btn-primary:hover { background: #1565c0; }
-      
-      .btn-success { background: #28a745; color: white; }
-      .btn-success:hover { background: #218838; }
-      
-      .btn-danger { background: #dc3545; color: white; }
-      .btn-danger:hover { background: #c82333; }
-      
-      .btn-warning { background: #ffc107; color: #333; }
-      .btn-warning:hover { background: #e0a800; }
-      
-      .btn-secondary { background: #6c757d; color: white; }
-      .btn-secondary:hover { background: #5a6268; }
-      
-      .btn-sm { padding: 4px 8px; font-size: 12px; }
-      
+
+      .btn-primary {
+        background: #1976d2;
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #1565c0;
+      }
+
+      .btn-success {
+        background: #28a745;
+        color: white;
+      }
+      .btn-success:hover {
+        background: #218838;
+      }
+
+      .btn-danger {
+        background: #dc3545;
+        color: white;
+      }
+      .btn-danger:hover {
+        background: #c82333;
+      }
+
+      .btn-warning {
+        background: #ffc107;
+        color: #333;
+      }
+      .btn-warning:hover {
+        background: #e0a800;
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+      .btn-secondary:hover {
+        background: #5a6268;
+      }
+
+      .btn-sm {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
       /* Forms */
       .form-group {
         margin-bottom: 15px;
       }
-      
+
       .form-group label {
         display: block;
         margin-bottom: 6px;
         font-weight: 500;
         color: #333;
       }
-      
+
       .form-control {
         width: 100%;
         padding: 10px 12px;
@@ -258,34 +293,34 @@
         border-radius: 6px;
         font-size: 14px;
       }
-      
+
       .form-control:focus {
         outline: none;
         border-color: #1976d2;
         box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
       }
-      
+
       .form-row {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;
       }
-      
+
       /* Modal */
       .modal-overlay {
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.5);
+        background: rgba(0, 0, 0, 0.5);
         z-index: 1000;
         align-items: center;
         justify-content: center;
       }
-      
+
       .modal-overlay.active {
         display: flex;
       }
-      
+
       .modal {
         background: white;
         border-radius: 12px;
@@ -295,7 +330,7 @@
         max-height: 80vh;
         overflow-y: auto;
       }
-      
+
       .modal-header {
         display: flex;
         justify-content: space-between;
@@ -304,12 +339,12 @@
         padding-bottom: 10px;
         border-bottom: 1px solid #eee;
       }
-      
+
       .modal-title {
         font-size: 18px;
         font-weight: 600;
       }
-      
+
       .modal-close {
         background: none;
         border: none;
@@ -317,7 +352,7 @@
         font-size: 24px;
         color: #666;
       }
-      
+
       /* Search & Filter */
       .search-filter-bar {
         display: flex;
@@ -325,20 +360,20 @@
         margin-bottom: 15px;
         flex-wrap: wrap;
       }
-      
+
       .search-box {
         flex: 1;
         min-width: 200px;
         position: relative;
       }
-      
+
       .search-box input {
         width: 100%;
         padding: 10px 12px 10px 36px;
         border: 1px solid #ddd;
         border-radius: 6px;
       }
-      
+
       .search-box .material-icons {
         position: absolute;
         left: 10px;
@@ -346,11 +381,11 @@
         transform: translateY(-50%);
         color: #666;
       }
-      
+
       select.form-control {
         min-width: 150px;
       }
-      
+
       /* Status Badges */
       .badge {
         padding: 4px 10px;
@@ -358,20 +393,62 @@
         font-size: 12px;
         font-weight: 500;
       }
-      
-      .badge-pending { background: #fff3e0; color: #e65100; }
-      .badge-approved { background: #e8f5e9; color: #2e7d32; }
-      .badge-rejected { background: #ffebee; color: #c62828; }
-      .badge-special { background: #f3e5f5; color: #6a1b9a; }
-      .badge-low { background: #ffebee; color: #d32f2f; }
-      
+
+      .badge-pending {
+        background: #fff3e0;
+        color: #e65100;
+      }
+      .badge-approved {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+      .badge-rejected {
+        background: #ffebee;
+        color: #c62828;
+      }
+      .badge-special {
+        background: #f3e5f5;
+        color: #6a1b9a;
+      }
+      .badge-low {
+        background: #ffebee;
+        color: #d32f2f;
+      }
+
+      /* Connection Status Badges */
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .status-ok {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+      .status-warning {
+        background: #fff3e0;
+        color: #e65100;
+      }
+      .status-error {
+        background: #ffebee;
+        color: #c62828;
+      }
+      .status-pending {
+        background: #e3f2fd;
+        color: #1976d2;
+      }
+
       /* Calendar */
       .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
         gap: 4px;
       }
-      
+
       .calendar-header {
         text-align: center;
         font-weight: 600;
@@ -379,7 +456,7 @@
         background: #f8f9fa;
         border-radius: 4px;
       }
-      
+
       .calendar-day {
         padding: 8px;
         text-align: center;
@@ -387,18 +464,24 @@
         background: #f8f9fa;
         cursor: pointer;
       }
-      
-      .calendar-day:hover { background: #e3f2fd; }
-      .calendar-day.has-event { background: #e8f5e9; }
-      .calendar-day.today { background: #bbdefb; }
-      
+
+      .calendar-day:hover {
+        background: #e3f2fd;
+      }
+      .calendar-day.has-event {
+        background: #e8f5e9;
+      }
+      .calendar-day.today {
+        background: #bbdefb;
+      }
+
       /* Tabs */
       .tabs {
         display: flex;
         border-bottom: 2px solid #eee;
         margin-bottom: 20px;
       }
-      
+
       .tab {
         padding: 12px 24px;
         cursor: pointer;
@@ -407,41 +490,51 @@
         color: #666;
         transition: all 0.2s;
       }
-      
-      .tab:hover { color: #1976d2; }
+
+      .tab:hover {
+        color: #1976d2;
+      }
       .tab.active {
         color: #1976d2;
         border-bottom-color: #1976d2;
       }
-      
+
       /* Page Sections */
       .page-section {
         display: none;
       }
-      
+
       .page-section.active {
         display: block;
       }
-      
+
       /* Action buttons in table */
       .action-buttons {
         display: flex;
         gap: 4px;
       }
-      
+
       /* Print styles */
       @media print {
-        .sidebar, .header-actions, .btn { display: none !important; }
-        .main-content { margin-left: 0 !important; }
-        .card { box-shadow: none !important; }
+        .sidebar,
+        .header-actions,
+        .btn {
+          display: none !important;
+        }
+        .main-content {
+          margin-left: 0 !important;
+        }
+        .card {
+          box-shadow: none !important;
+        }
       }
-      
+
       /* Loading */
       .loading {
         opacity: 0.6;
         pointer-events: none;
       }
-      
+
       /* File upload */
       .file-upload {
         border: 2px dashed #ddd;
@@ -450,31 +543,33 @@
         border-radius: 8px;
         cursor: pointer;
       }
-      
+
       .file-upload:hover {
         border-color: #1976d2;
         background: #f8f9fa;
       }
-      
+
       /* Dropdown */
       .dropdown {
         position: relative;
         display: inline-block;
       }
-      
+
       .dropdown-menu {
         display: none;
         position: absolute;
         background: white;
         min-width: 160px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         border-radius: 6px;
         z-index: 100;
         overflow: hidden;
       }
-      
-      .dropdown-menu.show { display: block; }
-      
+
+      .dropdown-menu.show {
+        display: block;
+      }
+
       .dropdown-item {
         padding: 10px 16px;
         cursor: pointer;
@@ -483,8 +578,10 @@
         width: 100%;
         text-align: left;
       }
-      
-      .dropdown-item:hover { background: #f8f9fa; }
+
+      .dropdown-item:hover {
+        background: #f8f9fa;
+      }
     </style>
   </head>
   <body>
@@ -515,7 +612,8 @@
             <span class="material-icons">local_shipping</span> Stock Suppliers
           </div>
           <div class="nav-item" data-page="manage-suppliers">
-            <span class="material-icons">supervised_user_circle</span> Manage Suppliers
+            <span class="material-icons">supervised_user_circle</span> Manage
+            Suppliers
           </div>
           <div class="nav-item" data-page="reports">
             <span class="material-icons">assessment</span> Reports
@@ -524,7 +622,8 @@
             <span class="material-icons">warning</span> Low Stocks Report
           </div>
           <div class="nav-item" data-page="branches-dashboard">
-            <span class="material-icons">calendar_month</span> Branches Dashboard
+            <span class="material-icons">calendar_month</span> Branches
+            Dashboard
           </div>
           <div class="nav-item" data-page="branch-report">
             <span class="material-icons">article</span> Branch Report
@@ -534,6 +633,9 @@
           </div>
           <div class="nav-item" data-page="manage-users">
             <span class="material-icons">people</span> Manage Users
+          </div>
+          <div class="nav-item" data-page="connection-status">
+            <span class="material-icons">wifi_tethering</span> Connection Status
           </div>
         </nav>
       </aside>
@@ -546,50 +648,56 @@
             <h1 class="page-title">Dashboard Overview</h1>
             <div class="header-actions">
               <span class="auto-refresh-badge">
-                <span class="material-icons" style="font-size:14px">sync</span>
+                <span class="material-icons" style="font-size: 14px">sync</span>
                 Auto-refresh: 10s
               </span>
             </div>
           </div>
-          
+
           <div class="stats-grid">
             <div class="stat-card">
-              <div class="stat-icon" style="background:#e3f2fd">
-                <span class="material-icons" style="color:#1976d2">business_center</span>
+              <div class="stat-icon" style="background: #e3f2fd">
+                <span class="material-icons" style="color: #1976d2"
+                  >business_center</span
+                >
               </div>
               <div class="stat-value" id="stat-office">0</div>
               <div class="stat-label">Pending Office Requests</div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon" style="background:#f3e5f5">
-                <span class="material-icons" style="color:#6a1b9a">star</span>
+              <div class="stat-icon" style="background: #f3e5f5">
+                <span class="material-icons" style="color: #6a1b9a">star</span>
               </div>
               <div class="stat-value" id="stat-special">0</div>
               <div class="stat-label">Pending Special Requests</div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon" style="background:#ffebee">
-                <span class="material-icons" style="color:#c62828">warning</span>
+              <div class="stat-icon" style="background: #ffebee">
+                <span class="material-icons" style="color: #c62828"
+                  >warning</span
+                >
               </div>
               <div class="stat-value" id="stat-lowstocks">0</div>
               <div class="stat-label">Low Stock Items</div>
             </div>
             <div class="stat-card">
-              <div class="stat-icon" style="background:#e8f5e9">
-                <span class="material-icons" style="color:#2e7d32">check_circle</span>
+              <div class="stat-icon" style="background: #e8f5e9">
+                <span class="material-icons" style="color: #2e7d32"
+                  >check_circle</span
+                >
               </div>
               <div class="stat-value" id="stat-approved">0</div>
               <div class="stat-label">Approved Requests</div>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Request Status Distribution</h3>
             </div>
             <div id="statusPie" style="height: 350px"></div>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Low Stock Items</h3>
@@ -624,17 +732,30 @@
               </button>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="search-filter-bar">
               <div class="search-box">
                 <span class="material-icons">search</span>
-                <input type="text" id="inventorySearch" placeholder="Search items..." oninput="filterInventory()">
+                <input
+                  type="text"
+                  id="inventorySearch"
+                  placeholder="Search items..."
+                  oninput="filterInventory()"
+                />
               </div>
-              <select class="form-control" id="inventorySupplierFilter" onchange="filterInventory()">
+              <select
+                class="form-control"
+                id="inventorySupplierFilter"
+                onchange="filterInventory()"
+              >
                 <option value="">All Suppliers</option>
               </select>
-              <select class="form-control" id="inventoryStatusFilter" onchange="filterInventory()">
+              <select
+                class="form-control"
+                id="inventoryStatusFilter"
+                onchange="filterInventory()"
+              >
                 <option value="">All Status</option>
                 <option value="Active">Active</option>
                 <option value="Low Stock">Low Stock</option>
@@ -666,7 +787,7 @@
           <div class="page-header">
             <h1 class="page-title">Office Requests</h1>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Pending Office Requests by Branch</h3>
@@ -691,17 +812,27 @@
           <div class="page-header">
             <h1 class="page-title">Special Requests</h1>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Pending Special Requests - Multi-Level Approval</h3>
+              <h3 class="card-title">
+                Pending Special Requests - Multi-Level Approval
+              </h3>
             </div>
             <div class="tabs">
-              <div class="tab active" onclick="switchSpecialTab('pending')">Pending</div>
-              <div class="tab" onclick="switchSpecialTab('purchasing')">Purchasing</div>
-              <div class="tab" onclick="switchSpecialTab('accounting')">Accounting</div>
+              <div class="tab active" onclick="switchSpecialTab('pending')">
+                Pending
+              </div>
+              <div class="tab" onclick="switchSpecialTab('purchasing')">
+                Purchasing
+              </div>
+              <div class="tab" onclick="switchSpecialTab('accounting')">
+                Accounting
+              </div>
               <div class="tab" onclick="switchSpecialTab('admin')">Admin</div>
-              <div class="tab" onclick="switchSpecialTab('approved')">Approved</div>
+              <div class="tab" onclick="switchSpecialTab('approved')">
+                Approved
+              </div>
             </div>
             <div class="table-scroll">
               <table class="data-table">
@@ -726,10 +857,12 @@
           <div class="page-header">
             <h1 class="page-title">Office Supplies</h1>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Office Supply Requests - Approval/Rejection</h3>
+              <h3 class="card-title">
+                Office Supply Requests - Approval/Rejection
+              </h3>
             </div>
             <div class="table-scroll">
               <table class="data-table">
@@ -755,16 +888,28 @@
           <div class="page-header">
             <h1 class="page-title">Stock Suppliers</h1>
             <div class="header-actions">
-              <button class="btn btn-primary" onclick="openModal('supplierItem')">
+              <button
+                class="btn btn-primary"
+                onclick="openModal('supplierItem')"
+              >
                 <span class="material-icons">add</span> Add Stock Entry
               </button>
-              <button class="btn btn-success" onclick="document.getElementById('excelUpload').click()">
+              <button
+                class="btn btn-success"
+                onclick="document.getElementById('excelUpload').click()"
+              >
                 <span class="material-icons">upload</span> Upload Excel
               </button>
-              <input type="file" id="excelUpload" accept=".xlsx,.xls" style="display:none" onchange="handleExcelUpload(this)">
+              <input
+                type="file"
+                id="excelUpload"
+                accept=".xlsx,.xls"
+                style="display: none"
+                onchange="handleExcelUpload(this)"
+              />
             </div>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Supplier Stock Entries</h3>
@@ -799,7 +944,7 @@
               </button>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="table-scroll">
               <table class="data-table">
@@ -834,7 +979,7 @@
               </button>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Report Filters</h3>
@@ -842,11 +987,11 @@
             <div class="form-row">
               <div class="form-group">
                 <label>Date From</label>
-                <input type="date" class="form-control" id="reportDateFrom">
+                <input type="date" class="form-control" id="reportDateFrom" />
               </div>
               <div class="form-group">
                 <label>Date To</label>
-                <input type="date" class="form-control" id="reportDateTo">
+                <input type="date" class="form-control" id="reportDateTo" />
               </div>
               <div class="form-group">
                 <label>Branch</label>
@@ -864,7 +1009,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Report Results</h3>
@@ -898,7 +1043,7 @@
               </button>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Items Below Minimum Stock Level</h3>
@@ -927,7 +1072,7 @@
           <div class="page-header">
             <h1 class="page-title">Branches Dashboard</h1>
           </div>
-          
+
           <div class="stats-grid">
             <div class="stat-card">
               <div class="stat-value" id="totalBranches">0</div>
@@ -938,7 +1083,7 @@
               <div class="stat-label">Total Requests</div>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Branch Overview</h3>
@@ -958,7 +1103,7 @@
               </table>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Calendar View</h3>
@@ -980,7 +1125,7 @@
               </button>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="form-row">
               <div class="form-group">
@@ -991,14 +1136,23 @@
               </div>
               <div class="form-group">
                 <label>Period</label>
-                <select class="form-control" id="branchReportPeriod" onchange="toggleMonthSelect()">
+                <select
+                  class="form-control"
+                  id="branchReportPeriod"
+                  onchange="toggleMonthSelect()"
+                >
                   <option value="yearly">Yearly</option>
                   <option value="monthly">Monthly</option>
                 </select>
               </div>
               <div class="form-group">
                 <label>Year</label>
-                <input type="number" class="form-control" id="branchReportYear" value="2026">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="branchReportYear"
+                  value="2026"
+                />
               </div>
               <div class="form-group">
                 <label>Month</label>
@@ -1020,7 +1174,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Branch Report Summary</h3>
@@ -1034,21 +1188,31 @@
           <div class="page-header">
             <h1 class="page-title">Add New Branch</h1>
           </div>
-          
+
           <div class="card">
             <form id="addBranchForm" onsubmit="saveBranch(event)">
               <div class="form-row">
                 <div class="form-group">
                   <label>Branch Name *</label>
-                  <input type="text" class="form-control" id="branchName" required>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="branchName"
+                    required
+                  />
                 </div>
                 <div class="form-group">
                   <label>Email *</label>
-                  <input type="email" class="form-control" id="branchEmail" required>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="branchEmail"
+                    required
+                  />
                 </div>
                 <div class="form-group">
                   <label>Location</label>
-                  <input type="text" class="form-control" id="branchLocation">
+                  <input type="text" class="form-control" id="branchLocation" />
                 </div>
                 <div class="form-group">
                   <label>Classification</label>
@@ -1076,7 +1240,7 @@
               </button>
             </div>
           </div>
-          
+
           <div class="card">
             <div class="table-scroll">
               <table class="data-table">
@@ -1095,8 +1259,8 @@
               </table>
             </div>
           </div>
-          
-          <div class="card" style="margin-top:20px">
+
+          <div class="card" style="margin-top: 20px">
             <div class="card-header">
               <h3 class="card-title">Password Reset Requests</h3>
             </div>
@@ -1116,11 +1280,39 @@
             </div>
           </div>
         </section>
+
+        <!-- CONNECTION STATUS PAGE -->
+        <section id="connection-status-page" class="page-section">
+          <div class="page-header">
+            <h1 class="page-title">Connection Status</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="testConnections()">
+                <span class="material-icons">sync</span> Test Connection
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Sheet Connection Status</h3>
+              <span
+                id="connectionStatusBadge"
+                class="status-badge status-pending"
+                >Click "Test Connection" to check</span
+              >
+            </div>
+            <div id="connectionResults"></div>
+          </div>
+        </section>
       </main>
     </div>
 
     <!-- MODALS -->
-    <div id="modalOverlay" class="modal-overlay" onclick="closeModalOverlay(event)">
+    <div
+      id="modalOverlay"
+      class="modal-overlay"
+      onclick="closeModalOverlay(event)"
+    >
       <div class="modal" onclick="event.stopPropagation()">
         <div class="modal-header">
           <h3 class="modal-title" id="modalTitle">Modal Title</h3>
@@ -1135,8 +1327,8 @@
       // CONFIG & STATE
       // ===============================
       google.charts.load("current", { packages: ["corechart"] });
-      
-      let currentPage = 'home';
+
+      let currentPage = "home";
       let inventoryData = [];
       let suppliersData = [];
       let supplierItemsData = [];
@@ -1144,16 +1336,21 @@
       let branchesData = [];
       let officeRequestsData = [];
       let specialRequestsData = [];
-      let specialTab = 'pending';
-      
+      let specialTab = "pending";
+
       let refreshInterval = null;
-      let autoRefreshPages = ['home', 'office-request', 'special-request', 'office-supplies'];
+      let autoRefreshPages = [
+        "home",
+        "office-request",
+        "special-request",
+        "office-supplies",
+      ];
 
       // ===============================
       // NAVIGATION
       // ===============================
-      document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function() {
+      document.querySelectorAll(".nav-item").forEach((item) => {
+        item.addEventListener("click", function () {
           const page = this.dataset.page;
           navigateTo(page);
         });
@@ -1161,40 +1358,70 @@
 
       function navigateTo(page) {
         // Update nav
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.querySelector(`[data-page="${page}"]`).classList.add('active');
-        
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((i) => i.classList.remove("active"));
+        document.querySelector(`[data-page="${page}"]`).classList.add("active");
+
         // Update page
-        document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
-        document.getElementById(`${page}-page`).classList.add('active');
-        
+        document
+          .querySelectorAll(".page-section")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById(`${page}-page`).classList.add("active");
+
         currentPage = page;
-        
+
         // Auto-refresh for certain pages
         if (autoRefreshPages.includes(page)) {
           startAutoRefresh();
         } else {
           stopAutoRefresh();
         }
-        
+
         // Load data for page
         loadPageData(page);
       }
 
       function loadPageData(page) {
-        switch(page) {
-          case 'home': loadHomeData(); break;
-          case 'inventory': loadInventory(); break;
-          case 'office-request': loadOfficeRequests(); break;
-          case 'special-request': loadSpecialRequests(); break;
-          case 'office-supplies': loadOfficeSupplies(); break;
-          case 'stock-suppliers': loadStockSuppliers(); break;
-          case 'manage-suppliers': loadManageSuppliers(); break;
-          case 'reports': loadBranchesForFilter(); break;
-          case 'low-stocks': loadLowStocks(); break;
-          case 'branches-dashboard': loadBranchesDashboard(); break;
-          case 'branch-report': loadBranchesForBranchReport(); break;
-          case 'manage-users': loadUsers(); break;
+        switch (page) {
+          case "home":
+            loadHomeData();
+            break;
+          case "inventory":
+            loadInventory();
+            break;
+          case "office-request":
+            loadOfficeRequests();
+            break;
+          case "special-request":
+            loadSpecialRequests();
+            break;
+          case "office-supplies":
+            loadOfficeSupplies();
+            break;
+          case "stock-suppliers":
+            loadStockSuppliers();
+            break;
+          case "manage-suppliers":
+            loadManageSuppliers();
+            break;
+          case "reports":
+            loadBranchesForFilter();
+            break;
+          case "low-stocks":
+            loadLowStocks();
+            break;
+          case "branches-dashboard":
+            loadBranchesDashboard();
+            break;
+          case "branch-report":
+            loadBranchesForBranchReport();
+            break;
+          case "manage-users":
+            loadUsers();
+            break;
+          case "connection-status":
+            break; // No auto-load needed
         }
       }
 
@@ -1221,30 +1448,38 @@
       // HOME
       // ===============================
       function loadHomeData() {
-        google.script.run.withSuccessHandler(renderDashboard).getDashboardData();
+        google.script.run
+          .withSuccessHandler(renderDashboard)
+          .getDashboardData();
       }
 
       function renderDashboard(d) {
         if (!d.success) return;
-        
-        document.getElementById('stat-office').textContent = d.pendingOffice.length;
-        document.getElementById('stat-special').textContent = d.pendingSpecial.length;
-        document.getElementById('stat-lowstocks').textContent = d.lowStockCount;
-        
+
+        document.getElementById("stat-office").textContent =
+          d.pendingOffice.length;
+        document.getElementById("stat-special").textContent =
+          d.pendingSpecial.length;
+        document.getElementById("stat-lowstocks").textContent = d.lowStockCount;
+
         let approved = 0;
-        Object.keys(d.statusCounts).forEach(k => {
-          if (k.toLowerCase().includes('approved')) approved += d.statusCounts[k];
+        Object.keys(d.statusCounts).forEach((k) => {
+          if (k.toLowerCase().includes("approved"))
+            approved += d.statusCounts[k];
         });
-        document.getElementById('stat-approved').textContent = approved;
-        
+        document.getElementById("stat-approved").textContent = approved;
+
         // Pie chart
         drawPie(d.statusCounts);
-        
+
         // Low stock items
-        const lowStockBody = document.getElementById('lowStockBody');
-        lowStockBody.innerHTML = '';
-        (d.addStocks || []).filter(s => s.totalRunningStocks <= 10).slice(0, 10).forEach(s => {
-          lowStockBody.innerHTML += `
+        const lowStockBody = document.getElementById("lowStockBody");
+        lowStockBody.innerHTML = "";
+        (d.addStocks || [])
+          .filter((s) => s.totalRunningStocks <= 10)
+          .slice(0, 10)
+          .forEach((s) => {
+            lowStockBody.innerHTML += `
             <tr>
               <td>${s.itemId}</td>
               <td>${s.description}</td>
@@ -1253,17 +1488,20 @@
               <td><span class="badge badge-low">Low Stock</span></td>
             </tr>
           `;
-        });
+          });
       }
 
       function drawPie(sc) {
         const rows = [["Status", "Count"]];
-        Object.keys(sc || {}).forEach(k => rows.push([k, sc[k]]));
+        Object.keys(sc || {}).forEach((k) => rows.push([k, sc[k]]));
         if (rows.length === 1) rows.push(["None", 0]);
-        new google.visualization.PieChart(document.getElementById('statusPie')).draw(
-          google.visualization.arrayToDataTable(rows),
-          { title: "Request Status Distribution", pieHole: 0.35, colors: ['#4caf50', '#ff9800', '#f44336', '#2196f3', '#9c27b0'] }
-        );
+        new google.visualization.PieChart(
+          document.getElementById("statusPie"),
+        ).draw(google.visualization.arrayToDataTable(rows), {
+          title: "Request Status Distribution",
+          pieHole: 0.35,
+          colors: ["#4caf50", "#ff9800", "#f44336", "#2196f3", "#9c27b0"],
+        });
       }
 
       // ===============================
@@ -1271,7 +1509,9 @@
       // ===============================
       function loadInventory() {
         google.script.run.withSuccessHandler(renderInventory).getInventory();
-        google.script.run.withSuccessHandler(populateSupplierFilter).getSuppliers();
+        google.script.run
+          .withSuccessHandler(populateSupplierFilter)
+          .getSuppliers();
       }
 
       function renderInventory(d) {
@@ -1281,27 +1521,37 @@
       }
 
       function filterInventory() {
-        const search = document.getElementById('inventorySearch').value.toLowerCase();
-        const supplier = document.getElementById('inventorySupplierFilter').value;
-        const status = document.getElementById('inventoryStatusFilter').value;
-        
-        const filtered = inventoryData.filter(item => {
-          const matchSearch = !search || 
-            item.description.toLowerCase().includes(search) || 
+        const search = document
+          .getElementById("inventorySearch")
+          .value.toLowerCase();
+        const supplier = document.getElementById(
+          "inventorySupplierFilter",
+        ).value;
+        const status = document.getElementById("inventoryStatusFilter").value;
+
+        const filtered = inventoryData.filter((item) => {
+          const matchSearch =
+            !search ||
+            item.description.toLowerCase().includes(search) ||
             item.item_id.toLowerCase().includes(search);
           const matchSupplier = !supplier || item.supplier === supplier;
-          const matchStatus = !status || 
-            (status === 'Low Stock' && item.total_running_stocks <= 10) ||
-            (status === 'Out of Stock' && item.total_running_stocks === 0) ||
-            (status === 'Active' && item.total_running_stocks > 10);
+          const matchStatus =
+            !status ||
+            (status === "Low Stock" && item.total_running_stocks <= 10) ||
+            (status === "Out of Stock" && item.total_running_stocks === 0) ||
+            (status === "Active" && item.total_running_stocks > 10);
           return matchSearch && matchSupplier && matchStatus;
         });
-        
-        const tbody = document.getElementById('inventoryBody');
-        tbody.innerHTML = '';
-        filtered.forEach(item => {
-          const stockStatus = item.total_running_stocks <= 10 ? 
-            (item.total_running_stocks === 0 ? 'Out of Stock' : 'Low Stock') : 'Active';
+
+        const tbody = document.getElementById("inventoryBody");
+        tbody.innerHTML = "";
+        filtered.forEach((item) => {
+          const stockStatus =
+            item.total_running_stocks <= 10
+              ? item.total_running_stocks === 0
+                ? "Out of Stock"
+                : "Low Stock"
+              : "Active";
           tbody.innerHTML += `
             <tr>
               <td>${item.item_id}</td>
@@ -1310,7 +1560,7 @@
               <td>${item.supplier}</td>
               <td>${item.classification}</td>
               <td>${item.total_running_stocks}</td>
-              <td><span class="badge badge-${stockStatus === 'Active' ? 'approved' : 'low'}">${stockStatus}</span></td>
+              <td><span class="badge badge-${stockStatus === "Active" ? "approved" : "low"}">${stockStatus}</span></td>
               <td>
                 <button class="btn btn-sm btn-warning" onclick="editInventoryItem(${item.id})">Edit</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteInventoryItem(${item.id})">Delete</button>
@@ -1322,9 +1572,9 @@
 
       function populateSupplierFilter(d) {
         if (!d.success) return;
-        const select = document.getElementById('inventorySupplierFilter');
+        const select = document.getElementById("inventorySupplierFilter");
         select.innerHTML = '<option value="">All Suppliers</option>';
-        (d.data || []).forEach(s => {
+        (d.data || []).forEach((s) => {
           select.innerHTML += `<option value="${s.supplier_name}">${s.supplier_name}</option>`;
         });
       }
@@ -1333,13 +1583,15 @@
       // OFFICE REQUEST
       // ===============================
       function loadOfficeRequests() {
-        google.script.run.withSuccessHandler(renderOfficeRequests).getPendingGroupedByBranch();
+        google.script.run
+          .withSuccessHandler(renderOfficeRequests)
+          .getPendingGroupedByBranch();
       }
 
       function renderOfficeRequests(d) {
         if (!d.success) return;
-        const tbody = document.getElementById('officeRequestBody');
-        tbody.innerHTML = '';
+        const tbody = document.getElementById("officeRequestBody");
+        tbody.innerHTML = "";
         (d.office || []).forEach((g, idx) => {
           tbody.innerHTML += `
             <tr>
@@ -1357,12 +1609,16 @@
       // SPECIAL REQUEST
       // ===============================
       function loadSpecialRequests() {
-        google.script.run.withSuccessHandler(renderSpecialRequests).getSpecialRequests();
+        google.script.run
+          .withSuccessHandler(renderSpecialRequests)
+          .getSpecialRequests();
       }
 
       function switchSpecialTab(tab) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        event.target.classList.add('active');
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        event.target.classList.add("active");
         specialTab = tab;
         renderSpecialRequests(specialRequestsData);
       }
@@ -1370,27 +1626,37 @@
       function renderSpecialRequests(d) {
         specialRequestsData = d;
         if (!d.success) return;
-        
-        const tbody = document.getElementById('specialRequestBody');
-        tbody.innerHTML = '';
-        
-        const filtered = (d.data || []).filter(item => {
-          const status = (item.status || '').toLowerCase();
-          if (specialTab === 'pending') return status === 'pending';
-          if (specialTab === 'purchasing') return status === 'approved';
-          if (specialTab === 'accounting') return status === 'accounting dept';
-          if (specialTab === 'admin') return status === 'approved by accounting';
-          if (specialTab === 'approved') return status === 'to purchased' || status === 'petty cash by branch';
+
+        const tbody = document.getElementById("specialRequestBody");
+        tbody.innerHTML = "";
+
+        const filtered = (d.data || []).filter((item) => {
+          const status = (item.status || "").toLowerCase();
+          if (specialTab === "pending") return status === "pending";
+          if (specialTab === "purchasing") return status === "approved";
+          if (specialTab === "accounting") return status === "accounting dept";
+          if (specialTab === "admin")
+            return status === "approved by accounting";
+          if (specialTab === "approved")
+            return (
+              status === "to purchased" || status === "petty cash by branch"
+            );
           return true;
         });
-        
-        filtered.forEach(item => {
-          let currentStage = 'Pending';
-          if (item.status === 'Approved') currentStage = 'Purchasing';
-          else if (item.status === 'Accounting Dept') currentStage = 'Accounting';
-          else if (item.status === 'Approved by Accounting') currentStage = 'Admin';
-          else if (item.status === 'To Purchased' || item.status === 'Petty Cash by Branch') currentStage = 'Completed';
-          
+
+        filtered.forEach((item) => {
+          let currentStage = "Pending";
+          if (item.status === "Approved") currentStage = "Purchasing";
+          else if (item.status === "Accounting Dept")
+            currentStage = "Accounting";
+          else if (item.status === "Approved by Accounting")
+            currentStage = "Admin";
+          else if (
+            item.status === "To Purchased" ||
+            item.status === "Petty Cash by Branch"
+          )
+            currentStage = "Completed";
+
           tbody.innerHTML += `
             <tr>
               <td>${item.branch}</td>
@@ -1411,16 +1677,22 @@
       // OFFICE SUPPLIES
       // ===============================
       function loadOfficeSupplies() {
-        google.script.run.withSuccessHandler(renderOfficeSupplies).getOfficeRequests();
+        google.script.run
+          .withSuccessHandler(renderOfficeSupplies)
+          .getOfficeRequests();
       }
 
       function renderOfficeSupplies(d) {
         if (!d.success) return;
-        const tbody = document.getElementById('officeSuppliesBody');
-        tbody.innerHTML = '';
-        (d.data || []).forEach(item => {
-          const statusClass = item.status === 'Pending' ? 'pending' : 
-                              item.status === 'Approved' ? 'approved' : 'rejected';
+        const tbody = document.getElementById("officeSuppliesBody");
+        tbody.innerHTML = "";
+        (d.data || []).forEach((item) => {
+          const statusClass =
+            item.status === "Pending"
+              ? "pending"
+              : item.status === "Approved"
+                ? "approved"
+                : "rejected";
           tbody.innerHTML += `
             <tr>
               <td>${item.branch}</td>
@@ -1442,16 +1714,20 @@
       // STOCK SUPPLIERS
       // ===============================
       function loadStockSuppliers() {
-        google.script.run.withSuccessHandler(renderStockSuppliers).getSupplierItems();
-        google.script.run.withSuccessHandler(populateSupplierSelect).getSuppliers();
+        google.script.run
+          .withSuccessHandler(renderStockSuppliers)
+          .getSupplierItems();
+        google.script.run
+          .withSuccessHandler(populateSupplierSelect)
+          .getSuppliers();
       }
 
       function renderStockSuppliers(d) {
         if (!d.success) return;
         supplierItemsData = d.data;
-        const tbody = document.getElementById('stockSuppliersBody');
-        tbody.innerHTML = '';
-        (d.data || []).forEach(item => {
+        const tbody = document.getElementById("stockSuppliersBody");
+        tbody.innerHTML = "";
+        (d.data || []).forEach((item) => {
           tbody.innerHTML += `
             <tr>
               <td>${item.item_id}</td>
@@ -1479,14 +1755,16 @@
       // MANAGE SUPPLIERS
       // ===============================
       function loadManageSuppliers() {
-        google.script.run.withSuccessHandler(renderManageSuppliers).getSuppliers();
+        google.script.run
+          .withSuccessHandler(renderManageSuppliers)
+          .getSuppliers();
       }
 
       function renderManageSuppliers(d) {
         if (!d.success) return;
-        const tbody = document.getElementById('manageSuppliersBody');
-        tbody.innerHTML = '';
-        (d.data || []).forEach(item => {
+        const tbody = document.getElementById("manageSuppliersBody");
+        tbody.innerHTML = "";
+        (d.data || []).forEach((item) => {
           tbody.innerHTML += `
             <tr>
               <td>${item.supplier_id}</td>
@@ -1495,7 +1773,7 @@
               <td>${item.email}</td>
               <td>${item.phone}</td>
               <td>${item.classification}</td>
-              <td><span class="badge badge-${item.status === 'Active' ? 'approved' : 'rejected'}">${item.status}</span></td>
+              <td><span class="badge badge-${item.status === "Active" ? "approved" : "rejected"}">${item.status}</span></td>
               <td>
                 <button class="btn btn-sm btn-warning" onclick="editSupplier(${item.id})">Edit</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteSupplier(${item.id})">Delete</button>
@@ -1509,32 +1787,36 @@
       // REPORTS
       // ===============================
       function loadBranchesForFilter() {
-        google.script.run.withSuccessHandler(d => {
-          if (!d.success) return;
-          const select = document.getElementById('reportBranch');
-          select.innerHTML = '<option value="">All Branches</option>';
-          (d.data || []).forEach(b => {
-            select.innerHTML += `<option value="${b.branch_name}">${b.branch_name}</option>`;
-          });
-        }).getBranches();
+        google.script.run
+          .withSuccessHandler((d) => {
+            if (!d.success) return;
+            const select = document.getElementById("reportBranch");
+            select.innerHTML = '<option value="">All Branches</option>';
+            (d.data || []).forEach((b) => {
+              select.innerHTML += `<option value="${b.branch_name}">${b.branch_name}</option>`;
+            });
+          })
+          .getBranches();
       }
 
       function generateReport() {
         const data = {
-          dateFrom: document.getElementById('reportDateFrom').value,
-          dateTo: document.getElementById('reportDateTo').value,
-          branch: document.getElementById('reportBranch').value,
-          requestType: document.getElementById('reportType').value
+          dateFrom: document.getElementById("reportDateFrom").value,
+          dateTo: document.getElementById("reportDateTo").value,
+          branch: document.getElementById("reportBranch").value,
+          requestType: document.getElementById("reportType").value,
         };
-        
-        google.script.run.withSuccessHandler(renderReportResults).generateReport(data);
+
+        google.script.run
+          .withSuccessHandler(renderReportResults)
+          .generateReport(data);
       }
 
       function renderReportResults(d) {
         if (!d.success) return;
-        const tbody = document.getElementById('reportResultsBody');
-        tbody.innerHTML = '';
-        (d.data || []).forEach(item => {
+        const tbody = document.getElementById("reportResultsBody");
+        tbody.innerHTML = "";
+        (d.data || []).forEach((item) => {
           tbody.innerHTML += `
             <tr>
               <td>${item.date}</td>
@@ -1543,7 +1825,7 @@
               <td>${item.description}</td>
               <td>${item.qty}</td>
               <td>${formatNumber(item.amount)}</td>
-              <td><span class="badge badge-${item.status.toLowerCase().includes('approved') ? 'approved' : 'pending'}">${item.status}</span></td>
+              <td><span class="badge badge-${item.status.toLowerCase().includes("approved") ? "approved" : "pending"}">${item.status}</span></td>
             </tr>
           `;
         });
@@ -1553,14 +1835,16 @@
       // LOW STOCKS
       // ===============================
       function loadLowStocks() {
-        google.script.run.withSuccessHandler(renderLowStocks).getLowStocksReport();
+        google.script.run
+          .withSuccessHandler(renderLowStocks)
+          .getLowStocksReport();
       }
 
       function renderLowStocks(d) {
         if (!d.success) return;
-        const tbody = document.getElementById('lowStocksBody');
-        tbody.innerHTML = '';
-        (d.data || []).forEach(item => {
+        const tbody = document.getElementById("lowStocksBody");
+        tbody.innerHTML = "";
+        (d.data || []).forEach((item) => {
           tbody.innerHTML += `
             <tr>
               <td>${item.item_id}</td>
@@ -1569,7 +1853,7 @@
               <td>${item.total_running_stocks}</td>
               <td>10</td>
               <td>${item.supplier}</td>
-              <td><span class="badge badge-low">${item.total_running_stocks === 0 ? 'Out of Stock' : 'Low Stock'}</span></td>
+              <td><span class="badge badge-low">${item.total_running_stocks === 0 ? "Out of Stock" : "Low Stock"}</span></td>
             </tr>
           `;
         });
@@ -1579,20 +1863,28 @@
       // BRANCHES DASHBOARD
       // ===============================
       function loadBranchesDashboard() {
-        google.script.run.withSuccessHandler(renderBranchesDashboard).getBranchDashboard();
-        google.script.run.withSuccessHandler(renderBranchesOverview).getBranches();
+        google.script.run
+          .withSuccessHandler(renderBranchesDashboard)
+          .getBranchDashboard();
+        google.script.run
+          .withSuccessHandler(renderBranchesOverview)
+          .getBranches();
       }
 
       function renderBranchesDashboard(d) {
         if (!d.success) return;
-        document.getElementById('totalBranches').textContent = d.data.length;
-        
+        document.getElementById("totalBranches").textContent = d.data.length;
+
         let total = 0;
-        d.data.forEach(b => {
-          total += b.officePending + b.officeApproved + b.specialPending + b.specialApproved;
+        d.data.forEach((b) => {
+          total +=
+            b.officePending +
+            b.officeApproved +
+            b.specialPending +
+            b.specialApproved;
         });
-        document.getElementById('totalBranchRequests').textContent = total;
-        
+        document.getElementById("totalBranchRequests").textContent = total;
+
         renderCalendar(d.data);
       }
 
@@ -1602,11 +1894,25 @@
       }
 
       function renderCalendar(branchData) {
-        const calendar = document.getElementById('calendarView');
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        
-        let html = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;">';
-        
+        const calendar = document.getElementById("calendarView");
+        const months = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+
+        let html =
+          '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;">';
+
         months.forEach((month, idx) => {
           html += `
             <div class="card" style="margin:0">
@@ -1620,31 +1926,35 @@
                 <div class="calendar-header">F</div>
                 <div class="calendar-header">S</div>
           `;
-          
+
           const daysInMonth = new Date(2026, idx + 1, 0).getDate();
           const firstDay = new Date(2026, idx, 1).getDay();
-          
+
           for (let i = 0; i < firstDay; i++) {
-            html += '<div></div>';
+            html += "<div></div>";
           }
-          
+
           for (let day = 1; day <= daysInMonth; day++) {
             let hasEvent = false;
-            branchData.forEach(b => {
-              b.calendar.forEach(c => {
-                if (c.date && new Date(c.date).getMonth() === idx && new Date(c.date).getDate() === day) {
+            branchData.forEach((b) => {
+              b.calendar.forEach((c) => {
+                if (
+                  c.date &&
+                  new Date(c.date).getMonth() === idx &&
+                  new Date(c.date).getDate() === day
+                ) {
                   hasEvent = true;
                 }
               });
             });
-            
-            html += `<div class="calendar-day ${hasEvent ? 'has-event' : ''}">${day}</div>`;
+
+            html += `<div class="calendar-day ${hasEvent ? "has-event" : ""}">${day}</div>`;
           }
-          
-          html += '</div></div>';
+
+          html += "</div></div>";
         });
-        
-        html += '</div>';
+
+        html += "</div>";
         calendar.innerHTML = html;
       }
 
@@ -1652,37 +1962,42 @@
       // BRANCH REPORT
       // ===============================
       function loadBranchesForBranchReport() {
-        google.script.run.withSuccessHandler(d => {
-          if (!d.success) return;
-          const select = document.getElementById('branchReportBranch');
-          select.innerHTML = '<option value="All">All Branches</option>';
-          (d.data || []).forEach(b => {
-            select.innerHTML += `<option value="${b.branch_name}">${b.branch_name}</option>`;
-          });
-        }).getBranches();
+        google.script.run
+          .withSuccessHandler((d) => {
+            if (!d.success) return;
+            const select = document.getElementById("branchReportBranch");
+            select.innerHTML = '<option value="All">All Branches</option>';
+            (d.data || []).forEach((b) => {
+              select.innerHTML += `<option value="${b.branch_name}">${b.branch_name}</option>`;
+            });
+          })
+          .getBranches();
       }
 
       function toggleMonthSelect() {
-        const period = document.getElementById('branchReportPeriod').value;
-        document.getElementById('branchReportMonth').disabled = period === 'yearly';
+        const period = document.getElementById("branchReportPeriod").value;
+        document.getElementById("branchReportMonth").disabled =
+          period === "yearly";
       }
 
       function generateBranchReport() {
         const data = {
-          branch: document.getElementById('branchReportBranch').value,
-          period: document.getElementById('branchReportPeriod').value,
-          year: document.getElementById('branchReportYear').value,
-          month: document.getElementById('branchReportMonth').value
+          branch: document.getElementById("branchReportBranch").value,
+          period: document.getElementById("branchReportPeriod").value,
+          year: document.getElementById("branchReportYear").value,
+          month: document.getElementById("branchReportMonth").value,
         };
-        
-        google.script.run.withSuccessHandler(renderBranchReport).getBranchReport(data);
+
+        google.script.run
+          .withSuccessHandler(renderBranchReport)
+          .getBranchReport(data);
       }
 
       function renderBranchReport(d) {
         if (!d.success) return;
-        const summary = document.getElementById('branchReportSummary');
+        const summary = document.getElementById("branchReportSummary");
         const data = d.data;
-        
+
         summary.innerHTML = `
           <div class="stats-grid">
             <div class="stat-card">
@@ -1718,16 +2033,20 @@
       // ===============================
       function loadUsers() {
         google.script.run.withSuccessHandler(renderUsers).getUsers();
-        google.script.run.withSuccessHandler(renderPasswordReset).getPasswordResetRequests();
-        google.script.run.withSuccessHandler(populateBranchesForUsers).getBranches();
+        google.script.run
+          .withSuccessHandler(renderPasswordReset)
+          .getPasswordResetRequests();
+        google.script.run
+          .withSuccessHandler(populateBranchesForUsers)
+          .getBranches();
       }
 
       function renderUsers(d) {
         if (!d.success) return;
         usersData = d.data;
-        const tbody = document.getElementById('usersBody');
-        tbody.innerHTML = '';
-        (d.data || []).forEach(item => {
+        const tbody = document.getElementById("usersBody");
+        tbody.innerHTML = "";
+        (d.data || []).forEach((item) => {
           tbody.innerHTML += `
             <tr>
               <td>${item.user_id}</td>
@@ -1735,7 +2054,7 @@
               <td>${item.email}</td>
               <td>${item.role}</td>
               <td>${item.branch_access}</td>
-              <td><span class="badge badge-${item.status === 'Active' ? 'approved' : 'rejected'}">${item.status}</span></td>
+              <td><span class="badge badge-${item.status === "Active" ? "approved" : "rejected"}">${item.status}</span></td>
               <td>
                 <button class="btn btn-sm btn-warning" onclick="editUser(${item.id})">Edit</button>
                 <button class="btn btn-sm btn-secondary" onclick="resetUserPassword(${item.id})">Reset PW</button>
@@ -1748,20 +2067,24 @@
 
       function renderPasswordReset(d) {
         if (!d.success) return;
-        const tbody = document.getElementById('passwordResetBody');
-        tbody.innerHTML = '';
-        (d.data || []).forEach(item => {
+        const tbody = document.getElementById("passwordResetBody");
+        tbody.innerHTML = "";
+        (d.data || []).forEach((item) => {
           tbody.innerHTML += `
             <tr>
               <td>${item.request_id}</td>
               <td>${item.user_id}</td>
               <td>${item.request_date}</td>
-              <td><span class="badge badge-${item.status === 'Pending' ? 'pending' : 'approved'}">${item.status}</span></td>
+              <td><span class="badge badge-${item.status === "Pending" ? "pending" : "approved"}">${item.status}</span></td>
               <td>
-                ${item.status === 'Pending' ? `
+                ${
+                  item.status === "Pending"
+                    ? `
                   <button class="btn btn-sm btn-success" onclick="approvePasswordReset(${item.id}, '${item.user_id}')">Approve</button>
                   <button class="btn btn-sm btn-danger" onclick="rejectPasswordReset(${item.id})">Reject</button>
-                ` : ''}
+                `
+                    : ""
+                }
               </td>
             </tr>
           `;
@@ -1773,147 +2096,248 @@
       }
 
       // ===============================
+      // CONNECTION TEST
+      // ===============================
+      function testConnections() {
+        const badge = document.getElementById("connectionStatusBadge");
+        const resultsDiv = document.getElementById("connectionResults");
+        badge.className = "status-badge status-pending";
+        badge.textContent = "Testing...";
+        resultsDiv.innerHTML = "<p>Testing connection...</p>";
+
+        google.script.run
+          .withSuccessHandler(function (d) {
+            console.log("Connection test result:", d);
+            
+            // Always show results, even if some sheets have issues
+            let html =
+              '<table class="data-table"><thead><tr><th>Sheet Name</th><th>Status</th><th>Current Headers</th><th>Missing Headers</th></tr></thead><tbody>';
+
+            let allOK = true;
+            
+            // Handle case where d.sheets might not exist
+            const sheets = d.sheets || {};
+            Object.keys(sheets).forEach((sheetName) => {
+              const sheet = sheets[sheetName];
+              const statusClass =
+                sheet.status === "OK"
+                  ? "status-ok"
+                  : sheet.status === "NOT FOUND"
+                    ? "status-error"
+                    : "status-warning";
+              const statusIcon =
+                sheet.status === "OK"
+                  ? "check_circle"
+                  : sheet.status === "NOT FOUND"
+                    ? "error"
+                    : "warning";
+
+              if (sheet.status !== "OK") allOK = false;
+
+              html += `
+                <tr>
+                  <td><strong>${sheetName}</strong></td>
+                  <td><span class="status-badge ${statusClass}"><span class="material-icons" style="font-size:14px">${statusIcon}</span> ${sheet.status}</span></td>
+                  <td>${sheet.headers && sheet.headers.length > 0 ? sheet.headers.join(", ") : "<em>No headers</em>"}</td>
+                  <td>${sheet.missingHeaders && sheet.missingHeaders.length > 0 ? '<span style="color:orange">' + sheet.missingHeaders.join(", ") + "</span>" : '<span style="color:green">None</span>'}</td>
+                </tr>
+              `;
+            });
+
+            html += "</tbody></table>";
+
+            if (allOK) {
+              badge.className = "status-badge status-ok";
+              badge.textContent = "All Connected";
+            } else {
+              badge.className = "status-badge status-error";
+              badge.textContent = "Issues Found";
+              // Show detailed error message
+              html = '<div style="background:#ffebee; border:1px solid #ef5350; padding:15px; border-radius:8px; margin-bottom:15px;">' +
+                '<strong style="color:#c62828">Missing Headers / Sheets:</strong><br/>' +
+                '<span style="color:#d32f2f">' + (d.error || "Some sheets need attention").replace(/ \| /g, "<br/>") + '</span>' +
+                '</div>' + html;
+            }
+
+            resultsDiv.innerHTML = html;
+          })
+          .withFailureHandler(function (err) {
+            badge.className = "status-badge status-error";
+            badge.textContent = "Failed";
+            resultsDiv.innerHTML =
+              '<p style="color:red">Error: ' + err.message + "</p>";
+          })
+          .testSheetConnections();
+      }
+
+      // ===============================
       // ACTIONS
       // ===============================
       function saveBranch(e) {
         e.preventDefault();
         const data = {
-          branch_name: document.getElementById('branchName').value,
-          email: document.getElementById('branchEmail').value,
-          location: document.getElementById('branchLocation').value,
-          classification: document.getElementById('branchClassification').value
+          branch_name: document.getElementById("branchName").value,
+          email: document.getElementById("branchEmail").value,
+          location: document.getElementById("branchLocation").value,
+          classification: document.getElementById("branchClassification").value,
         };
-        
-        google.script.run.withSuccessHandler(r => {
-          alert(r.message);
-          if (r.success) {
-            document.getElementById('addBranchForm').reset();
-            loadBranchesForFilter();
-          }
-        }).addBranch(data);
+
+        google.script.run
+          .withSuccessHandler((r) => {
+            alert(r.message);
+            if (r.success) {
+              document.getElementById("addBranchForm").reset();
+              loadBranchesForFilter();
+            }
+          })
+          .addBranch(data);
       }
 
       function advanceSpecialRequest(id, currentStatus) {
-        let newStatus = 'Approved';
-        if (currentStatus === 'Approved') newStatus = 'Accounting Dept';
-        else if (currentStatus === 'Accounting Dept') newStatus = 'Approved by Accounting';
-        else if (currentStatus === 'Approved by Accounting') newStatus = 'To Purchased';
-        
-        google.script.run.withSuccessHandler(() => {
-          loadSpecialRequests();
-        }).updateSpecialRequest({ id: id, status: newStatus });
+        let newStatus = "Approved";
+        if (currentStatus === "Approved") newStatus = "Accounting Dept";
+        else if (currentStatus === "Accounting Dept")
+          newStatus = "Approved by Accounting";
+        else if (currentStatus === "Approved by Accounting")
+          newStatus = "To Purchased";
+
+        google.script.run
+          .withSuccessHandler(() => {
+            loadSpecialRequests();
+          })
+          .updateSpecialRequest({ id: id, status: newStatus });
       }
 
       function rejectSpecialRequest(id) {
-        if (!confirm('Reject this request?')) return;
-        google.script.run.withSuccessHandler(() => {
-          loadSpecialRequests();
-        }).updateSpecialRequest({ id: id, status: 'Cancel' });
+        if (!confirm("Reject this request?")) return;
+        google.script.run
+          .withSuccessHandler(() => {
+            loadSpecialRequests();
+          })
+          .updateSpecialRequest({ id: id, status: "Cancel" });
       }
 
       function approveOfficeRequest(id) {
-        google.script.run.withSuccessHandler(() => {
-          loadOfficeSupplies();
-        }).updateOfficeRequest({ id: id, status: 'Approved' });
+        google.script.run
+          .withSuccessHandler(() => {
+            loadOfficeSupplies();
+          })
+          .updateOfficeRequest({ id: id, status: "Approved" });
       }
 
       function rejectOfficeRequest(id) {
-        if (!confirm('Reject this request?')) return;
-        google.script.run.withSuccessHandler(() => {
-          loadOfficeSupplies();
-        }).updateOfficeRequest({ id: id, status: 'Cancel' });
+        if (!confirm("Reject this request?")) return;
+        google.script.run
+          .withSuccessHandler(() => {
+            loadOfficeSupplies();
+          })
+          .updateOfficeRequest({ id: id, status: "Cancel" });
       }
 
       function resetUserPassword(id) {
-        if (!confirm('Reset password to default?')) return;
-        google.script.run.withSuccessHandler(r => {
-          alert(r.message);
-          loadUsers();
-        }).resetPassword(id);
+        if (!confirm("Reset password to default?")) return;
+        google.script.run
+          .withSuccessHandler((r) => {
+            alert(r.message);
+            loadUsers();
+          })
+          .resetPassword(id);
       }
 
       function approvePasswordReset(id, userId) {
-        google.script.run.withSuccessHandler(r => {
-          alert(r.message);
-          loadUsers();
-        }).handlePasswordReset({ id: id, user_id: userId, status: 'Approved' });
+        google.script.run
+          .withSuccessHandler((r) => {
+            alert(r.message);
+            loadUsers();
+          })
+          .handlePasswordReset({ id: id, user_id: userId, status: "Approved" });
       }
 
       function rejectPasswordReset(id) {
-        google.script.run.withSuccessHandler(r => {
-          alert(r.message);
-          loadUsers();
-        }).handlePasswordReset({ id: id, status: 'Rejected' });
+        google.script.run
+          .withSuccessHandler((r) => {
+            alert(r.message);
+            loadUsers();
+          })
+          .handlePasswordReset({ id: id, status: "Rejected" });
       }
 
       function deleteSupplier(id) {
-        if (!confirm('Delete this supplier?')) return;
-        google.script.run.withSuccessHandler(r => {
-          alert(r.message);
-          loadManageSuppliers();
-        }).deleteSupplier(id);
+        if (!confirm("Delete this supplier?")) return;
+        google.script.run
+          .withSuccessHandler((r) => {
+            alert(r.message);
+            loadManageSuppliers();
+          })
+          .deleteSupplier(id);
       }
 
       function deleteSupplierItem(id) {
-        if (!confirm('Delete this item?')) return;
-        google.script.run.withSuccessHandler(r => {
-          alert(r.message);
-          loadStockSuppliers();
-        }).deleteSupplierItem(id);
+        if (!confirm("Delete this item?")) return;
+        google.script.run
+          .withSuccessHandler((r) => {
+            alert(r.message);
+            loadStockSuppliers();
+          })
+          .deleteSupplierItem(id);
       }
 
       function deleteInventoryItem(id) {
-        if (!confirm('Delete this item?')) return;
-        google.script.run.withSuccessHandler(r => {
-          alert(r.message);
-          loadInventory();
-        }).deleteInventoryItem(id);
+        if (!confirm("Delete this item?")) return;
+        google.script.run
+          .withSuccessHandler((r) => {
+            alert(r.message);
+            loadInventory();
+          })
+          .deleteInventoryItem(id);
       }
 
       function deleteUser(id) {
-        if (!confirm('Delete this user?')) return;
-        google.script.run.withSuccessHandler(r => {
-          alert(r.message);
-          loadUsers();
-        }).deleteUser(id);
+        if (!confirm("Delete this user?")) return;
+        google.script.run
+          .withSuccessHandler((r) => {
+            alert(r.message);
+            loadUsers();
+          })
+          .deleteUser(id);
       }
 
       // ===============================
       // MODALS
       // ===============================
       function openModal(type) {
-        const overlay = document.getElementById('modalOverlay');
-        const title = document.getElementById('modalTitle');
-        const content = document.getElementById('modalContent');
-        
-        overlay.classList.add('active');
-        
-        switch(type) {
-          case 'supplier':
-            title.textContent = 'Add Supplier';
+        const overlay = document.getElementById("modalOverlay");
+        const title = document.getElementById("modalTitle");
+        const content = document.getElementById("modalContent");
+
+        overlay.classList.add("active");
+
+        switch (type) {
+          case "supplier":
+            title.textContent = "Add Supplier";
             content.innerHTML = getSupplierFormHtml();
             break;
-          case 'supplierItem':
-            title.textContent = 'Add Stock Entry';
+          case "supplierItem":
+            title.textContent = "Add Stock Entry";
             content.innerHTML = getSupplierItemFormHtml();
             break;
-          case 'user':
-            title.textContent = 'Add User';
+          case "user":
+            title.textContent = "Add User";
             content.innerHTML = getUserFormHtml();
             break;
-          case 'inventory':
-            title.textContent = 'Add Inventory Item';
+          case "inventory":
+            title.textContent = "Add Inventory Item";
             content.innerHTML = getInventoryFormHtml();
             break;
         }
       }
 
       function closeModal() {
-        document.getElementById('modalOverlay').classList.remove('active');
+        document.getElementById("modalOverlay").classList.remove("active");
       }
 
       function closeModalOverlay(e) {
-        if (e.target.id === 'modalOverlay') closeModal();
+        if (e.target.id === "modalOverlay") closeModal();
       }
 
       function getSupplierFormHtml() {
@@ -1955,10 +2379,10 @@
 
       function getSupplierItemFormHtml() {
         let options = '<option value="">Select Supplier</option>';
-        (suppliersData || []).forEach(s => {
+        (suppliersData || []).forEach((s) => {
           options += `<option value="${s.supplier_name}">${s.supplier_name}</option>`;
         });
-        
+
         return `
           <form onsubmit="saveSupplierItem(event)">
             <div class="form-group">
@@ -1998,10 +2422,10 @@
 
       function getUserFormHtml() {
         let branchOptions = '<option value="">All Branches</option>';
-        (branchesData || []).forEach(b => {
+        (branchesData || []).forEach((b) => {
           branchOptions += `<option value="${b.branch_name}">${b.branch_name}</option>`;
         });
-        
+
         return `
           <form onsubmit="saveUser(event)">
             <div class="form-row">
@@ -2036,10 +2460,10 @@
 
       function getInventoryFormHtml() {
         let supplierOptions = '<option value="">Select Supplier</option>';
-        (suppliersData || []).forEach(s => {
+        (suppliersData || []).forEach((s) => {
           supplierOptions += `<option value="${s.supplier_name}">${s.supplier_name}</option>`;
         });
-        
+
         return `
           <form onsubmit="saveInventoryItem(event)">
             <div class="form-row">
@@ -2084,236 +2508,269 @@
 
       function saveSupplier(e) {
         e.preventDefault();
-        google.script.run.withSuccessHandler(r => {
-          alert(r.message);
-          if (r.success) {
-            closeModal();
-            loadManageSuppliers();
-          }
-        }).addSupplier({
-          supplier_name: document.getElementById('supplierName').value,
-          contact_person: document.getElementById('supplierContact').value,
-          email: document.getElementById('supplierEmail').value,
-          phone: document.getElementById('supplierPhone').value,
-          address: document.getElementById('supplierAddress').value,
-          classification: document.getElementById('supplierClassification').value
-        });
-      }
-
-      function saveSupplierItem(e) {
-        e.preventDefault();
-        google.script.run.withSuccessHandler(r => {
-          alert(r.message);
-          if (r.success) {
-            closeModal();
-            loadStockSuppliers();
-          }
-        }).addSupplierItem({
-          item_id: document.getElementById('supplierItemId').value,
-          supplier_id: document.getElementById('supplierItemSupplier').value,
-          description: document.getElementById('supplierItemDesc').value,
-          unit: document.getElementById('supplierItemUnit').value,
-          unit_price: document.getElementById('supplierItemPrice').value,
-          min_stock_level: document.getElementById('supplierItemMin').value,
-          current_stock: document.getElementById('supplierItemCurrent').value
-        });
-      }
-
-      function saveUser(e) {
-        e.preventDefault();
-        google.script.run.withSuccessHandler(r => {
-          alert(r.message);
-          if (r.success) {
-            closeModal();
-            loadUsers();
-          }
-        }).addUser({
-          username: document.getElementById('userUsername').value,
-          email: document.getElementById('userEmail').value,
-          role: document.getElementById('userRole').value,
-          branch_access: document.getElementById('userBranch').value
-        });
-      }
-
-      function saveInventoryItem(e) {
-        e.preventDefault();
-        google.script.run.withSuccessHandler(r => {
-          alert(r.message);
-          if (r.success) {
-            closeModal();
-            loadInventory();
-          }
-        }).addInventoryItem({
-          item_id: document.getElementById('invItemId').value,
-          description: document.getElementById('invDesc').value,
-          unit: document.getElementById('invUnit').value,
-          total_running_stocks: document.getElementById('invStock').value,
-          supplier: document.getElementById('invSupplier').value,
-          classification: document.getElementById('invClassification').value
-        });
-      }
-
-      function editSupplier(id) {
-        const item = suppliersData.find(s => s.id === id);
-        if (!item) return;
-        
-        document.getElementById('modalTitle').textContent = 'Edit Supplier';
-        document.getElementById('modalContent').innerHTML = getSupplierFormHtml();
-        document.getElementById('supplierName').value = item.supplier_name;
-        document.getElementById('supplierContact').value = item.contact_person;
-        document.getElementById('supplierEmail').value = item.email;
-        document.getElementById('supplierPhone').value = item.phone;
-        document.getElementById('supplierAddress').value = item.address;
-        document.getElementById('supplierClassification').value = item.classification;
-        
-        document.querySelector('#modalContent form').onsubmit = function(e) {
-          e.preventDefault();
-          google.script.run.withSuccessHandler(r => {
+        google.script.run
+          .withSuccessHandler((r) => {
             alert(r.message);
             if (r.success) {
               closeModal();
               loadManageSuppliers();
             }
-          }).updateSupplier({
-            id: id,
-            supplier_name: document.getElementById('supplierName').value,
-            contact_person: document.getElementById('supplierContact').value,
-            email: document.getElementById('supplierEmail').value,
-            phone: document.getElementById('supplierPhone').value,
-            address: document.getElementById('supplierAddress').value,
-            classification: document.getElementById('supplierClassification').value,
-            status: item.status
+          })
+          .addSupplier({
+            supplier_name: document.getElementById("supplierName").value,
+            contact_person: document.getElementById("supplierContact").value,
+            email: document.getElementById("supplierEmail").value,
+            phone: document.getElementById("supplierPhone").value,
+            address: document.getElementById("supplierAddress").value,
+            classification: document.getElementById("supplierClassification")
+              .value,
           });
-        };
-        
-        document.getElementById('modalOverlay').classList.add('active');
       }
 
-      function editSupplierItem(id) {
-        const item = supplierItemsData.find(s => s.id === id);
-        if (!item) return;
-        
-        document.getElementById('modalTitle').textContent = 'Edit Stock Entry';
-        document.getElementById('modalContent').innerHTML = getSupplierItemFormHtml();
-        
-        let options = '<option value="">Select Supplier</option>';
-        (suppliersData || []).forEach(s => {
-          options += `<option value="${s.supplier_name}" ${s.supplier_name === item.supplier_id ? 'selected' : ''}>${s.supplier_name}</option>`;
-        });
-        document.getElementById('supplierItemSupplier').innerHTML = options;
-        
-        document.getElementById('supplierItemId').value = item.item_id;
-        document.getElementById('supplierItemDesc').value = item.description;
-        document.getElementById('supplierItemUnit').value = item.unit;
-        document.getElementById('supplierItemPrice').value = item.unit_price;
-        document.getElementById('supplierItemMin').value = item.min_stock_level;
-        document.getElementById('supplierItemCurrent').value = item.current_stock;
-        
-        document.querySelector('#modalContent form').onsubmit = function(e) {
-          e.preventDefault();
-          google.script.run.withSuccessHandler(r => {
+      function saveSupplierItem(e) {
+        e.preventDefault();
+        google.script.run
+          .withSuccessHandler((r) => {
             alert(r.message);
             if (r.success) {
               closeModal();
               loadStockSuppliers();
             }
-          }).updateSupplierItem({
-            id: id,
-            supplier_id: document.getElementById('supplierItemSupplier').value,
-            description: document.getElementById('supplierItemDesc').value,
-            unit: document.getElementById('supplierItemUnit').value,
-            unit_price: document.getElementById('supplierItemPrice').value,
-            min_stock_level: document.getElementById('supplierItemMin').value,
-            current_stock: document.getElementById('supplierItemCurrent').value
+          })
+          .addSupplierItem({
+            item_id: document.getElementById("supplierItemId").value,
+            supplier_id: document.getElementById("supplierItemSupplier").value,
+            description: document.getElementById("supplierItemDesc").value,
+            unit: document.getElementById("supplierItemUnit").value,
+            unit_price: document.getElementById("supplierItemPrice").value,
+            min_stock_level: document.getElementById("supplierItemMin").value,
+            current_stock: document.getElementById("supplierItemCurrent").value,
           });
-        };
-        
-        document.getElementById('modalOverlay').classList.add('active');
       }
 
-      function editUser(id) {
-        const item = usersData.find(u => u.id === id);
-        if (!item) return;
-        
-        document.getElementById('modalTitle').textContent = 'Edit User';
-        document.getElementById('modalContent').innerHTML = getUserFormHtml();
-        
-        document.getElementById('userUsername').value = item.username;
-        document.getElementById('userEmail').value = item.email;
-        document.getElementById('userRole').value = item.role;
-        document.getElementById('userBranch').value = item.branch_access;
-        
-        document.querySelector('#modalContent form').onsubmit = function(e) {
-          e.preventDefault();
-          google.script.run.withSuccessHandler(r => {
+      function saveUser(e) {
+        e.preventDefault();
+        google.script.run
+          .withSuccessHandler((r) => {
             alert(r.message);
             if (r.success) {
               closeModal();
               loadUsers();
             }
-          }).updateUser({
-            id: id,
-            username: document.getElementById('userUsername').value,
-            email: document.getElementById('userEmail').value,
-            role: document.getElementById('userRole').value,
-            branch_access: document.getElementById('userBranch').value,
-            status: item.status
+          })
+          .addUser({
+            username: document.getElementById("userUsername").value,
+            email: document.getElementById("userEmail").value,
+            role: document.getElementById("userRole").value,
+            branch_access: document.getElementById("userBranch").value,
           });
-        };
-        
-        document.getElementById('modalOverlay').classList.add('active');
       }
 
-      function editInventoryItem(id) {
-        const item = inventoryData.find(i => i.id === id);
-        if (!item) return;
-        
-        document.getElementById('modalTitle').textContent = 'Edit Inventory Item';
-        document.getElementById('modalContent').innerHTML = getInventoryFormHtml();
-        
-        document.getElementById('invItemId').value = item.item_id;
-        document.getElementById('invDesc').value = item.description;
-        document.getElementById('invUnit').value = item.unit;
-        document.getElementById('invStock').value = item.total_running_stocks;
-        document.getElementById('invSupplier').value = item.supplier;
-        document.getElementById('invClassification').value = item.classification;
-        
-        document.querySelector('#modalContent form').onsubmit = function(e) {
-          e.preventDefault();
-          google.script.run.withSuccessHandler(r => {
+      function saveInventoryItem(e) {
+        e.preventDefault();
+        google.script.run
+          .withSuccessHandler((r) => {
             alert(r.message);
             if (r.success) {
               closeModal();
               loadInventory();
             }
-          }).updateInventoryItem({
-            id: id,
-            description: document.getElementById('invDesc').value,
-            unit: document.getElementById('invUnit').value,
-            total_running_stocks: document.getElementById('invStock').value,
-            supplier: document.getElementById('invSupplier').value,
-            classification: document.getElementById('invClassification').value
+          })
+          .addInventoryItem({
+            item_id: document.getElementById("invItemId").value,
+            description: document.getElementById("invDesc").value,
+            unit: document.getElementById("invUnit").value,
+            total_running_stocks: document.getElementById("invStock").value,
+            supplier: document.getElementById("invSupplier").value,
+            classification: document.getElementById("invClassification").value,
           });
+      }
+
+      function editSupplier(id) {
+        const item = suppliersData.find((s) => s.id === id);
+        if (!item) return;
+
+        document.getElementById("modalTitle").textContent = "Edit Supplier";
+        document.getElementById("modalContent").innerHTML =
+          getSupplierFormHtml();
+        document.getElementById("supplierName").value = item.supplier_name;
+        document.getElementById("supplierContact").value = item.contact_person;
+        document.getElementById("supplierEmail").value = item.email;
+        document.getElementById("supplierPhone").value = item.phone;
+        document.getElementById("supplierAddress").value = item.address;
+        document.getElementById("supplierClassification").value =
+          item.classification;
+
+        document.querySelector("#modalContent form").onsubmit = function (e) {
+          e.preventDefault();
+          google.script.run
+            .withSuccessHandler((r) => {
+              alert(r.message);
+              if (r.success) {
+                closeModal();
+                loadManageSuppliers();
+              }
+            })
+            .updateSupplier({
+              id: id,
+              supplier_name: document.getElementById("supplierName").value,
+              contact_person: document.getElementById("supplierContact").value,
+              email: document.getElementById("supplierEmail").value,
+              phone: document.getElementById("supplierPhone").value,
+              address: document.getElementById("supplierAddress").value,
+              classification: document.getElementById("supplierClassification")
+                .value,
+              status: item.status,
+            });
         };
-        
-        document.getElementById('modalOverlay').classList.add('active');
+
+        document.getElementById("modalOverlay").classList.add("active");
+      }
+
+      function editSupplierItem(id) {
+        const item = supplierItemsData.find((s) => s.id === id);
+        if (!item) return;
+
+        document.getElementById("modalTitle").textContent = "Edit Stock Entry";
+        document.getElementById("modalContent").innerHTML =
+          getSupplierItemFormHtml();
+
+        let options = '<option value="">Select Supplier</option>';
+        (suppliersData || []).forEach((s) => {
+          options += `<option value="${s.supplier_name}" ${s.supplier_name === item.supplier_id ? "selected" : ""}>${s.supplier_name}</option>`;
+        });
+        document.getElementById("supplierItemSupplier").innerHTML = options;
+
+        document.getElementById("supplierItemId").value = item.item_id;
+        document.getElementById("supplierItemDesc").value = item.description;
+        document.getElementById("supplierItemUnit").value = item.unit;
+        document.getElementById("supplierItemPrice").value = item.unit_price;
+        document.getElementById("supplierItemMin").value = item.min_stock_level;
+        document.getElementById("supplierItemCurrent").value =
+          item.current_stock;
+
+        document.querySelector("#modalContent form").onsubmit = function (e) {
+          e.preventDefault();
+          google.script.run
+            .withSuccessHandler((r) => {
+              alert(r.message);
+              if (r.success) {
+                closeModal();
+                loadStockSuppliers();
+              }
+            })
+            .updateSupplierItem({
+              id: id,
+              supplier_id: document.getElementById("supplierItemSupplier")
+                .value,
+              description: document.getElementById("supplierItemDesc").value,
+              unit: document.getElementById("supplierItemUnit").value,
+              unit_price: document.getElementById("supplierItemPrice").value,
+              min_stock_level: document.getElementById("supplierItemMin").value,
+              current_stock: document.getElementById("supplierItemCurrent")
+                .value,
+            });
+        };
+
+        document.getElementById("modalOverlay").classList.add("active");
+      }
+
+      function editUser(id) {
+        const item = usersData.find((u) => u.id === id);
+        if (!item) return;
+
+        document.getElementById("modalTitle").textContent = "Edit User";
+        document.getElementById("modalContent").innerHTML = getUserFormHtml();
+
+        document.getElementById("userUsername").value = item.username;
+        document.getElementById("userEmail").value = item.email;
+        document.getElementById("userRole").value = item.role;
+        document.getElementById("userBranch").value = item.branch_access;
+
+        document.querySelector("#modalContent form").onsubmit = function (e) {
+          e.preventDefault();
+          google.script.run
+            .withSuccessHandler((r) => {
+              alert(r.message);
+              if (r.success) {
+                closeModal();
+                loadUsers();
+              }
+            })
+            .updateUser({
+              id: id,
+              username: document.getElementById("userUsername").value,
+              email: document.getElementById("userEmail").value,
+              role: document.getElementById("userRole").value,
+              branch_access: document.getElementById("userBranch").value,
+              status: item.status,
+            });
+        };
+
+        document.getElementById("modalOverlay").classList.add("active");
+      }
+
+      function editInventoryItem(id) {
+        const item = inventoryData.find((i) => i.id === id);
+        if (!item) return;
+
+        document.getElementById("modalTitle").textContent =
+          "Edit Inventory Item";
+        document.getElementById("modalContent").innerHTML =
+          getInventoryFormHtml();
+
+        document.getElementById("invItemId").value = item.item_id;
+        document.getElementById("invDesc").value = item.description;
+        document.getElementById("invUnit").value = item.unit;
+        document.getElementById("invStock").value = item.total_running_stocks;
+        document.getElementById("invSupplier").value = item.supplier;
+        document.getElementById("invClassification").value =
+          item.classification;
+
+        document.querySelector("#modalContent form").onsubmit = function (e) {
+          e.preventDefault();
+          google.script.run
+            .withSuccessHandler((r) => {
+              alert(r.message);
+              if (r.success) {
+                closeModal();
+                loadInventory();
+              }
+            })
+            .updateInventoryItem({
+              id: id,
+              description: document.getElementById("invDesc").value,
+              unit: document.getElementById("invUnit").value,
+              total_running_stocks: document.getElementById("invStock").value,
+              supplier: document.getElementById("invSupplier").value,
+              classification:
+                document.getElementById("invClassification").value,
+            });
+        };
+
+        document.getElementById("modalOverlay").classList.add("active");
       }
 
       function handleExcelUpload(input) {
-        alert('Excel upload feature requires additional implementation. Please add items manually or use Google Sheets import.');
+        alert(
+          "Excel upload feature requires additional implementation. Please add items manually or use Google Sheets import.",
+        );
       }
 
       // ===============================
       // UTILITIES
       // ===============================
       function formatNumber(num) {
-        return parseFloat(num || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return parseFloat(num || 0).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
       }
 
       // ===============================
       // INITIALIZATION
       // ===============================
-      google.charts.setOnLoadCallback(function() {
+      google.charts.setOnLoadCallback(function () {
         loadHomeData();
         loadBranchesForFilter();
         loadBranchesForBranchReport();

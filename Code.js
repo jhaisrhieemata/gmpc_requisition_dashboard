@@ -1,8 +1,9 @@
 // ===============================
 // CONFIG
 // ===============================
-const SHEET_FILE_ID = "1MVY1ucbqCTRQkoEEMaQc6tEI6u62psbup6iL023xGsI";
-
+//const SHEET_FILE_ID = "1MVY1ucbqCTRQkoEEMaQc6tEI6u62psbup6iL023xGsI"; functional
+const SHEET_FILE_ID = "1-h-zH2uLahRyNSMukXoGjQ1eVOkeRXPX5wXNX2IOMY4";
+const SRIPT_ID = "1tm7aeYdH9tAx4jg6KKZHX-ReD9srmbXkBcv4X5n3dM1IiKL6dG6TucXI"; //script ID for the branche user
 // ===============================
 // WEB APP ENTRY
 // ===============================
@@ -18,81 +19,169 @@ function doGet() {
 function doPost(e) {
   const action = e.parameter.action;
   const data = JSON.parse(e.parameter.data || "{}");
-  
+
   let result = { success: false, message: "" };
-  
+
   try {
-    switch(action) {
+    switch (action) {
       // Suppliers
-      case "getSuppliers": result = getSuppliers(); break;
-      case "addSupplier": result = addSupplier(data); break;
-      case "updateSupplier": result = updateSupplier(data); break;
-      case "deleteSupplier": result = deleteSupplier(data.id); break;
-      
+      case "getSuppliers":
+        result = getSuppliers();
+        break;
+      case "addSupplier":
+        result = addSupplier(data);
+        break;
+      case "updateSupplier":
+        result = updateSupplier(data);
+        break;
+      case "deleteSupplier":
+        result = deleteSupplier(data.id);
+        break;
+
       // Supplier Items
-      case "getSupplierItems": result = getSupplierItems(); break;
-      case "addSupplierItem": result = addSupplierItem(data); break;
-      case "updateSupplierItem": result = updateSupplierItem(data); break;
-      case "deleteSupplierItem": result = deleteSupplierItem(data.id); break;
-      
+      case "getSupplierItems":
+        result = getSupplierItems();
+        break;
+      case "addSupplierItem":
+        result = addSupplierItem(data);
+        break;
+      case "updateSupplierItem":
+        result = updateSupplierItem(data);
+        break;
+      case "deleteSupplierItem":
+        result = deleteSupplierItem(data.id);
+        break;
+
       // Users
-      case "getUsers": result = getUsers(); break;
-      case "addUser": result = addUser(data); break;
-      case "updateUser": result = updateUser(data); break;
-      case "deleteUser": result = deleteUser(data.id); break;
-      case "resetPassword": result = resetPassword(data.id); break;
-      case "getPasswordResetRequests": result = getPasswordResetRequests(); break;
-      case "handlePasswordReset": result = handlePasswordReset(data); break;
-      
+      case "getUsers":
+        result = getUsers();
+        break;
+      case "addUser":
+        result = addUser(data);
+        break;
+      case "updateUser":
+        result = updateUser(data);
+        break;
+      case "deleteUser":
+        result = deleteUser(data.id);
+        break;
+      case "resetPassword":
+        result = resetPassword(data.id);
+        break;
+      case "getPasswordResetRequests":
+        result = getPasswordResetRequests();
+        break;
+      case "handlePasswordReset":
+        result = handlePasswordReset(data);
+        break;
+
       // Branches
-      case "getBranches": result = getBranches(); break;
-      case "addBranch": result = addBranch(data); break;
-      case "updateBranch": result = updateBranch(data); break;
-      case "deleteBranch": result = deleteBranch(data.id); break;
-      
+      case "getBranches":
+        result = getBranches();
+        break;
+      case "addBranch":
+        result = addBranch(data);
+        break;
+      case "updateBranch":
+        result = updateBranch(data);
+        break;
+      case "deleteBranch":
+        result = deleteBranch(data.id);
+        break;
+
       // Inventory
-      case "getInventory": result = getInventory(); break;
-      case "updateInventoryItem": result = updateInventoryItem(data); break;
-      case "addInventoryItem": result = addInventoryItem(data); break;
-      case "deleteInventoryItem": result = deleteInventoryItem(data.id); break;
-      
+      case "getInventory":
+        result = getInventory();
+        break;
+      case "updateInventoryItem":
+        result = updateInventoryItem(data);
+        break;
+      case "addInventoryItem":
+        result = addInventoryItem(data);
+        break;
+      case "deleteInventoryItem":
+        result = deleteInventoryItem(data.id);
+        break;
+
       // Office Requests
-      case "getOfficeRequests": result = getOfficeRequests(); break;
-      case "updateOfficeRequest": result = updateOfficeRequest(data); break;
-      case "deleteOfficeRequest": result = deleteOfficeRequest(data.id); break;
-      
+      case "getOfficeRequests":
+        result = getOfficeRequests();
+        break;
+      case "updateOfficeRequest":
+        result = updateOfficeRequest(data);
+        break;
+      case "deleteOfficeRequest":
+        result = deleteOfficeRequest(data.id);
+        break;
+
       // Special Requests
-      case "getSpecialRequests": result = getSpecialRequests(); break;
-      case "updateSpecialRequest": result = updateSpecialRequest(data); break;
-      case "deleteSpecialRequest": result = deleteSpecialRequest(data.id); break;
-      
+      case "getSpecialRequests":
+        result = getSpecialRequests();
+        break;
+      case "updateSpecialRequest":
+        result = updateSpecialRequest(data);
+        break;
+      case "deleteSpecialRequest":
+        result = deleteSpecialRequest(data.id);
+        break;
+
       // Reports
-      case "generateReport": result = generateReport(data); break;
-      case "getLowStocksReport": result = getLowStocksReport(); break;
-      case "getBranchDashboard": result = getBranchDashboard(); break;
-      case "getBranchReport": result = getBranchReport(data); break;
-      
+      case "generateReport":
+        result = generateReport(data);
+        break;
+      case "getLowStocksReport":
+        result = getLowStocksReport();
+        break;
+      case "getBranchDashboard":
+        result = getBranchDashboard();
+        break;
+      case "getBranchReport":
+        result = getBranchReport(data);
+        break;
+
       // Dashboard
-      case "getDashboardData": result = getDashboardData(); break;
-      case "getPendingGroupedByBranch": result = getPendingGroupedByBranch(); break;
-      case "getPendingBreakdown": result = getPendingBreakdown(); break;
-      
+      case "getDashboardData":
+        result = getDashboardData();
+        break;
+      case "getPendingGroupedByBranch":
+        result = getPendingGroupedByBranch();
+        break;
+      case "getPendingBreakdown":
+        result = getPendingBreakdown();
+        break;
+
       // Batch Actions
-      case "batchAction": result = batchAction(data.rows, data.action); break;
-      case "rowAction": result = rowAction(data.sheetName, data.rowNumber, data.action); break;
-      case "editPendingRow": result = editPendingRow(data.sheetName, data.rowNumber, data.values); break;
-      case "deletePendingRow": result = deletePendingRow(data.sheetName, data.rowNumber); break;
-      case "getBatchPdfUrls": result = getBatchPdfUrls(data.rows); break;
-      
+      case "batchAction":
+        result = batchAction(data.rows, data.action);
+        break;
+      case "rowAction":
+        result = rowAction(data.sheetName, data.rowNumber, data.action);
+        break;
+      case "editPendingRow":
+        result = editPendingRow(data.sheetName, data.rowNumber, data.values);
+        break;
+      case "deletePendingRow":
+        result = deletePendingRow(data.sheetName, data.rowNumber);
+        break;
+      case "getBatchPdfUrls":
+        result = getBatchPdfUrls(data.rows);
+        break;
+
+      // Connection Test
+      case "testConnections":
+        result = testSheetConnections();
+        break;
+
       default:
         result = { success: false, message: "Unknown action: " + action };
     }
   } catch (err) {
     result = { success: false, message: err.toString() };
   }
-  
-  return ContentService.createTextOutput(JSON.stringify(result))
-    .setMimeType(ContentService.MimeType.JSON);
+
+  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(
+    ContentService.MimeType.JSON,
+  );
 }
 
 // ===============================
@@ -119,6 +208,177 @@ function generateId() {
 
 function getCurrentTimestamp() {
   return new Date().toISOString();
+}
+
+// ===============================
+// SHEET CONNECTION VERIFICATION
+// ===============================
+function testSheetConnections() {
+  const requiredSheets = [
+    "ADD STOCKS",
+    "SUPPLIERS",
+    "SUPPLIER ITEMS",
+    "USERS",
+    "BRANCHES",
+    "OFFICE REQUESTS",
+    "SPECIAL REQUESTS",
+    "PASSWORD RESET",
+  ];
+
+  const sheetHeaders = {
+    "ADD STOCKS": [
+      "item_id",
+      "description",
+      "unit",
+      "total running stocks",
+      "status",
+      "supplier",
+      "classification",
+    ],
+    SUPPLIERS: [
+      "supplier_id",
+      "supplier_name",
+      "contact_person",
+      "email",
+      "phone",
+      "address",
+      "classification",
+      "status",
+      "created_at",
+    ],
+    "SUPPLIER ITEMS": [
+      "item_id",
+      "supplier_id",
+      "description",
+      "unit",
+      "unit_price",
+      "min_stock_level",
+      "current_stock",
+    ],
+    USERS: [
+      "user_id",
+      "username",
+      "email",
+      "role",
+      "branch_access",
+      "password_hash",
+      "status",
+      "created_at",
+    ],
+    BRANCHES: [
+      "branch_id",
+      "branch_name",
+      "email",
+      "location",
+      "classification",
+      "status",
+      "created_at",
+    ],
+    "OFFICE REQUESTS": [
+      "date",
+      "branch",
+      "description",
+      "qty",
+      "unit",
+      "uprice",
+      "amount",
+      "status",
+      "requested_by",
+    ],
+    "SPECIAL REQUESTS": [
+      "date",
+      "branch",
+      "description",
+      "qty",
+      "unit",
+      "uprice",
+      "amount",
+      "status",
+      "requested_by",
+      "approved_by_purchasing",
+      "approved_by_accounting",
+      "approved_by_admin",
+    ],
+    "PASSWORD RESET": [
+      "request_id",
+      "user_id",
+      "token",
+      "request_date",
+      "status",
+    ],
+  };
+
+  const results = {
+    success: true,
+    sheetId: SHEET_FILE_ID,
+    sheets: {},
+  };
+
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_FILE_ID);
+    const existingSheets = ss.getSheets().map((s) => s.getName());
+
+    requiredSheets.forEach((sheetName) => {
+      const exists = existingSheets.includes(sheetName);
+      let headers = [];
+      let missingHeaders = [];
+
+      if (exists) {
+        const sheet = ss.getSheetByName(sheetName);
+        const data = sheet.getDataRange().getValues();
+        if (data.length > 0) {
+          headers = data[0].map((h) => ("" + h).toLowerCase().trim());
+          const required = sheetHeaders[sheetName] || [];
+          missingHeaders = required.filter((h) => {
+            const hNormalized = h.replace(/_/g, " ");
+            return !headers.some(
+              (eh) =>
+                eh === h ||
+                eh === hNormalized ||
+                eh.includes(h) ||
+                h.includes(eh) ||
+                eh.replace(/_/g, " ").includes(hNormalized) ||
+                hNormalized.replace(/_/g, " ").includes(eh.replace(/_/g, " ")),
+            );
+          });
+        }
+      }
+
+      results.sheets[sheetName] = {
+        exists: exists,
+        headers: headers,
+        missingHeaders: missingHeaders,
+        status: exists
+          ? missingHeaders.length > 0
+            ? "Missing headers"
+            : "OK"
+          : "NOT FOUND",
+      };
+    });
+
+    const allOK = requiredSheets.every(
+      (s) => results.sheets[s].status === "OK",
+    );
+    if (!allOK) {
+      const issues = [];
+      requiredSheets.forEach((s) => {
+        if (results.sheets[s].status === "NOT FOUND") {
+          issues.push(s + " - NOT FOUND");
+        } else if (results.sheets[s].status === "Missing headers") {
+          issues.push(
+            s + " - missing: " + results.sheets[s].missingHeaders.join(", "),
+          );
+        }
+      });
+      results.success = false;
+      results.error = issues.join(" | ");
+    }
+  } catch (err) {
+    results.success = false;
+    results.error = err.toString();
+  }
+
+  return results;
 }
 
 // ===============================
@@ -227,13 +487,13 @@ function getDashboardData() {
     }
   });
 
-  return { 
-    success: true, 
-    pendingOffice, 
-    pendingSpecial, 
-    statusCounts, 
+  return {
+    success: true,
+    pendingOffice,
+    pendingSpecial,
+    statusCounts,
     addStocks,
-    lowStockCount: addStocks.filter(s => s.totalRunningStocks <= 10).length
+    lowStockCount: addStocks.filter((s) => s.totalRunningStocks <= 10).length,
   };
 }
 
@@ -265,7 +525,11 @@ function getPendingGroupedByBranch() {
 
 function getPendingBreakdown() {
   const d = getDashboardData();
-  return { success: true, office: d.pendingOffice.length, special: d.pendingSpecial.length };
+  return {
+    success: true,
+    office: d.pendingOffice.length,
+    special: d.pendingSpecial.length,
+  };
 }
 
 // ===============================
@@ -273,14 +537,15 @@ function getPendingBreakdown() {
 // ===============================
 function getSuppliers() {
   const sheet = getSheetByNameSafe("SUPPLIERS");
-  if (!sheet) return { success: false, message: "SUPPLIERS sheet not found", data: [] };
-  
+  if (!sheet)
+    return { success: false, message: "SUPPLIERS sheet not found", data: [] };
+
   const data = sheet.getDataRange().getValues();
   if (data.length < 2) return { success: true, data: [] };
-  
-  const headers = data[0].map(h => ("" + h).toLowerCase());
+
+  const headers = data[0].map((h) => ("" + h).toLowerCase());
   const result = [];
-  
+
   for (let i = 1; i < data.length; i++) {
     result.push({
       id: i + 1,
@@ -291,17 +556,17 @@ function getSuppliers() {
       phone: data[i][headers.indexOf("phone")] || "",
       address: data[i][headers.indexOf("address")] || "",
       classification: data[i][headers.indexOf("classification")] || "",
-      status: data[i][headers.indexOf("status")] || "Active"
+      status: data[i][headers.indexOf("status")] || "Active",
     });
   }
-  
+
   return { success: true, data: result };
 }
 
 function addSupplier(data) {
   const sheet = getSheetByNameSafe("SUPPLIERS");
   if (!sheet) return { success: false, message: "SUPPLIERS sheet not found" };
-  
+
   const row = [
     data.supplier_id || generateId(),
     data.supplier_name,
@@ -311,9 +576,9 @@ function addSupplier(data) {
     data.address,
     data.classification || "General",
     data.status || "Active",
-    getCurrentTimestamp()
+    getCurrentTimestamp(),
   ];
-  
+
   sheet.appendRow(row);
   return { success: true, message: "Supplier added successfully" };
 }
@@ -321,25 +586,34 @@ function addSupplier(data) {
 function updateSupplier(data) {
   const sheet = getSheetByNameSafe("SUPPLIERS");
   if (!sheet) return { success: false, message: "SUPPLIERS sheet not found" };
-  
-  const headers = sheet.getDataRange().getValues()[0].map(h => ("" + h).toLowerCase());
+
+  const headers = sheet
+    .getDataRange()
+    .getValues()[0]
+    .map((h) => ("" + h).toLowerCase());
   const rowNum = parseInt(data.id);
-  
-  sheet.getRange(rowNum, headers.indexOf("supplier_name") + 1).setValue(data.supplier_name);
-  sheet.getRange(rowNum, headers.indexOf("contact_person") + 1).setValue(data.contact_person);
+
+  sheet
+    .getRange(rowNum, headers.indexOf("supplier_name") + 1)
+    .setValue(data.supplier_name);
+  sheet
+    .getRange(rowNum, headers.indexOf("contact_person") + 1)
+    .setValue(data.contact_person);
   sheet.getRange(rowNum, headers.indexOf("email") + 1).setValue(data.email);
   sheet.getRange(rowNum, headers.indexOf("phone") + 1).setValue(data.phone);
   sheet.getRange(rowNum, headers.indexOf("address") + 1).setValue(data.address);
-  sheet.getRange(rowNum, headers.indexOf("classification") + 1).setValue(data.classification);
+  sheet
+    .getRange(rowNum, headers.indexOf("classification") + 1)
+    .setValue(data.classification);
   sheet.getRange(rowNum, headers.indexOf("status") + 1).setValue(data.status);
-  
+
   return { success: true, message: "Supplier updated successfully" };
 }
 
 function deleteSupplier(id) {
   const sheet = getSheetByNameSafe("SUPPLIERS");
   if (!sheet) return { success: false, message: "SUPPLIERS sheet not found" };
-  
+
   sheet.deleteRow(parseInt(id));
   return { success: true, message: "Supplier deleted successfully" };
 }
@@ -349,14 +623,19 @@ function deleteSupplier(id) {
 // ===============================
 function getSupplierItems() {
   const sheet = getSheetByNameSafe("SUPPLIER ITEMS");
-  if (!sheet) return { success: false, message: "SUPPLIER ITEMS sheet not found", data: [] };
-  
+  if (!sheet)
+    return {
+      success: false,
+      message: "SUPPLIER ITEMS sheet not found",
+      data: [],
+    };
+
   const data = sheet.getDataRange().getValues();
   if (data.length < 2) return { success: true, data: [] };
-  
-  const headers = data[0].map(h => ("" + h).toLowerCase());
+
+  const headers = data[0].map((h) => ("" + h).toLowerCase());
   const result = [];
-  
+
   for (let i = 1; i < data.length; i++) {
     result.push({
       id: i + 1,
@@ -366,17 +645,18 @@ function getSupplierItems() {
       unit: data[i][headers.indexOf("unit")] || "",
       unit_price: data[i][headers.indexOf("unit_price")] || 0,
       min_stock_level: data[i][headers.indexOf("min_stock_level")] || 0,
-      current_stock: data[i][headers.indexOf("current_stock")] || 0
+      current_stock: data[i][headers.indexOf("current_stock")] || 0,
     });
   }
-  
+
   return { success: true, data: result };
 }
 
 function addSupplierItem(data) {
   const sheet = getSheetByNameSafe("SUPPLIER ITEMS");
-  if (!sheet) return { success: false, message: "SUPPLIER ITEMS sheet not found" };
-  
+  if (!sheet)
+    return { success: false, message: "SUPPLIER ITEMS sheet not found" };
+
   const row = [
     data.item_id || generateId(),
     data.supplier_id,
@@ -384,34 +664,49 @@ function addSupplierItem(data) {
     data.unit,
     data.unit_price || 0,
     data.min_stock_level || 0,
-    data.current_stock || 0
+    data.current_stock || 0,
   ];
-  
+
   sheet.appendRow(row);
   return { success: true, message: "Supplier item added successfully" };
 }
 
 function updateSupplierItem(data) {
   const sheet = getSheetByNameSafe("SUPPLIER ITEMS");
-  if (!sheet) return { success: false, message: "SUPPLIER ITEMS sheet not found" };
-  
-  const headers = sheet.getDataRange().getValues()[0].map(h => ("" + h).toLowerCase());
+  if (!sheet)
+    return { success: false, message: "SUPPLIER ITEMS sheet not found" };
+
+  const headers = sheet
+    .getDataRange()
+    .getValues()[0]
+    .map((h) => ("" + h).toLowerCase());
   const rowNum = parseInt(data.id);
-  
-  sheet.getRange(rowNum, headers.indexOf("supplier_id") + 1).setValue(data.supplier_id);
-  sheet.getRange(rowNum, headers.indexOf("description") + 1).setValue(data.description);
+
+  sheet
+    .getRange(rowNum, headers.indexOf("supplier_id") + 1)
+    .setValue(data.supplier_id);
+  sheet
+    .getRange(rowNum, headers.indexOf("description") + 1)
+    .setValue(data.description);
   sheet.getRange(rowNum, headers.indexOf("unit") + 1).setValue(data.unit);
-  sheet.getRange(rowNum, headers.indexOf("unit_price") + 1).setValue(data.unit_price);
-  sheet.getRange(rowNum, headers.indexOf("min_stock_level") + 1).setValue(data.min_stock_level);
-  sheet.getRange(rowNum, headers.indexOf("current_stock") + 1).setValue(data.current_stock);
-  
+  sheet
+    .getRange(rowNum, headers.indexOf("unit_price") + 1)
+    .setValue(data.unit_price);
+  sheet
+    .getRange(rowNum, headers.indexOf("min_stock_level") + 1)
+    .setValue(data.min_stock_level);
+  sheet
+    .getRange(rowNum, headers.indexOf("current_stock") + 1)
+    .setValue(data.current_stock);
+
   return { success: true, message: "Supplier item updated successfully" };
 }
 
 function deleteSupplierItem(id) {
   const sheet = getSheetByNameSafe("SUPPLIER ITEMS");
-  if (!sheet) return { success: false, message: "SUPPLIER ITEMS sheet not found" };
-  
+  if (!sheet)
+    return { success: false, message: "SUPPLIER ITEMS sheet not found" };
+
   sheet.deleteRow(parseInt(id));
   return { success: true, message: "Supplier item deleted successfully" };
 }
@@ -421,14 +716,15 @@ function deleteSupplierItem(id) {
 // ===============================
 function getUsers() {
   const sheet = getSheetByNameSafe("USERS");
-  if (!sheet) return { success: false, message: "USERS sheet not found", data: [] };
-  
+  if (!sheet)
+    return { success: false, message: "USERS sheet not found", data: [] };
+
   const data = sheet.getDataRange().getValues();
   if (data.length < 2) return { success: true, data: [] };
-  
-  const headers = data[0].map(h => ("" + h).toLowerCase());
+
+  const headers = data[0].map((h) => ("" + h).toLowerCase());
   const result = [];
-  
+
   for (let i = 1; i < data.length; i++) {
     result.push({
       id: i + 1,
@@ -438,17 +734,17 @@ function getUsers() {
       role: data[i][headers.indexOf("role")] || "",
       branch_access: data[i][headers.indexOf("branch_access")] || "",
       status: data[i][headers.indexOf("status")] || "Active",
-      created_at: data[i][headers.indexOf("created_at")] || ""
+      created_at: data[i][headers.indexOf("created_at")] || "",
     });
   }
-  
+
   return { success: true, data: result };
 }
 
 function addUser(data) {
   const sheet = getSheetByNameSafe("USERS");
   if (!sheet) return { success: false, message: "USERS sheet not found" };
-  
+
   const row = [
     data.user_id || generateId(),
     data.username,
@@ -457,9 +753,9 @@ function addUser(data) {
     data.branch_access || "",
     data.password_hash || "changeme123",
     data.status || "Active",
-    getCurrentTimestamp()
+    getCurrentTimestamp(),
   ];
-  
+
   sheet.appendRow(row);
   return { success: true, message: "User added successfully" };
 }
@@ -467,23 +763,30 @@ function addUser(data) {
 function updateUser(data) {
   const sheet = getSheetByNameSafe("USERS");
   if (!sheet) return { success: false, message: "USERS sheet not found" };
-  
-  const headers = sheet.getDataRange().getValues()[0].map(h => ("" + h).toLowerCase());
+
+  const headers = sheet
+    .getDataRange()
+    .getValues()[0]
+    .map((h) => ("" + h).toLowerCase());
   const rowNum = parseInt(data.id);
-  
-  sheet.getRange(rowNum, headers.indexOf("username") + 1).setValue(data.username);
+
+  sheet
+    .getRange(rowNum, headers.indexOf("username") + 1)
+    .setValue(data.username);
   sheet.getRange(rowNum, headers.indexOf("email") + 1).setValue(data.email);
   sheet.getRange(rowNum, headers.indexOf("role") + 1).setValue(data.role);
-  sheet.getRange(rowNum, headers.indexOf("branch_access") + 1).setValue(data.branch_access);
+  sheet
+    .getRange(rowNum, headers.indexOf("branch_access") + 1)
+    .setValue(data.branch_access);
   sheet.getRange(rowNum, headers.indexOf("status") + 1).setValue(data.status);
-  
+
   return { success: true, message: "User updated successfully" };
 }
 
 function deleteUser(id) {
   const sheet = getSheetByNameSafe("USERS");
   if (!sheet) return { success: false, message: "USERS sheet not found" };
-  
+
   sheet.deleteRow(parseInt(id));
   return { success: true, message: "User deleted successfully" };
 }
@@ -491,25 +794,35 @@ function deleteUser(id) {
 function resetPassword(id) {
   const sheet = getSheetByNameSafe("USERS");
   if (!sheet) return { success: false, message: "USERS sheet not found" };
-  
-  const headers = sheet.getDataRange().getValues()[0].map(h => ("" + h).toLowerCase());
+
+  const headers = sheet
+    .getDataRange()
+    .getValues()[0]
+    .map((h) => ("" + h).toLowerCase());
   const rowNum = parseInt(id);
-  
-  sheet.getRange(rowNum, headers.indexOf("password_hash") + 1).setValue("changeme123");
-  
+
+  sheet
+    .getRange(rowNum, headers.indexOf("password_hash") + 1)
+    .setValue("changeme123");
+
   return { success: true, message: "Password reset successfully" };
 }
 
 function getPasswordResetRequests() {
   const sheet = getSheetByNameSafe("PASSWORD RESET");
-  if (!sheet) return { success: false, message: "PASSWORD RESET sheet not found", data: [] };
-  
+  if (!sheet)
+    return {
+      success: false,
+      message: "PASSWORD RESET sheet not found",
+      data: [],
+    };
+
   const data = sheet.getDataRange().getValues();
   if (data.length < 2) return { success: true, data: [] };
-  
-  const headers = data[0].map(h => ("" + h).toLowerCase());
+
+  const headers = data[0].map((h) => ("" + h).toLowerCase());
   const result = [];
-  
+
   for (let i = 1; i < data.length; i++) {
     result.push({
       id: i + 1,
@@ -517,33 +830,48 @@ function getPasswordResetRequests() {
       user_id: data[i][headers.indexOf("user_id")] || "",
       token: data[i][headers.indexOf("token")] || "",
       request_date: data[i][headers.indexOf("request_date")] || "",
-      status: data[i][headers.indexOf("status")] || "Pending"
+      status: data[i][headers.indexOf("status")] || "Pending",
     });
   }
-  
+
   return { success: true, data: result };
 }
 
 function handlePasswordReset(data) {
   const sheet = getSheetByNameSafe("PASSWORD RESET");
-  if (!sheet) return { success: false, message: "PASSWORD RESET sheet not found" };
-  
-  const headers = sheet.getDataRange().getValues()[0].map(h => ("" + h).toLowerCase());
+  if (!sheet)
+    return { success: false, message: "PASSWORD RESET sheet not found" };
+
+  const headers = sheet
+    .getDataRange()
+    .getValues()[0]
+    .map((h) => ("" + h).toLowerCase());
   const rowNum = parseInt(data.id);
-  
+
   sheet.getRange(rowNum, headers.indexOf("status") + 1).setValue(data.status);
-  
+
   if (data.status === "Approved") {
     const usersSheet = getSheetByNameSafe("USERS");
     const usersData = usersSheet.getDataRange().getValues();
     for (let i = 1; i < usersData.length; i++) {
-      if (usersData[i][usersData[0].map(h => ("" + h).toLowerCase()).indexOf("user_id")] == data.user_id) {
-        usersSheet.getRange(i + 1, usersData[0].map(h => ("" + h).toLowerCase()).indexOf("password_hash") + 1).setValue("changeme123");
+      if (
+        usersData[i][
+          usersData[0].map((h) => ("" + h).toLowerCase()).indexOf("user_id")
+        ] == data.user_id
+      ) {
+        usersSheet
+          .getRange(
+            i + 1,
+            usersData[0]
+              .map((h) => ("" + h).toLowerCase())
+              .indexOf("password_hash") + 1,
+          )
+          .setValue("changeme123");
         break;
       }
     }
   }
-  
+
   return { success: true, message: "Password reset request handled" };
 }
 
@@ -552,14 +880,15 @@ function handlePasswordReset(data) {
 // ===============================
 function getBranches() {
   const sheet = getSheetByNameSafe("BRANCHES");
-  if (!sheet) return { success: false, message: "BRANCHES sheet not found", data: [] };
-  
+  if (!sheet)
+    return { success: false, message: "BRANCHES sheet not found", data: [] };
+
   const data = sheet.getDataRange().getValues();
   if (data.length < 2) return { success: true, data: [] };
-  
-  const headers = data[0].map(h => ("" + h).toLowerCase());
+
+  const headers = data[0].map((h) => ("" + h).toLowerCase());
   const result = [];
-  
+
   for (let i = 1; i < data.length; i++) {
     result.push({
       id: i + 1,
@@ -569,17 +898,17 @@ function getBranches() {
       location: data[i][headers.indexOf("location")] || "",
       classification: data[i][headers.indexOf("classification")] || "",
       status: data[i][headers.indexOf("status")] || "Active",
-      created_at: data[i][headers.indexOf("created_at")] || ""
+      created_at: data[i][headers.indexOf("created_at")] || "",
     });
   }
-  
+
   return { success: true, data: result };
 }
 
 function addBranch(data) {
   const sheet = getSheetByNameSafe("BRANCHES");
   if (!sheet) return { success: false, message: "BRANCHES sheet not found" };
-  
+
   const row = [
     data.branch_id || generateId(),
     data.branch_name,
@@ -587,9 +916,9 @@ function addBranch(data) {
     data.location,
     data.classification || "Regular",
     data.status || "Active",
-    getCurrentTimestamp()
+    getCurrentTimestamp(),
   ];
-  
+
   sheet.appendRow(row);
   return { success: true, message: "Branch added successfully" };
 }
@@ -597,23 +926,32 @@ function addBranch(data) {
 function updateBranch(data) {
   const sheet = getSheetByNameSafe("BRANCHES");
   if (!sheet) return { success: false, message: "BRANCHES sheet not found" };
-  
-  const headers = sheet.getDataRange().getValues()[0].map(h => ("" + h).toLowerCase());
+
+  const headers = sheet
+    .getDataRange()
+    .getValues()[0]
+    .map((h) => ("" + h).toLowerCase());
   const rowNum = parseInt(data.id);
-  
-  sheet.getRange(rowNum, headers.indexOf("branch_name") + 1).setValue(data.branch_name);
+
+  sheet
+    .getRange(rowNum, headers.indexOf("branch_name") + 1)
+    .setValue(data.branch_name);
   sheet.getRange(rowNum, headers.indexOf("email") + 1).setValue(data.email);
-  sheet.getRange(rowNum, headers.indexOf("location") + 1).setValue(data.location);
-  sheet.getRange(rowNum, headers.indexOf("classification") + 1).setValue(data.classification);
+  sheet
+    .getRange(rowNum, headers.indexOf("location") + 1)
+    .setValue(data.location);
+  sheet
+    .getRange(rowNum, headers.indexOf("classification") + 1)
+    .setValue(data.classification);
   sheet.getRange(rowNum, headers.indexOf("status") + 1).setValue(data.status);
-  
+
   return { success: true, message: "Branch updated successfully" };
 }
 
 function deleteBranch(id) {
   const sheet = getSheetByNameSafe("BRANCHES");
   if (!sheet) return { success: false, message: "BRANCHES sheet not found" };
-  
+
   sheet.deleteRow(parseInt(id));
   return { success: true, message: "Branch deleted successfully" };
 }
@@ -623,34 +961,37 @@ function deleteBranch(id) {
 // ===============================
 function getInventory() {
   const sheet = getSheetByNameSafe("ADD STOCKS");
-  if (!sheet) return { success: false, message: "ADD STOCKS sheet not found", data: [] };
-  
+  if (!sheet)
+    return { success: false, message: "ADD STOCKS sheet not found", data: [] };
+
   const data = sheet.getDataRange().getValues();
   if (data.length < 2) return { success: true, data: [] };
-  
-  const headers = data[0].map(h => ("" + h).toLowerCase());
+
+  const headers = data[0].map((h) => ("" + h).toLowerCase());
   const result = [];
-  
+
   for (let i = 1; i < data.length; i++) {
     result.push({
       id: i + 1,
       item_id: data[i][headers.indexOf("item_id")] || "",
       description: data[i][headers.indexOf("description")] || "",
       unit: data[i][headers.indexOf("unit")] || "",
-      total_running_stocks: Number(data[i][headers.indexOf("total running stocks")] || 0),
+      total_running_stocks: Number(
+        data[i][headers.indexOf("total running stocks")] || 0,
+      ),
       status: data[i][headers.indexOf("status")] || "",
       supplier: data[i][headers.indexOf("supplier")] || "",
-      classification: data[i][headers.indexOf("classification")] || ""
+      classification: data[i][headers.indexOf("classification")] || "",
     });
   }
-  
+
   return { success: true, data: result };
 }
 
 function addInventoryItem(data) {
   const sheet = getSheetByNameSafe("ADD STOCKS");
   if (!sheet) return { success: false, message: "ADD STOCKS sheet not found" };
-  
+
   const row = [
     data.item_id || generateId(),
     data.description,
@@ -658,9 +999,9 @@ function addInventoryItem(data) {
     data.total_running_stocks || 0,
     data.status || "Active",
     data.supplier || "",
-    data.classification || ""
+    data.classification || "",
   ];
-  
+
   sheet.appendRow(row);
   return { success: true, message: "Inventory item added successfully" };
 }
@@ -668,30 +1009,41 @@ function addInventoryItem(data) {
 function updateInventoryItem(data) {
   const sheet = getSheetByNameSafe("ADD STOCKS");
   if (!sheet) return { success: false, message: "ADD STOCKS sheet not found" };
-  
-  const headers = sheet.getDataRange().getValues()[0].map(h => ("" + h).toLowerCase());
+
+  const headers = sheet
+    .getDataRange()
+    .getValues()[0]
+    .map((h) => ("" + h).toLowerCase());
   const rowNum = parseInt(data.id);
-  
+
   if (headers.indexOf("description") > -1)
-    sheet.getRange(rowNum, headers.indexOf("description") + 1).setValue(data.description);
+    sheet
+      .getRange(rowNum, headers.indexOf("description") + 1)
+      .setValue(data.description);
   if (headers.indexOf("unit") > -1)
     sheet.getRange(rowNum, headers.indexOf("unit") + 1).setValue(data.unit);
   if (headers.indexOf("total running stocks") > -1)
-    sheet.getRange(rowNum, headers.indexOf("total running stocks") + 1).setValue(data.total_running_stocks);
+    sheet
+      .getRange(rowNum, headers.indexOf("total running stocks") + 1)
+      .setValue(data.total_running_stocks);
   if (headers.indexOf("status") > -1)
     sheet.getRange(rowNum, headers.indexOf("status") + 1).setValue(data.status);
   if (headers.indexOf("supplier") > -1)
-    sheet.getRange(rowNum, headers.indexOf("supplier") + 1).setValue(data.supplier);
+    sheet
+      .getRange(rowNum, headers.indexOf("supplier") + 1)
+      .setValue(data.supplier);
   if (headers.indexOf("classification") > -1)
-    sheet.getRange(rowNum, headers.indexOf("classification") + 1).setValue(data.classification);
-  
+    sheet
+      .getRange(rowNum, headers.indexOf("classification") + 1)
+      .setValue(data.classification);
+
   return { success: true, message: "Inventory item updated successfully" };
 }
 
 function deleteInventoryItem(id) {
   const sheet = getSheetByNameSafe("ADD STOCKS");
   if (!sheet) return { success: false, message: "ADD STOCKS sheet not found" };
-  
+
   sheet.deleteRow(parseInt(id));
   return { success: true, message: "Inventory item deleted successfully" };
 }
@@ -701,14 +1053,19 @@ function deleteInventoryItem(id) {
 // ===============================
 function getOfficeRequests() {
   const sheet = getSheetByNameSafe("OFFICE REQUESTS");
-  if (!sheet) return { success: false, message: "OFFICE REQUESTS sheet not found", data: [] };
-  
+  if (!sheet)
+    return {
+      success: false,
+      message: "OFFICE REQUESTS sheet not found",
+      data: [],
+    };
+
   const data = sheet.getDataRange().getValues();
   if (data.length < 2) return { success: true, data: [] };
-  
-  const headers = data[0].map(h => ("" + h).toLowerCase());
+
+  const headers = data[0].map((h) => ("" + h).toLowerCase());
   const result = [];
-  
+
   for (let i = 1; i < data.length; i++) {
     result.push({
       id: i + 1,
@@ -722,30 +1079,35 @@ function getOfficeRequests() {
       uprice: Number(data[i][headers.indexOf("uprice")] || 0),
       amount: Number(data[i][headers.indexOf("amount")] || 0),
       status: data[i][headers.indexOf("status")] || "",
-      requested_by: data[i][headers.indexOf("requested_by")] || ""
+      requested_by: data[i][headers.indexOf("requested_by")] || "",
     });
   }
-  
+
   return { success: true, data: result };
 }
 
 function updateOfficeRequest(data) {
   const sheet = getSheetByNameSafe("OFFICE REQUESTS");
-  if (!sheet) return { success: false, message: "OFFICE REQUESTS sheet not found" };
-  
-  const headers = sheet.getDataRange().getValues()[0].map(h => ("" + h).toLowerCase());
+  if (!sheet)
+    return { success: false, message: "OFFICE REQUESTS sheet not found" };
+
+  const headers = sheet
+    .getDataRange()
+    .getValues()[0]
+    .map((h) => ("" + h).toLowerCase());
   const rowNum = parseInt(data.id);
-  
+
   if (data.status && headers.indexOf("status") > -1)
     sheet.getRange(rowNum, headers.indexOf("status") + 1).setValue(data.status);
-  
+
   return { success: true, message: "Office request updated successfully" };
 }
 
 function deleteOfficeRequest(id) {
   const sheet = getSheetByNameSafe("OFFICE REQUESTS");
-  if (!sheet) return { success: false, message: "OFFICE REQUESTS sheet not found" };
-  
+  if (!sheet)
+    return { success: false, message: "OFFICE REQUESTS sheet not found" };
+
   sheet.deleteRow(parseInt(id));
   return { success: true, message: "Office request deleted successfully" };
 }
@@ -755,14 +1117,19 @@ function deleteOfficeRequest(id) {
 // ===============================
 function getSpecialRequests() {
   const sheet = getSheetByNameSafe("SPECIAL REQUESTS");
-  if (!sheet) return { success: false, message: "SPECIAL REQUESTS sheet not found", data: [] };
-  
+  if (!sheet)
+    return {
+      success: false,
+      message: "SPECIAL REQUESTS sheet not found",
+      data: [],
+    };
+
   const data = sheet.getDataRange().getValues();
   if (data.length < 2) return { success: true, data: [] };
-  
-  const headers = data[0].map(h => ("" + h).toLowerCase());
+
+  const headers = data[0].map((h) => ("" + h).toLowerCase());
   const result = [];
-  
+
   for (let i = 1; i < data.length; i++) {
     result.push({
       id: i + 1,
@@ -777,38 +1144,57 @@ function getSpecialRequests() {
       amount: Number(data[i][headers.indexOf("amount")] || 0),
       status: data[i][headers.indexOf("status")] || "",
       requested_by: data[i][headers.indexOf("requested_by")] || "",
-      approved_by_purchasing: data[i][headers.indexOf("approved_by_purchasing")] || "",
-      approved_by_accounting: data[i][headers.indexOf("approved_by_accounting")] || "",
-      approved_by_admin: data[i][headers.indexOf("approved_by_admin")] || ""
+      approved_by_purchasing:
+        data[i][headers.indexOf("approved_by_purchasing")] || "",
+      approved_by_accounting:
+        data[i][headers.indexOf("approved_by_accounting")] || "",
+      approved_by_admin: data[i][headers.indexOf("approved_by_admin")] || "",
     });
   }
-  
+
   return { success: true, data: result };
 }
 
 function updateSpecialRequest(data) {
   const sheet = getSheetByNameSafe("SPECIAL REQUESTS");
-  if (!sheet) return { success: false, message: "SPECIAL REQUESTS sheet not found" };
-  
-  const headers = sheet.getDataRange().getValues()[0].map(h => ("" + h).toLowerCase());
+  if (!sheet)
+    return { success: false, message: "SPECIAL REQUESTS sheet not found" };
+
+  const headers = sheet
+    .getDataRange()
+    .getValues()[0]
+    .map((h) => ("" + h).toLowerCase());
   const rowNum = parseInt(data.id);
-  
+
   if (data.status && headers.indexOf("status") > -1)
     sheet.getRange(rowNum, headers.indexOf("status") + 1).setValue(data.status);
-  if (data.approved_by_purchasing && headers.indexOf("approved_by_purchasing") > -1)
-    sheet.getRange(rowNum, headers.indexOf("approved_by_purchasing") + 1).setValue(data.approved_by_purchasing);
-  if (data.approved_by_accounting && headers.indexOf("approved_by_accounting") > -1)
-    sheet.getRange(rowNum, headers.indexOf("approved_by_accounting") + 1).setValue(data.approved_by_accounting);
+  if (
+    data.approved_by_purchasing &&
+    headers.indexOf("approved_by_purchasing") > -1
+  )
+    sheet
+      .getRange(rowNum, headers.indexOf("approved_by_purchasing") + 1)
+      .setValue(data.approved_by_purchasing);
+  if (
+    data.approved_by_accounting &&
+    headers.indexOf("approved_by_accounting") > -1
+  )
+    sheet
+      .getRange(rowNum, headers.indexOf("approved_by_accounting") + 1)
+      .setValue(data.approved_by_accounting);
   if (data.approved_by_admin && headers.indexOf("approved_by_admin") > -1)
-    sheet.getRange(rowNum, headers.indexOf("approved_by_admin") + 1).setValue(data.approved_by_admin);
-  
+    sheet
+      .getRange(rowNum, headers.indexOf("approved_by_admin") + 1)
+      .setValue(data.approved_by_admin);
+
   return { success: true, message: "Special request updated successfully" };
 }
 
 function deleteSpecialRequest(id) {
   const sheet = getSheetByNameSafe("SPECIAL REQUESTS");
-  if (!sheet) return { success: false, message: "SPECIAL REQUESTS sheet not found" };
-  
+  if (!sheet)
+    return { success: false, message: "SPECIAL REQUESTS sheet not found" };
+
   sheet.deleteRow(parseInt(id));
   return { success: true, message: "Special request deleted successfully" };
 }
@@ -819,10 +1205,10 @@ function deleteSpecialRequest(id) {
 function generateReport(data) {
   const ss = SpreadsheetApp.openById(SHEET_FILE_ID);
   const { dateFrom, dateTo, branch, requestType } = data;
-  
+
   const results = [];
   const sheets = ss.getSheets();
-  
+
   const headerNames = {
     date: ["date", "date created", "request date"],
     branch: ["branch", "office", "location"],
@@ -830,24 +1216,31 @@ function generateReport(data) {
     qty: ["qty", "quantity"],
     amount: ["amount", "total amount"],
   };
-  
+
   sheets.forEach((sheet) => {
     const sheetName = sheet.getName().toLowerCase();
-    if (sheetName === "add stocks" || sheetName === "suppliers" || 
-        sheetName === "supplier items" || sheetName === "users" ||
-        sheetName === "branches" || sheetName === "password reset" ||
-        sheetName === "low stocks log" || sheetName === "reports log") return;
-    
+    if (
+      sheetName === "add stocks" ||
+      sheetName === "suppliers" ||
+      sheetName === "supplier items" ||
+      sheetName === "users" ||
+      sheetName === "branches" ||
+      sheetName === "password reset" ||
+      sheetName === "low stocks log" ||
+      sheetName === "reports log"
+    )
+      return;
+
     // Filter by request type
     if (requestType && requestType !== "All") {
       if (requestType === "Office" && !sheetName.includes("office")) return;
       if (requestType === "Special" && !sheetName.includes("special")) return;
     }
-    
+
     const sheetData = sheet.getDataRange().getValues();
     if (sheetData.length < 2) return;
-    
-    const headers = sheetData[0].map(h => ("" + h).toLowerCase());
+
+    const headers = sheetData[0].map((h) => ("" + h).toLowerCase());
     const idx = {
       date: findIdx(headers, headerNames.date),
       branch: findIdx(headers, headerNames.branch),
@@ -855,12 +1248,12 @@ function generateReport(data) {
       qty: findIdx(headers, headerNames.qty),
       amount: findIdx(headers, headerNames.amount),
     };
-    
+
     for (let r = 1; r < sheetData.length; r++) {
       const rowDate = sheetData[r][idx.date];
       const rowBranch = sheetData[r][idx.branch] || "";
       const rowStatus = sheetData[r][idx.status] || "";
-      
+
       // Date filter
       if (dateFrom && dateTo && rowDate) {
         const rowDateObj = new Date(rowDate);
@@ -868,10 +1261,15 @@ function generateReport(data) {
         const toObj = new Date(dateTo);
         if (rowDateObj < fromObj || rowDateObj > toObj) continue;
       }
-      
+
       // Branch filter
-      if (branch && branch !== "All" && rowBranch.toLowerCase() !== branch.toLowerCase()) continue;
-      
+      if (
+        branch &&
+        branch !== "All" &&
+        rowBranch.toLowerCase() !== branch.toLowerCase()
+      )
+        continue;
+
       results.push({
         sheetName: sheet.getName(),
         rowNumber: r + 1,
@@ -880,22 +1278,22 @@ function generateReport(data) {
         description: sheetData[r][headers.indexOf("description")] || "",
         qty: sheetData[r][idx.qty] || 0,
         amount: sheetData[r][idx.amount] || 0,
-        status: rowStatus
+        status: rowStatus,
       });
     }
   });
-  
+
   return { success: true, data: results };
 }
 
 function getLowStocksReport() {
   const inv = getInventory();
   if (!inv.success) return inv;
-  
-  const lowStocks = inv.data.filter(item => {
+
+  const lowStocks = inv.data.filter((item) => {
     return item.total_running_stocks <= 10;
   });
-  
+
   return { success: true, data: lowStocks };
 }
 
@@ -903,11 +1301,11 @@ function getBranchDashboard() {
   const branches = getBranches();
   const officeReq = getOfficeRequests();
   const specialReq = getSpecialRequests();
-  
+
   const branchData = {};
-  
+
   // Initialize branch data
-  (branches.data || []).forEach(b => {
+  (branches.data || []).forEach((b) => {
     branchData[b.branch_name] = {
       branch: b.branch_name,
       officePending: 0,
@@ -916,12 +1314,12 @@ function getBranchDashboard() {
       specialPending: 0,
       specialApproved: 0,
       specialRejected: 0,
-      calendar: []
+      calendar: [],
     };
   });
-  
+
   // Count office requests by branch
-  (officeReq.data || []).forEach(req => {
+  (officeReq.data || []).forEach((req) => {
     const b = req.branch;
     if (!branchData[b]) {
       branchData[b] = {
@@ -932,27 +1330,28 @@ function getBranchDashboard() {
         specialPending: 0,
         specialApproved: 0,
         specialRejected: 0,
-        calendar: []
+        calendar: [],
       };
     }
-    
+
     const status = (req.status || "").toLowerCase();
     if (status === "pending") branchData[b].officePending++;
     else if (status === "approved") branchData[b].officeApproved++;
-    else if (status === "cancel" || status === "rejected") branchData[b].officeRejected++;
-    
+    else if (status === "cancel" || status === "rejected")
+      branchData[b].officeRejected++;
+
     if (req.date) {
       branchData[b].calendar.push({
         date: req.date,
         type: "Office",
         status: req.status,
-        description: req.description
+        description: req.description,
       });
     }
   });
-  
+
   // Count special requests by branch
-  (specialReq.data || []).forEach(req => {
+  (specialReq.data || []).forEach((req) => {
     const b = req.branch;
     if (!branchData[b]) {
       branchData[b] = {
@@ -963,34 +1362,40 @@ function getBranchDashboard() {
         specialPending: 0,
         specialApproved: 0,
         specialRejected: 0,
-        calendar: []
+        calendar: [],
       };
     }
-    
+
     const status = (req.status || "").toLowerCase();
     if (status === "pending") branchData[b].specialPending++;
-    else if (status === "approved" || status === "approved by accounting" || status === "to purchased") branchData[b].specialApproved++;
-    else if (status === "cancel" || status === "rejected") branchData[b].specialRejected++;
-    
+    else if (
+      status === "approved" ||
+      status === "approved by accounting" ||
+      status === "to purchased"
+    )
+      branchData[b].specialApproved++;
+    else if (status === "cancel" || status === "rejected")
+      branchData[b].specialRejected++;
+
     if (req.date) {
       branchData[b].calendar.push({
         date: req.date,
         type: "Special",
         status: req.status,
-        description: req.description
+        description: req.description,
       });
     }
   });
-  
+
   return { success: true, data: Object.values(branchData) };
 }
 
 function getBranchReport(data) {
   const { branch, period, year, month } = data;
-  
+
   const officeReq = getOfficeRequests();
   const specialReq = getSpecialRequests();
-  
+
   const results = {
     branch: branch,
     officeRequests: [],
@@ -1001,29 +1406,34 @@ function getBranchReport(data) {
       officeApproved: 0,
       specialTotal: 0,
       specialPending: 0,
-      specialApproved: 0
-    }
+      specialApproved: 0,
+    },
   };
-  
+
   const currentYear = year || new Date().getFullYear();
   const currentMonth = month ? parseInt(month) : null;
-  
+
   const filterByPeriod = (dateStr) => {
     if (!dateStr) return true;
     const d = new Date(dateStr);
     if (period === "yearly") {
       return d.getFullYear() === currentYear;
     } else if (period === "monthly") {
-      return d.getFullYear() === currentYear && (currentMonth ? d.getMonth() + 1 === currentMonth : true);
+      return (
+        d.getFullYear() === currentYear &&
+        (currentMonth ? d.getMonth() + 1 === currentMonth : true)
+      );
     }
     return true;
   };
-  
+
   const filterByBranch = (b) => {
-    return !branch || branch === "All" || b.toLowerCase() === branch.toLowerCase();
+    return (
+      !branch || branch === "All" || b.toLowerCase() === branch.toLowerCase()
+    );
   };
-  
-  (officeReq.data || []).forEach(req => {
+
+  (officeReq.data || []).forEach((req) => {
     if (filterByBranch(req.branch) && filterByPeriod(req.date)) {
       results.officeRequests.push(req);
       results.summary.officeTotal++;
@@ -1032,17 +1442,18 @@ function getBranchReport(data) {
       else if (status === "approved") results.summary.officeApproved++;
     }
   });
-  
-  (specialReq.data || []).forEach(req => {
+
+  (specialReq.data || []).forEach((req) => {
     if (filterByBranch(req.branch) && filterByPeriod(req.date)) {
       results.specialRequests.push(req);
       results.summary.specialTotal++;
       const status = (req.status || "").toLowerCase();
       if (status === "pending") results.summary.specialPending++;
-      else if (status === "approved" || status === "approved by accounting") results.summary.specialApproved++;
+      else if (status === "approved" || status === "approved by accounting")
+        results.summary.specialApproved++;
     }
   });
-  
+
   return { success: true, data: results };
 }
 
